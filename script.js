@@ -21,13 +21,13 @@ const terminalBody = document.getElementById('terminalBody');
 
 const terminalScript = [
   { type: 'prompt', text: '$ whoami' },
-  { type: 'text', text: 'dinuka-wijesinghe' },
+  { type: 'text', text: 'dinuka-hasanka-wijesinghe' },
   { type: 'gap' },
-  { type: 'prompt', text: '$ ping career -c 1' },
-  { type: 'muted', text: '64 bytes from network-engineer: icmp_seq=1 ttl=64 time=8.2ms' },
+  { type: 'prompt', text: '$ ping backbone -c 1' },
+  { type: 'muted', text: '64 bytes from ip-mpls-core: icmp_seq=1 ttl=64 time=6.4ms' },
   { type: 'gap' },
   { type: 'prompt', text: '$ cat role.txt' },
-  { type: 'text', text: 'Network Engineer — Routing / Switching / Security' },
+  { type: 'text', text: 'Network Engineer — IP/MPLS Core, 7+ yrs ISP & carrier' },
   { type: 'gap' },
   { type: 'prompt', text: '$ echo $STATUS' },
   { type: 'muted', text: 'available_for_hire=true' },
