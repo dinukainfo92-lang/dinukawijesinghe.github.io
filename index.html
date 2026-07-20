@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinuka Wijesinghe | Network Engineer</title>
+<meta name="description" content="Dinuka Wijesinghe — Network Engineer specializing in routing, switching, and enterprise infrastructure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="scanline" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="#top" class="logo">
+      <span class="logo-prompt">~/</span>dinuka<span class="cursor-blink">_</span>
+    </a>
+    <nav class="nav" id="siteNav">
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#experience">experience</a>
+      <a href="#projects">projects</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow">// network engineer</p>
+        <h1>Dinuka<br>Wijesinghe</h1>
+        <p class="hero-sub">
+          I design, build and keep enterprise networks up —
+          routing, switching, security and everything that moves packets between them.
+          <!-- EDIT ME: replace with your own one-line pitch -->
+        </p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">view projects</a>
+          <a href="#contact" class="btn btn-ghost">get in touch</a>
+        </div>
+      </div>
+
+      <div class="terminal" role="img" aria-label="Terminal showing a simulated ping and system info for Dinuka Wijesinghe">
+        <div class="terminal-bar">
+          <span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span>
+          <span class="terminal-title">noc@dinukawijesinghe.com</span>
+        </div>
+        <div class="terminal-body" id="terminalBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section wrap">
+    <p class="section-tag">01 · about</p>
+    <div class="about-grid">
+      <p class="about-text">
+        <!-- EDIT ME: write 2-4 sentences about your background, focus areas, and what kind of work you enjoy -->
+        I'm a Network Engineer focused on designing resilient, secure infrastructure for growing
+        organizations. My work spans routing and switching, firewall and VPN architecture, and
+        day-two operations — monitoring, troubleshooting, and keeping mean-time-to-resolution low.
+        I like networks that are boring in the best way: predictable, documented, and quiet at 3am.
+      </p>
+      <ul class="about-meta">
+        <li><span>location</span>Colombo, Sri Lanka</li>
+        <li><span>focus</span>Routing &amp; Switching, Security</li>
+        <li><span>status</span><span class="led led-up"></span>Open to opportunities</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="section wrap">
+    <p class="section-tag">02 · skills</p>
+    <h2 class="section-title">show interfaces status</h2>
+
+    <div class="iface-table" role="table" aria-label="Skills shown as interface status">
+      <div class="iface-row iface-head" role="row">
+        <span role="columnheader">interface</span>
+        <span role="columnheader">skill area</span>
+        <span role="columnheader">status</span>
+        <span role="columnheader">proficiency</span>
+      </div>
+
+      <!-- EDIT ME: adjust skills and proficiency (0-100) freely -->
+      <div class="iface-row" role="row" data-level="92">
+        <span class="iface-name">Gi0/1</span>
+        <span>Routing (BGP, OSPF, EIGRP)</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="88">
+        <span class="iface-name">Gi0/2</span>
+        <span>Switching (VLAN, STP, LACP)</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="80">
+        <span class="iface-name">Gi0/3</span>
+        <span>Firewalls &amp; VPN (Palo Alto, Fortinet)</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="75">
+        <span class="iface-name">Gi0/4</span>
+        <span>Network Automation (Python, Ansible)</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="70">
+        <span class="iface-name">Gi0/5</span>
+        <span>Monitoring (Zabbix, SolarWinds, PRTG)</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="65">
+        <span class="iface-name">Gi0/6</span>
+        <span>Cloud Networking (AWS VPC, Azure)</span>
+        <span class="iface-status admin"><span class="led led-amber"></span>learning</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="section wrap">
+    <p class="section-tag">03 · experience</p>
+    <h2 class="section-title">show ip route</h2>
+
+    <!-- EDIT ME: replace with your actual roles, most recent first -->
+    <ol class="timeline">
+      <li class="timeline-item">
+        <div class="timeline-date">2023 — present</div>
+        <div class="timeline-body">
+          <h3>Network Engineer</h3>
+          <p class="timeline-org">Company Name · Colombo</p>
+          <p>Managed enterprise routing/switching infrastructure across multiple sites, led firewall
+             policy reviews, and reduced average incident resolution time through improved monitoring.</p>
+        </div>
+      </li>
+      <li class="timeline-item">
+        <div class="timeline-date">2021 — 2023</div>
+        <div class="timeline-body">
+          <h3>Associate Network Engineer</h3>
+          <p class="timeline-org">Company Name · Colombo</p>
+          <p>Supported LAN/WAN operations, VLAN and VPN configuration, and participated in a
+             datacenter migration project with zero unplanned downtime.</p>
+        </div>
+      </li>
+      <li class="timeline-item">
+        <div class="timeline-date">2020 — 2021</div>
+        <div class="timeline-body">
+          <h3>IT Support / Network Intern</h3>
+          <p class="timeline-org">Company Name · Colombo</p>
+          <p>Handled first-line network troubleshooting, device provisioning, and documentation
+             of network topology and IP addressing.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- PROJECTS / CERTS -->
+  <section id="projects" class="section wrap">
+    <p class="section-tag">04 · projects &amp; certifications</p>
+    <h2 class="section-title">show running-config</h2>
+
+    <!-- EDIT ME: swap in your real projects and certifications -->
+    <div class="card-grid">
+      <article class="card">
+        <p class="card-tag">project</p>
+        <h3>Automated Network Health Dashboard</h3>
+        <p>Built a Python + SNMP based monitoring tool that polls core switches and routers,
+           flags anomalies, and posts alerts to a team channel in real time.</p>
+      </article>
+      <article class="card">
+        <p class="card-tag">project</p>
+        <h3>Branch Office WAN Redesign</h3>
+        <p>Re-architected WAN connectivity for five branch offices using SD-WAN, cutting
+           link costs while improving failover time from minutes to seconds.</p>
+      </article>
+      <article class="card">
+        <p class="card-tag">certification</p>
+        <h3>CCNA — Cisco Certified Network Associate</h3>
+        <p>Routing, switching, and core networking fundamentals.</p>
+      </article>
+      <article class="card">
+        <p class="card-tag">certification</p>
+        <h3>CCNP Enterprise (in progress)</h3>
+        <p>Advanced routing, SD-WAN, and enterprise network design.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section wrap contact-section">
+    <p class="section-tag">05 · contact</p>
+    <h2 class="section-title">establish connection</h2>
+    <p class="contact-sub">
+      <!-- EDIT ME -->
+      Open to network engineering roles, freelance infrastructure work, or just talking shop about routing.
+    </p>
+    <div class="contact-grid">
+      <a href="mailto:hello@dinukawijesinghe.com" class="contact-card">
+        <span class="contact-label">email</span>
+        <span class="contact-value">hello@dinukawijesinghe.com</span>
+      </a>
+      <a href="https://linkedin.com/in/dinukawijesinghe" class="contact-card" target="_blank" rel="noopener">
+        <span class="contact-label">linkedin</span>
+        <span class="contact-value">/in/dinukawijesinghe</span>
+      </a>
+      <a href="https://github.com/dinukawijesinghe" class="contact-card" target="_blank" rel="noopener">
+        <span class="contact-label">github</span>
+        <span class="contact-value">@dinukawijesinghe</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>© <span id="year"></span> Dinuka Wijesinghe — built &amp; hosted from a terminal.</p>
+    <p class="footer-ping">status: <span class="led led-up"></span> all interfaces up</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
