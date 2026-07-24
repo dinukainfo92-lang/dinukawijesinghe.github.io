@@ -874,6 +874,23 @@ button:focus-visible {
   color: var(--accent);
 }
 
+.tool-tab-open {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 9px 16px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  align-self: center;
+}
+.tool-tab-open:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .tool-panel {
   display: none;
 }
