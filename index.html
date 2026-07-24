@@ -289,56 +289,527 @@
       </button>
     </div>
 
-    <!-- CONFIG GENERATOR -->
+    <!-- CONFIG GENERATOR (V3.3 — full feature) -->
     <div class="tool-panel active" id="tool-configgen" role="tabpanel">
-      <div class="tool-grid">
-        <form class="tool-form" id="configForm">
-          <div class="form-row">
-            <label for="cfgHostname">hostname</label>
-            <input type="text" id="cfgHostname" value="PE-ROUTER-01" autocomplete="off">
-          </div>
-          <div class="form-row">
-            <label for="cfgIface">interface</label>
-            <input type="text" id="cfgIface" value="GigabitEthernet0/0/0/1" autocomplete="off">
-          </div>
-          <div class="form-row">
-            <label for="cfgDesc">description</label>
-            <input type="text" id="cfgDesc" value="UPLINK-TO-CORE" autocomplete="off">
-          </div>
-          <div class="form-row form-row-split">
-            <div>
-              <label for="cfgIp">ip address</label>
-              <input type="text" id="cfgIp" value="10.10.10.1" autocomplete="off">
+
+      <!-- external dependency for xlsx/csv parsing -->
+      <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+      <div class="cg-wrap">
+
+        <!-- LEFT: template + controls -->
+        <div class="cg-left">
+
+          <div class="cg-card">
+            <p class="cg-eyebrow">Template</p>
+            <div class="cg-tpl-actions">
+              <button type="button" class="cg-btn" onclick="cgLoadDefault()">Default Template</button>
+              <button type="button" class="cg-btn" onclick="cgResetTpl()">Clear Template</button>
             </div>
-            <div>
-              <label for="cfgMask">mask</label>
-              <input type="text" id="cfgMask" value="255.255.255.252" autocomplete="off">
+            <textarea id="cgTpl" class="cg-textarea" spellcheck="false"></textarea>
+          </div>
+
+          <div class="cg-card">
+            <p class="cg-eyebrow">Data Source &amp; Controls</p>
+            <div class="cg-controls">
+
+              <div class="cg-field cg-full">
+                <label>Upload CSV / Excel</label>
+                <input type="file" id="cgFile" accept=".xlsx,.xls,.csv">
+              </div>
+
+              <button type="button" class="cg-btn cg-btn-green" id="cgResetFileBtn" onclick="cgResetFile()">↺ Reset File</button>
+              <button type="button" class="cg-btn" onclick="cgOnValidate()">✓ Validate</button>
+              <button type="button" class="cg-btn" id="cgGenBtn" onclick="cgGenerate()">⚙ Generate All</button>
+              <button type="button" class="cg-btn" id="cgDownloadBtn" onclick="cgDownload()">↓ Download TXT</button>
+              <button type="button" class="cg-btn" id="cgCopyBtn" onclick="cgCopy()">⎘ Copy Output</button>
+
+              <div class="cg-field">
+                <label>Label by column</label>
+                <select id="cgHeaderVar"><option value="">ROW Number</option></select>
+              </div>
+
+              <div class="cg-field">
+                <label>Select configs</label>
+                <div class="cg-device-box" id="cgDeviceBox">
+                  <input type="text" id="cgDeviceSearch" placeholder="Search…" oninput="cgFilterDevices()">
+                  <div id="cgDeviceList"></div>
+                </div>
+                <div class="cg-device-toolbar">
+                  <button type="button" class="cg-btn" onclick="cgSelectAll()">Select All</button>
+                  <button type="button" class="cg-btn" onclick="cgClearSel()">Clear</button>
+                </div>
+              </div>
+
+              <button type="button" class="cg-btn cg-full" id="cgGenSelBtn" onclick="cgGenerateSelected()">Generate Selected</button>
+            </div>
+
+            <!-- progress bar -->
+            <div id="cgProgress" style="display:none;margin-top:12px">
+              <div class="cg-prog-label">
+                <span>Generating configs…</span>
+                <b id="cgProgressPct">0%</b>
+              </div>
+              <div class="cg-prog-track"><div id="cgProgressFill" class="cg-prog-fill"></div></div>
             </div>
           </div>
-          <div class="form-row form-row-checkbox">
-            <label for="cfgMpls"><input type="checkbox" id="cfgMpls" checked> enable MPLS on interface</label>
+
+          <div class="cg-card">
+            <div class="cg-output-head">
+              <p class="cg-eyebrow">Generated Output</p>
+              <button type="button" class="cg-btn cg-btn-sm" id="cgClearOutBtn" onclick="cgClearOutput()">✕ Clear</button>
+            </div>
+            <textarea id="cgOut" class="cg-textarea cg-output-ta" spellcheck="false" readonly></textarea>
           </div>
 
-          <div class="form-row">
-            <label for="cfgProtocol">routing protocol</label>
-            <select id="cfgProtocol">
-              <option value="ospf">OSPF</option>
-              <option value="isis">IS-IS</option>
-              <option value="bgp">MP-BGP</option>
-            </select>
+        </div>
+
+        <!-- RIGHT: validation + editor -->
+        <div class="cg-right">
+
+          <div class="cg-card">
+            <p class="cg-eyebrow">Validation</p>
+            <div id="cgDash"></div>
           </div>
 
-          <div id="cfgProtocolFields"></div>
-        </form>
-
-        <div class="tool-output">
-          <div class="tool-output-bar">
-            <span>generated-config.txt</span>
-            <button class="copy-btn" id="copyConfigBtn" type="button">copy</button>
+          <div class="cg-card">
+            <p class="cg-eyebrow">Data Editor</p>
+            <div class="cg-editor-toolbar">
+              <button type="button" class="cg-btn" onclick="cgAddCol()">+ Col</button>
+              <button type="button" class="cg-btn" onclick="cgDelCol()">− Col</button>
+              <button type="button" class="cg-btn" onclick="cgAddRow()">+ Row</button>
+              <button type="button" class="cg-btn" onclick="cgDelRow()">− Row</button>
+            </div>
+            <div class="cg-table-shell"><table id="cgGrid"></table></div>
           </div>
-          <pre class="tool-output-body" id="configOutput"></pre>
+
         </div>
       </div>
+
+      <!-- scoped styles -->
+      <style>
+      .cg-wrap{display:grid;grid-template-columns:1.45fr 1fr;gap:16px;margin-top:8px}
+      @media(max-width:860px){.cg-wrap{grid-template-columns:1fr}}
+
+      .cg-card{
+        background:var(--bg-raised);
+        border:1px solid var(--border);
+        border-radius:8px;
+        padding:18px;
+        margin-bottom:14px;
+      }
+      .cg-card:last-child{margin-bottom:0}
+
+      .cg-eyebrow{
+        font-family:var(--font-mono);
+        font-size:0.72rem;
+        text-transform:uppercase;
+        letter-spacing:0.06em;
+        color:var(--accent);
+        margin:0 0 12px 0;
+      }
+      .cg-eyebrow::before{content:'# ';color:var(--text-faint)}
+
+      .cg-textarea{
+        width:100%;
+        background:var(--bg);
+        color:#a3f7c5;
+        border:1px solid var(--border);
+        border-radius:var(--radius);
+        padding:12px;
+        font-family:var(--font-mono);
+        font-size:0.8rem;
+        line-height:1.6;
+        resize:vertical;
+        min-height:180px;
+        transition:border-color .15s;
+      }
+      .cg-textarea:focus{outline:none;border-color:var(--accent)}
+      .cg-output-ta{color:#b9d9ff;min-height:160px}
+
+      .cg-tpl-actions{display:flex;gap:8px;margin-bottom:10px}
+
+      .cg-controls{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:9px;
+        align-items:end;
+      }
+      .cg-full{grid-column:1/-1}
+
+      .cg-field{display:flex;flex-direction:column;gap:5px;grid-column:1/-1}
+      .cg-field label{
+        font-family:var(--font-mono);
+        font-size:0.68rem;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+        color:var(--text-faint);
+      }
+      .cg-field input[type=file],
+      .cg-field select{
+        background:var(--bg);
+        color:var(--text);
+        border:1px solid var(--border);
+        border-radius:var(--radius);
+        padding:9px 10px;
+        font-family:var(--font-mono);
+        font-size:0.82rem;
+        width:100%;
+      }
+      .cg-field input[type=file]{color:var(--text-dim);border-style:dashed}
+
+      .cg-btn{
+        font-family:var(--font-mono);
+        font-size:0.78rem;
+        font-weight:500;
+        background:var(--bg-raised-2);
+        color:var(--text-dim);
+        border:1px solid var(--border);
+        border-radius:var(--radius);
+        padding:9px 12px;
+        cursor:pointer;
+        transition:border-color .15s,color .15s,background .15s;
+        white-space:nowrap;
+      }
+      .cg-btn:hover{border-color:var(--accent);color:var(--text)}
+      .cg-btn-green{border-color:var(--green-dim);color:var(--green)}
+      .cg-btn-sm{padding:5px 10px;font-size:0.72rem}
+      .cg-btn.cg-active{border-color:var(--accent);color:var(--accent)}
+      .cg-btn.cg-disabled{opacity:.4;pointer-events:none}
+
+      .cg-device-box{
+        background:var(--bg);
+        border:1px solid var(--border);
+        border-radius:var(--radius);
+        padding:8px;
+        margin-bottom:6px;
+      }
+      #cgDeviceSearch{
+        width:100%;background:var(--bg-raised);color:var(--text);
+        border:1px solid var(--border);border-radius:var(--radius);
+        padding:7px 10px;font-family:var(--font-mono);font-size:0.78rem;
+        margin-bottom:6px;
+      }
+      #cgDeviceSearch:focus{outline:none;border-color:var(--accent)}
+      #cgDeviceList{max-height:140px;overflow-y:auto}
+      #cgDeviceList div{
+        padding:5px 6px;border-radius:4px;font-size:0.8rem;
+        font-family:var(--font-mono);color:var(--text-dim);
+        transition:background .1s;
+      }
+      #cgDeviceList div:hover{background:rgba(47,226,143,0.06);color:var(--text)}
+      #cgDeviceList label{display:flex;align-items:center;gap:8px;cursor:pointer}
+      #cgDeviceList input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
+
+      .cg-device-toolbar{display:flex;gap:8px}
+      .cg-device-toolbar .cg-btn{flex:1}
+
+      .cg-prog-label{
+        display:flex;justify-content:space-between;
+        font-family:var(--font-mono);font-size:0.72rem;
+        color:var(--text-dim);margin-bottom:6px;
+      }
+      .cg-prog-label b{color:var(--accent)}
+      .cg-prog-track{
+        height:6px;border-radius:4px;
+        background:var(--border-soft);overflow:hidden;
+      }
+      .cg-prog-fill{
+        height:100%;width:0%;border-radius:4px;
+        background:linear-gradient(90deg,var(--green-dim),var(--green));
+        transition:width .05s linear;
+      }
+
+      .cg-output-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+      .cg-output-head .cg-eyebrow{margin:0}
+
+      /* validation dashboard */
+      #cgDash{display:flex;flex-direction:column;gap:8px}
+      .cg-stat{
+        display:flex;justify-content:space-between;align-items:center;
+        background:var(--bg);border:1px solid var(--border);
+        border-left:3px solid var(--border);
+        border-radius:var(--radius);padding:9px 12px;
+        font-family:var(--font-mono);font-size:0.78rem;color:var(--text-dim);
+      }
+      .cg-stat b{font-size:0.82rem;color:var(--text)}
+      .cg-stat.ok{border-left-color:var(--green);color:var(--green)}
+      .cg-stat.bad{border-left-color:#ff5f56;color:#ff5f56}
+      .cg-stat.warn{border-left-color:var(--amber);color:var(--amber)}
+      .cg-stat-detail{
+        font-family:var(--font-mono);font-size:0.72rem;
+        color:var(--text-faint);padding:8px 12px;
+        background:var(--bg);border:1px solid var(--border);
+        border-top:none;border-radius:0 0 var(--radius) var(--radius);
+        line-height:1.8;
+      }
+
+      /* data editor table */
+      .cg-editor-toolbar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+      .cg-editor-toolbar .cg-btn{flex:1;min-width:60px}
+      .cg-table-shell{
+        max-height:300px;overflow:auto;
+        border:1px solid var(--border);border-radius:var(--radius);
+        background:var(--bg);
+      }
+      #cgGrid{width:100%;border-collapse:collapse;font-size:0.75rem;font-family:var(--font-mono)}
+      #cgGrid th,#cgGrid td{
+        border:1px solid var(--border-soft);padding:6px 9px;text-align:left;
+        white-space:nowrap;
+      }
+      #cgGrid th{
+        background:var(--bg-raised-2);color:var(--accent);
+        position:sticky;top:0;font-weight:600;letter-spacing:.3px;z-index:1;
+      }
+      #cgGrid tbody tr:nth-child(even){background:rgba(255,255,255,0.012)}
+      #cgGrid tbody tr:hover{background:rgba(47,226,143,0.04)}
+      #cgGrid td[contenteditable]{background:#1a2a1a;color:#d0ffd0}
+      #cgGrid td[contenteditable]:focus{outline:2px solid var(--accent);outline-offset:-2px}
+      #cgGrid td.cg-edited{background:#2a2200;color:#fde68a}
+      </style>
+
+      <!-- scoped script (prefixed cg*) -->
+      <script>
+      (function(){
+        const defaultTpl =
+`interface {{INTERFACE}}
+ description {{DESCRIPTION}}
+ mtu {{MTU}}
+ encapsulation dot1q {{VLAN}}
+ vrf {{VRF}}
+ ipv4 address {{IP}} {{MASK}}
+ no shutdown`;
+
+        let cgRows = [];
+
+        const $ = id => document.getElementById(id);
+        const tpl = () => $('cgTpl');
+        const out = () => $('cgOut');
+
+        // init template
+        tpl().value = defaultTpl;
+
+        // ── file upload ──────────────────────────────────────
+        $('cgFile').onchange = function(){
+          const file = this.files[0];
+          if(!file) return;
+          const reader = new FileReader();
+          reader.onload = function(e){
+            if(file.name.toLowerCase().endsWith('.csv')){
+              const lines = e.target.result.split(/\r?\n/).filter(Boolean);
+              const h = lines[0].split(',');
+              cgRows = lines.slice(1).map(l=>{
+                const o={};
+                l.split(',').forEach((v,i)=>o[h[i]]=v);
+                return o;
+              });
+            } else {
+              const wb = XLSX.read(e.target.result, {type:'array'});
+              const ws = wb.Sheets[wb.SheetNames[0]];
+              cgRows = XLSX.utils.sheet_to_json(ws, {defval:''});
+            }
+            cgRender(); cgPopHeader(); cgPopDevices(); cgValidate();
+          };
+          file.name.toLowerCase().endsWith('.csv')
+            ? reader.readAsText(file)
+            : reader.readAsArrayBuffer(file);
+        };
+
+        // ── helpers ──────────────────────────────────────────
+        function cgVars(){
+          return [...new Set((tpl().value.match(/{{(.*?)}}/g)||[]).map(v=>v.slice(2,-2).trim()))];
+        }
+
+        window.cgLoadDefault = function(){ tpl().value=defaultTpl; cgValidate(); };
+        window.cgResetTpl   = function(){ tpl().value=''; cgValidate(); };
+
+        window.cgResetFile  = function(){
+          $('cgFile').value='';
+          cgRows=[];
+          out().value='';
+          $('cgGrid').innerHTML='';
+          $('cgDash').innerHTML='';
+          $('cgDeviceList').innerHTML='';
+          $('cgHeaderVar').innerHTML='<option value="">ROW Number</option>';
+        };
+
+        // ── render table ─────────────────────────────────────
+        function cgRender(){
+          if(!cgRows.length){ $('cgGrid').innerHTML=''; return; }
+          const h = Object.keys(cgRows[0]);
+          let t = '<tr><th>#</th>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr>';
+          cgRows.forEach((r,i)=>{
+            t += '<tr><td>'+(i+1)+'</td>';
+            h.forEach(k=>t+=`<td contenteditable data-r="${i}" data-k="${k}">${r[k]||''}</td>`);
+            t += '</tr>';
+          });
+          $('cgGrid').innerHTML = t;
+          $('cgGrid').querySelectorAll('[contenteditable]').forEach(c=>{
+            c.oninput=()=>{
+              cgRows[+c.dataset.r][c.dataset.k]=c.textContent;
+              c.classList.add('cg-edited');
+              cgValidate();
+            };
+          });
+        }
+
+        // ── header dropdown ──────────────────────────────────
+        function cgPopHeader(){
+          const sel=$('cgHeaderVar');
+          const cur=sel.value;
+          sel.innerHTML='<option value="">ROW Number</option>';
+          if(cgRows.length){
+            Object.keys(cgRows[0]).forEach(h=>{
+              const o=document.createElement('option');
+              o.value=h; o.textContent=h;
+              if(h===cur) o.selected=true;
+              sel.appendChild(o);
+            });
+          }
+          sel.onchange = cgPopDevices;
+        }
+
+        // ── device list ──────────────────────────────────────
+        function cgPopDevices(){
+          const box=$('cgDeviceList');
+          const hv=$('cgHeaderVar').value;
+          box.innerHTML='';
+          cgRows.forEach((r,i)=>{
+            const name=(hv&&r[hv])?r[hv]:('Row '+(i+1));
+            const d=document.createElement('div');
+            d.innerHTML=`<label><input type="checkbox" class="cgChk" data-i="${i}"> ${name}</label>`;
+            box.appendChild(d);
+          });
+        }
+
+        window.cgFilterDevices = function(){
+          const q=$('cgDeviceSearch').value.toLowerCase();
+          $('cgDeviceList').querySelectorAll('div').forEach(d=>{
+            d.style.display=d.textContent.toLowerCase().includes(q)?'':'none';
+          });
+        };
+        window.cgSelectAll = function(){ document.querySelectorAll('.cgChk').forEach(c=>c.checked=true); };
+        window.cgClearSel  = function(){ document.querySelectorAll('.cgChk').forEach(c=>c.checked=false); };
+
+        // ── validation ───────────────────────────────────────
+        window.cgOnValidate = function(){
+          if(!cgValidate()) alert('✖ Validation Failed — fix Missing Variables first.');
+        };
+
+        function cgValidate(){
+          const headers = cgRows[0] ? Object.keys(cgRows[0]) : [];
+          const v = cgVars();
+          const miss = v.filter(x=>!headers.includes(x));
+          const matched = v.filter(x=>headers.includes(x));
+          const unused = headers.filter(h=>!v.includes(h));
+          const tplEmpty = !tpl().value.trim();
+
+          const dash = $('cgDash');
+          const statRow = (cls,icon,label,count,items)=>`
+            <div class="cg-stat ${cls}"><span>${icon} ${label}</span><b>${count}</b></div>
+            ${items.length?`<div class="cg-stat-detail">${items.join('<br>')}</div>`:''}`;
+
+          dash.innerHTML =
+            statRow('','▸','Total Variables', v.length, v) +
+            statRow('ok','✔','Matched', matched.length, matched) +
+            statRow('bad','✖','Missing', miss.length, miss.length?miss:['None']) +
+            statRow('warn','⚠','Unused Columns', unused.length, unused.length?unused:['None']) +
+            `<div class="cg-stat ${miss.length||tplEmpty?'bad':'ok'}">
+              <span>${miss.length||tplEmpty?'✖ Validation Failed':'✔ Ready to Generate'}</span>
+            </div>`;
+
+          const ok = miss.length===0 && cgRows.length>0 && !tplEmpty;
+          const genBtn=$('cgGenBtn');
+          if(genBtn) genBtn.classList.toggle('cg-disabled',!ok);
+          return ok;
+        }
+
+        // ── generate ─────────────────────────────────────────
+        function cgApply(r){
+          let t=tpl().value;
+          cgVars().forEach(v=>t=t.replaceAll('{{'+v+'}}',r[v]||''));
+          return t;
+        }
+        function cgFormat(r,i){
+          const hv=$('cgHeaderVar').value;
+          const hdr=(hv&&r[hv])?r[hv]:String(i+1).padStart(2,'0');
+          const title=(hv&&r[hv])?(hv+' - '+hdr):('ROW NUMBER - '+hdr);
+          return '######## '+title+' ########\n\n'+cgApply(r);
+        }
+
+        function cgShowProgress(cb){
+          const bar=$('cgProgress'), fill=$('cgProgressFill'), pct=$('cgProgressPct');
+          bar.style.display='block'; fill.style.width='0%'; pct.textContent='0%';
+          let start=null;
+          const dur=550;
+          (function step(ts){
+            if(!start) start=ts;
+            const p=Math.min((ts-start)/dur,1);
+            fill.style.width=(p*100)+'%';
+            pct.textContent=Math.round(p*100)+'%';
+            p<1 ? requestAnimationFrame(step) : setTimeout(()=>{bar.style.display='none';cb();},100);
+          })(performance.now());
+        }
+
+        window.cgGenerate = function(){
+          if(!cgValidate()){ alert('✖ Validation Failed!'); return; }
+          cgShowProgress(()=>{
+            out().value = cgRows.map((r,i)=>cgFormat(r,i)).join('\n\n');
+          });
+        };
+
+        window.cgGenerateSelected = function(){
+          if(!cgValidate()){ alert('✖ Validation Failed!'); return; }
+          const sel=[...document.querySelectorAll('.cgChk:checked')].map(x=>+x.dataset.i);
+          if(!sel.length){ alert('Select at least one device'); return; }
+          cgShowProgress(()=>{
+            out().value = sel.map(i=>cgFormat(cgRows[i],i)).join('\n\n');
+          });
+        };
+
+        window.cgClearOutput = function(){ out().value=''; };
+
+        window.cgDownload = function(){
+          if(!out().value.trim()){ alert('No output to download'); return; }
+          const a=document.createElement('a');
+          a.href=URL.createObjectURL(new Blob([out().value],{type:'text/plain'}));
+          a.download='Generated_Configs.txt';
+          a.click();
+        };
+
+        window.cgCopy = async function(){
+          if(!out().value.trim()){ alert('No output to copy'); return; }
+          await navigator.clipboard.writeText(out().value);
+          const btn=$('cgCopyBtn');
+          const orig=btn.textContent;
+          btn.textContent='✔ Copied';
+          btn.classList.add('cg-active');
+          setTimeout(()=>{ btn.textContent=orig; btn.classList.remove('cg-active'); },1600);
+        };
+
+        // ── editor helpers ────────────────────────────────────
+        window.cgAddCol = function(){
+          const n=prompt('Column name'); if(!n) return;
+          cgRows.forEach(r=>r[n]=''); cgRender(); cgPopHeader(); cgPopDevices(); cgValidate();
+        };
+        window.cgDelCol = function(){
+          const n=prompt('Delete column'); if(!n) return;
+          cgRows.forEach(r=>delete r[n]); cgRender(); cgPopHeader(); cgPopDevices(); cgValidate();
+        };
+        window.cgAddRow = function(){
+          if(!cgRows.length) cgRows=[{}];
+          const o={}; Object.keys(cgRows[0]).forEach(k=>o[k]='');
+          cgRows.push(o); cgRender(); cgPopHeader(); cgPopDevices(); cgValidate();
+        };
+        window.cgDelRow = function(){
+          cgRows.pop(); cgRender(); cgPopHeader(); cgPopDevices(); cgValidate();
+        };
+
+        // initial validate
+        cgValidate();
+      })();
+      </script>
+
     </div>
 
     <!-- PROTOCOL COMPARISON -->
