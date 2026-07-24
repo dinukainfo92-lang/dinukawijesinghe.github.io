@@ -24,6 +24,9 @@
       <a href="#about">about</a>
       <a href="#skills">skills</a>
       <a href="#experience">experience</a>
+      <a href="#gallery">gallery</a>
+      <a href="#articles">articles</a>
+      <a href="#tools">tools</a>
       <a href="#education">education</a>
       <a href="#certifications">certs</a>
       <a href="#contact">contact</a>
@@ -173,9 +176,179 @@
     </ol>
   </section>
 
+  <!-- GALLERY -->
+  <section id="gallery" class="section wrap">
+    <p class="section-tag">04 · gallery</p>
+    <h2 class="section-title">ls -la ./gallery</h2>
+    <p class="section-intro">
+      Field shots, rack builds and deployment moments. Drop your own images into
+      <code>/assets/gallery/</code> and update the list in <code>script.js</code> — tiles without a
+      matching file automatically fall back to this placeholder frame.
+    </p>
+
+    <div class="gallery-grid" id="galleryGrid">
+      <!-- Populated from script.js (GALLERY_ITEMS). Structure kept here for no-JS fallback. -->
+      <figure class="gallery-item" data-src="assets/gallery/01.jpg" data-caption="Core router deployment — NBN POI, Sydney">
+        <img src="assets/gallery/01.jpg" alt="Core router deployment at an NBN Point of Interconnect" loading="lazy">
+        <figcaption>Core router deployment — NBN POI, Sydney</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/02.jpg" data-caption="IOS-XR upgrade — Cisco NCS-5500">
+        <img src="assets/gallery/02.jpg" alt="IOS-XR software upgrade on a Cisco NCS-5500" loading="lazy">
+        <figcaption>IOS-XR upgrade — Cisco NCS-5500</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/03.jpg" data-caption="Interstate fibre link commissioning">
+        <img src="assets/gallery/03.jpg" alt="Fibre optic link commissioning" loading="lazy">
+        <figcaption>Interstate fibre link commissioning</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/04.jpg" data-caption="MOP walkthrough before a maintenance window">
+        <img src="assets/gallery/04.jpg" alt="Method of Procedure walkthrough before a maintenance window" loading="lazy">
+        <figcaption>MOP walkthrough before a maintenance window</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/05.jpg" data-caption="SD-WAN rollout — FortiGate edge">
+        <img src="assets/gallery/05.jpg" alt="SD-WAN rollout on a FortiGate edge device" loading="lazy">
+        <figcaption>SD-WAN rollout — FortiGate edge</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/06.jpg" data-caption="Rack &amp; cable cleanup — data centre visit">
+        <img src="assets/gallery/06.jpg" alt="Rack and cable cleanup during a data centre visit" loading="lazy">
+        <figcaption>Rack &amp; cable cleanup — data centre visit</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ARTICLES -->
+  <section id="articles" class="section wrap">
+    <p class="section-tag">05 · articles</p>
+    <h2 class="section-title">cat ./articles/index.md</h2>
+    <p class="section-intro">
+      Notes and write-ups on carrier routing, MPLS and network design. Drafts below — wire each
+      card's link up to the published post when it's live.
+    </p>
+
+    <div class="article-grid">
+      <article class="article-card">
+        <p class="article-status">draft</p>
+        <h3>MPLS Traffic Engineering: RSVP-TE vs Segment Routing</h3>
+        <p class="article-excerpt">
+          A practical comparison of two ways to steer traffic across a backbone — where per-hop
+          signalling still wins, and where SR simplifies the core.
+        </p>
+        <span class="article-link">read article →</span>
+      </article>
+
+      <article class="article-card">
+        <p class="article-status">draft</p>
+        <h3>EVPN-VXLAN Fundamentals for Carrier Networks</h3>
+        <p class="article-excerpt">
+          Control-plane vs data-plane roles in EVPN-VXLAN, and why it's replacing traditional
+          VPLS for multi-tenant Layer 2 extension.
+        </p>
+        <span class="article-link">read article →</span>
+      </article>
+
+      <article class="article-card">
+        <p class="article-status">draft</p>
+        <h3>Zero-Downtime Migrations Across a National IP Core</h3>
+        <p class="article-excerpt">
+          Lessons from decommissioning end-of-support routers and migrating live customer
+          services without dropping traffic.
+        </p>
+        <span class="article-link">read article →</span>
+      </article>
+
+      <article class="article-card">
+        <p class="article-status">draft</p>
+        <h3>Writing an MOP Nobody Has to Guess At</h3>
+        <p class="article-excerpt">
+          What a good Method of Procedure actually needs — rollback steps, verification
+          commands, and clear go/no-go points.
+        </p>
+        <span class="article-link">read article →</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="tools" class="section wrap">
+    <p class="section-tag">06 · tools</p>
+    <h2 class="section-title">run ./tools/</h2>
+    <p class="section-intro">
+      Small utilities built for day-to-day network work — right in the browser, nothing sent
+      anywhere.
+    </p>
+
+    <div class="tool-tabs" role="tablist" aria-label="Tools">
+      <button class="tool-tab active" role="tab" aria-selected="true" data-tool="configgen">
+        <span class="tool-tab-num">01</span> Config Generator
+      </button>
+      <button class="tool-tab" role="tab" aria-selected="false" data-tool="compare">
+        <span class="tool-tab-num">02</span> Protocol Comparison
+      </button>
+    </div>
+
+    <!-- CONFIG GENERATOR -->
+    <div class="tool-panel active" id="tool-configgen" role="tabpanel">
+      <div class="tool-grid">
+        <form class="tool-form" id="configForm">
+          <div class="form-row">
+            <label for="cfgHostname">hostname</label>
+            <input type="text" id="cfgHostname" value="PE-ROUTER-01" autocomplete="off">
+          </div>
+          <div class="form-row">
+            <label for="cfgIface">interface</label>
+            <input type="text" id="cfgIface" value="GigabitEthernet0/0/0/1" autocomplete="off">
+          </div>
+          <div class="form-row">
+            <label for="cfgDesc">description</label>
+            <input type="text" id="cfgDesc" value="UPLINK-TO-CORE" autocomplete="off">
+          </div>
+          <div class="form-row form-row-split">
+            <div>
+              <label for="cfgIp">ip address</label>
+              <input type="text" id="cfgIp" value="10.10.10.1" autocomplete="off">
+            </div>
+            <div>
+              <label for="cfgMask">mask</label>
+              <input type="text" id="cfgMask" value="255.255.255.252" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row form-row-checkbox">
+            <label for="cfgMpls"><input type="checkbox" id="cfgMpls" checked> enable MPLS on interface</label>
+          </div>
+
+          <div class="form-row">
+            <label for="cfgProtocol">routing protocol</label>
+            <select id="cfgProtocol">
+              <option value="ospf">OSPF</option>
+              <option value="isis">IS-IS</option>
+              <option value="bgp">MP-BGP</option>
+            </select>
+          </div>
+
+          <div id="cfgProtocolFields"></div>
+        </form>
+
+        <div class="tool-output">
+          <div class="tool-output-bar">
+            <span>generated-config.txt</span>
+            <button class="copy-btn" id="copyConfigBtn" type="button">copy</button>
+          </div>
+          <pre class="tool-output-body" id="configOutput"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROTOCOL COMPARISON -->
+    <div class="tool-panel" id="tool-compare" role="tabpanel">
+      <div class="compare-controls" id="compareControls"></div>
+      <div class="compare-table-wrap">
+        <table class="compare-table" id="compareTable"></table>
+      </div>
+    </div>
+  </section>
+
   <!-- EDUCATION -->
   <section id="education" class="section wrap">
-    <p class="section-tag">04 · education</p>
+    <p class="section-tag">07 · education</p>
     <h2 class="section-title">show boot-history</h2>
 
     <ol class="timeline">
@@ -198,7 +371,7 @@
 
   <!-- CERTIFICATIONS -->
   <section id="certifications" class="section wrap">
-    <p class="section-tag">05 · certifications</p>
+    <p class="section-tag">08 · certifications</p>
     <h2 class="section-title">show running-config</h2>
 
     <div class="card-grid">
@@ -232,7 +405,7 @@
 
   <!-- CONTACT -->
   <section id="contact" class="section wrap contact-section">
-    <p class="section-tag">06 · contact</p>
+    <p class="section-tag">09 · contact</p>
     <h2 class="section-title">establish connection</h2>
     <p class="contact-sub">
       Open to network engineering roles and carrier/ISP infrastructure projects — reach out any time.
@@ -261,6 +434,14 @@
     <p class="footer-ping">status: <span class="led led-up"></span> all interfaces up</p>
   </div>
 </footer>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close image">×</button>
+  <figure>
+    <img id="lightboxImg" src="" alt="">
+    <figcaption id="lightboxCaption"></figcaption>
+  </figure>
+</div>
 
 <script src="script.js"></script>
 </body>
