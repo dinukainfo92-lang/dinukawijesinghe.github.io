@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Protocol Comparison | OSPF vs IS-IS vs MP-BGP vs EVPN — Dinuka Wijesinghe</title>
+<meta name="description" content="Interactive comparison of carrier routing protocols — OSPF, IS-IS, MP-BGP, EVPN, VXLAN, RSVP-TE, Segment Routing. Built by Dinuka Wijesinghe, IP/MPLS Core Network Engineer.">
+<meta name="keywords" content="OSPF vs IS-IS, MP-BGP comparison, EVPN VXLAN, Segment Routing vs RSVP-TE, routing protocol comparison, IP/MPLS, service provider networking, Dinuka Wijesinghe">
+<meta name="author" content="Dinuka Hasanka Wijesinghe">
+<link rel="canonical" href="https://dinukawijesinghe.com/tools/protocol-compare.html">
+
+<meta property="og:title" content="Network Protocol Comparison Tool — Dinuka Wijesinghe">
+<meta property="og:description" content="Compare OSPF, IS-IS, MP-BGP, EVPN, VXLAN, RSVP-TE and Segment Routing side by side.">
+<meta property="og:url" content="https://dinukawijesinghe.com/tools/protocol-compare.html">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#090c11;--bg-raised:#10151d;--bg-raised-2:#151b25;
+  --border:#1f2733;--border-soft:#171e28;
+  --text:#d9e0e8;--text-dim:#8891a1;--text-faint:#545e6d;
+  --green:#2fe28f;--green-dim:#1c8a5a;--amber:#ffb454;--blue:#5ec8ff;--red:#ff5f56;
+  --accent:#2fe28f;--accent-glow:rgba(47,226,143,.35);
+  --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  --font-sans:'IBM Plex Sans',-apple-system,sans-serif;
+  --radius:3px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-size:15px;min-height:100vh;background-image:linear-gradient(180deg,rgba(47,226,143,.05),transparent 280px);}
+a{color:inherit;text-decoration:none}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border-soft);background:rgba(9,12,17,.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;}
+.topbar-logo{font-family:var(--font-mono);font-size:.95rem;font-weight:600}
+.topbar-logo span{color:var(--accent)}
+.topbar-back{font-family:var(--font-mono);font-size:.78rem;color:var(--text-dim);border:1px solid var(--border);border-radius:var(--radius);padding:7px 14px;transition:border-color .2s,color .2s;}
+.topbar-back:hover{border-color:var(--accent);color:var(--accent)}
+
+.page-header{padding:40px 28px 24px;max-width:1100px;margin:0 auto}
+.page-tag{font-family:var(--font-mono);font-size:.75rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px}
+.page-title{font-family:var(--font-mono);font-size:1.7rem;font-weight:600;color:#f2f5f8}
+.page-title::before{content:'$ ';color:var(--text-faint)}
+.page-sub{color:var(--text-dim);font-size:.93rem;margin-top:10px;max-width:60ch;line-height:1.65}
+
+main{max-width:1100px;margin:0 auto;padding:0 28px 60px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}
+.chip{
+  font-family:var(--font-mono);font-size:.8rem;color:var(--text-dim);
+  background:var(--bg-raised);border:1px solid var(--border);border-radius:20px;
+  padding:9px 18px;cursor:pointer;transition:border-color .2s,color .2s,background .2s;
+  user-select:none;
+}
+.chip:hover{color:var(--text)}
+.chip.active{border-color:var(--accent);color:var(--accent);background:rgba(47,226,143,.08)}
+.hint{font-family:var(--font-mono);font-size:.73rem;color:var(--text-faint);margin-bottom:16px}
+
+/* table */
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg-raised)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--border-soft)}
+th{
+  font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--text-faint);background:var(--bg-raised-2);
+  white-space:nowrap;
+}
+tr:last-child td{border-bottom:none}
+td:first-child,th:first-child{
+  font-family:var(--font-mono);color:var(--blue);
+  position:sticky;left:0;background:var(--bg-raised);min-width:160px;font-size:.82rem;
+}
+th:first-child{background:var(--bg-raised-2)}
+tr:hover td{background:rgba(255,255,255,.012)}
+tr:hover td:first-child{background:var(--bg-raised)}
+
+/* detail cards */
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:32px}
+.detail-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:20px}
+.detail-card h3{font-family:var(--font-mono);font-size:.95rem;color:var(--text);margin-bottom:10px}
+.detail-card p{font-size:.86rem;color:var(--text-dim);line-height:1.65}
+.detail-card .proto-tag{
+  display:inline-block;font-family:var(--font-mono);font-size:.66rem;text-transform:uppercase;
+  letter-spacing:.06em;border:1px solid var(--green-dim);color:var(--green);
+  padding:3px 8px;border-radius:20px;margin-bottom:10px;
+}
+
+.tool-footer{border-top:1px solid var(--border-soft);padding:22px 28px;font-family:var(--font-mono);font-size:.75rem;color:var(--text-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.tool-footer a{color:var(--text-dim);transition:color .2s}
+.tool-footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo"><span>~/</span>dinuka · tools</div>
+  <a href="https://dinukawijesinghe.com" class="topbar-back">← back to portfolio</a>
+</div>
+
+<div class="page-header">
+  <p class="page-tag">tools / 02</p>
+  <h1 class="page-title">Protocol Comparison</h1>
+  <p class="page-sub">
+    Compare carrier routing and overlay protocols side by side. Toggle up to 5 protocols using the chips below.
+  </p>
+</div>
+
+<main>
+  <div class="chips" id="chips"></div>
+  <p class="hint" id="hint"></p>
+  <div class="table-wrap"><table id="compareTable"></table></div>
+  <div class="detail-grid" id="detailGrid"></div>
+</main>
+
+<footer class="tool-footer">
+  <span>Built by <a href="https://dinukawijesinghe.com">Dinuka Hasanka Wijesinghe</a> — Network Engineer, IP/MPLS Core</span>
+  <a href="https://dinukawijesinghe.com/tools/config-generator.html">Config Generator Tool →</a>
+</footer>
+
+<script>
+const PROTOCOLS={
+  'OSPF':{
+    tag:'IGP · link-state',
+    type:'Interior Gateway Protocol (link-state)',
+    scalability:'Medium — area-based hierarchy required at scale',
+    convergence:'Fast (SPF, sub-second with BFD)',
+    useCase:'Enterprise networks, ISP access/aggregation',
+    complexity:'Medium',
+    vendors:'Cisco IOS/IOS-XR, Juniper JunOS, Nokia SR OS',
+    rfc:'RFC 2328 (OSPFv2), RFC 5340 (OSPFv3)',
+    detail:'Uses Dijkstra SPF algorithm. Area 0 (backbone) is mandatory. Scales to thousands of routers with area design. Widely supported and easiest to operate.'
+  },
+  'IS-IS':{
+    tag:'IGP · link-state',
+    type:'Interior Gateway Protocol (link-state)',
+    scalability:'High — preferred for large carrier backbones',
+    convergence:'Fast (SPF, sub-second with BFD)',
+    useCase:'ISP / carrier IP/MPLS backbones',
+    complexity:'Medium',
+    vendors:'Cisco IOS-XR (NCS, ASR), Juniper, Nokia',
+    rfc:'ISO 10589, RFC 5308 (IPv6)',
+    detail:'Runs directly over Layer 2, not IP — making it more resilient in some failure scenarios. Preferred by ISPs for MPLS backbone IGP. Supports SR-MPLS and SRv6 natively.'
+  },
+  'MP-BGP':{
+    tag:'EGP · path-vector',
+    type:'Exterior / overlay control-plane (path-vector)',
+    scalability:'Internet-scale — millions of prefixes',
+    convergence:'Slower, policy-driven (minutes without tuning)',
+    useCase:'Internet routing, MPLS VPNs, EVPN control-plane',
+    complexity:'High',
+    vendors:'All major vendors',
+    rfc:'RFC 4760 (multiprotocol extensions)',
+    detail:'Multi-Protocol BGP extends BGP to carry VPN, EVPN, and IPv6 routes. The control-plane backbone for MPLS L3VPN and EVPN. Highly tunable with route policies and communities.'
+  },
+  'EVPN':{
+    tag:'L2VPN · MP-BGP control-plane',
+    type:'Ethernet VPN — L2/L3 overlay control-plane',
+    scalability:'High — scales across data centres and metro',
+    convergence:'Fast (BGP-driven MAC/IP learning)',
+    useCase:'DC fabric, metro Ethernet, multi-tenant L2 extension',
+    complexity:'High',
+    vendors:'Cisco NCS/Nexus, Juniper QFX/MX, Arista',
+    rfc:'RFC 7432, RFC 8365 (VXLAN data-plane)',
+    detail:'Replaces traditional VPLS. Uses BGP as the control-plane for MAC/IP advertisement, eliminating data-plane flooding. Works over MPLS or VXLAN data-planes.'
+  },
+  'VXLAN':{
+    tag:'Overlay · data-plane encapsulation',
+    type:'Data-plane encapsulation (UDP/IP)',
+    scalability:'Very high — 16M VNIs (24-bit)',
+    convergence:'N/A — data-plane only',
+    useCase:'Data-centre fabric, cloud multi-tenancy',
+    complexity:'Medium',
+    vendors:'Cisco Nexus/NCS, Juniper, Arista, open-source',
+    rfc:'RFC 7348',
+    detail:'Encapsulates Layer 2 frames in UDP/IP packets. Paired with EVPN as its control-plane for production deployments. 24-bit VNI field allows far more segments than traditional VLANs.'
+  },
+  'RSVP-TE':{
+    tag:'Traffic engineering · signalling',
+    type:'Traffic-engineering — per-LSP signalling',
+    scalability:'Medium — per-flow state on every router',
+    convergence:'Medium (tunnel re-optimisation on failure)',
+    useCase:'Strict bandwidth-guaranteed TE tunnels (voice, video)',
+    complexity:'High',
+    vendors:'Cisco IOS-XR, Juniper, Nokia',
+    rfc:'RFC 3209',
+    detail:'Creates explicitly routed Label Switched Paths with bandwidth reservation. Requires state on every router along the path (soft-state). Being replaced by Segment Routing in most new designs.'
+  },
+  'Segment Routing':{
+    tag:'Traffic engineering · source-routed',
+    type:'Source-routed TE — stateless core',
+    scalability:'High — no per-flow state in the core',
+    convergence:'Fast (IGP-driven)',
+    useCase:'Simplified TE, SDN-ready, SR-MPLS & SRv6',
+    complexity:'Medium',
+    vendors:'Cisco IOS-XR (NCS-5500, ASR9k), Juniper, Nokia',
+    rfc:'RFC 8402 (architecture), RFC 8660 (MPLS)',
+    detail:'Encodes the entire path in the packet header. No per-hop RSVP state needed in the core. Supports SR-MPLS (label stack) and SRv6 (IPv6 extension headers). Foundation of modern carrier TE.'
+  }
+};
+
+const ROWS=[
+  {key:'type',label:'Protocol type'},
+  {key:'scalability',label:'Scalability'},
+  {key:'convergence',label:'Convergence'},
+  {key:'useCase',label:'Typical use case'},
+  {key:'complexity',label:'Operational complexity'},
+  {key:'vendors',label:'Common vendors'},
+  {key:'rfc',label:'Key RFC(s)'},
+];
+
+let selected=['IS-IS','MP-BGP','EVPN','Segment Routing'];
+
+function renderChips(){
+  const container=document.getElementById('chips');
+  container.innerHTML=Object.keys(PROTOCOLS).map(name=>
+    `<div class="chip${selected.includes(name)?' active':''}" data-p="${name}">${name}</div>`
+  ).join('');
+  container.querySelectorAll('.chip').forEach(c=>{
+    c.onclick=()=>{
+      const p=c.getAttribute('data-p');
+      if(selected.includes(p)){if(selected.length>1)selected=selected.filter(x=>x!==p);}
+      else if(selected.length<5)selected.push(p);
+      renderChips();renderTable();renderCards();
+    };
+  });
+  document.getElementById('hint').textContent=
+    `${selected.length} of 5 selected — click to toggle`;
+}
+
+function renderTable(){
+  const tbl=document.getElementById('compareTable');
+  const head='<tr><th>Attribute</th>'+selected.map(p=>`<th>${p}</th>`).join('')+'</tr>';
+  const body=ROWS.map(row=>
+    '<tr><td>'+row.label+'</td>'+selected.map(p=>`<td>${PROTOCOLS[p][row.key]}</td>`).join('')+'</tr>'
+  ).join('');
+  tbl.innerHTML=head+body;
+}
+
+function renderCards(){
+  const grid=document.getElementById('detailGrid');
+  grid.innerHTML=selected.map(p=>{
+    const d=PROTOCOLS[p];
+    return`<div class="detail-card">
+      <span class="proto-tag">${d.tag}</span>
+      <h3>${p}</h3>
+      <p>${d.detail}</p>
+    </div>`;
+  }).join('');
+}
+
+renderChips();renderTable();renderCards();
+</script>
+</body>
+</html>
