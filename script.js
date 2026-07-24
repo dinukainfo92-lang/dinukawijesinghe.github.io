@@ -254,6 +254,12 @@
      ========================================================== */
   const toolTabs = document.querySelectorAll('.tool-tab');
   const toolPanels = document.querySelectorAll('.tool-panel');
+  const toolFullPageLink = document.getElementById('toolFullPageLink');
+
+  const TOOL_PAGE_URLS = {
+    configgen: 'tools/config-generator.html',
+    compare:   'tools/protocol-compare.html',
+  };
 
   toolTabs.forEach((tab) => {
     tab.addEventListener('click', () => {
@@ -265,8 +271,12 @@
 
       tab.classList.add('active');
       tab.setAttribute('aria-selected', 'true');
-      const target = document.getElementById(`tool-${tab.getAttribute('data-tool')}`);
+      const toolKey = tab.getAttribute('data-tool');
+      const target = document.getElementById(`tool-${toolKey}`);
       if (target) target.classList.add('active');
+      if (toolFullPageLink && TOOL_PAGE_URLS[toolKey]) {
+        toolFullPageLink.href = TOOL_PAGE_URLS[toolKey];
+      }
     });
   });
 
