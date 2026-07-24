@@ -1,472 +1,448 @@
-(() => {
-  'use strict';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinuka Hasanka Wijesinghe | Network Engineer — IP/MPLS Core</title>
+<meta name="description" content="Dinuka Hasanka Wijesinghe — Network Engineer with 7+ years in ISP and carrier-grade IP/MPLS backbone networking.">
 
-  /* ---------- footer year ---------- */
-  const yearEl = document.getElementById('year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-  /* ---------- mobile nav toggle ---------- */
-  const navToggle = document.getElementById('navToggle');
-  const nav = document.getElementById('siteNav');
+<div class="scanline" aria-hidden="true"></div>
 
-  if (navToggle && nav) {
-    navToggle.addEventListener('click', () => {
-      const isOpen = nav.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', String(isOpen));
-    });
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="#top" class="logo">
+      <span class="logo-prompt">~/</span>dinuka<span class="cursor-blink">_</span>
+    </a>
+    <nav class="nav" id="siteNav">
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#experience">experience</a>
+      <a href="#gallery">gallery</a>
+      <a href="#articles">articles</a>
+      <a href="#tools">tools</a>
+      <a href="#education">education</a>
+      <a href="#certifications">certs</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    nav.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => {
-        nav.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
+<main id="top">
 
-  /* ---------- section reveal on scroll ---------- */
-  const revealTargets = document.querySelectorAll('.section');
-  const skillTable = document.querySelector('.iface-table');
+  <!-- HERO -->
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow">// ISP &amp; carrier network engineer</p>
+        <h1>Dinuka Hasanka<br>Wijesinghe</h1>
+        <p class="hero-sub">
+          7+ years designing, deploying and operating large-scale IP/MPLS backbone networks —
+          MPLS, MP-BGP, IS-IS, OSPF, EVPN, VXLAN and Traffic Engineering for carrier-grade infrastructure
+          in Sri Lanka and Australia.
+        </p>
+        <div class="hero-actions">
+          <a href="#experience" class="btn btn-primary">view experience</a>
+          <a href="#contact" class="btn btn-ghost">get in touch</a>
+        </div>
+      </div>
 
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
-  );
+      <div class="terminal" role="img" aria-label="Terminal showing a simulated ping and system info for Dinuka Wijesinghe">
+        <div class="terminal-bar">
+          <span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span>
+          <span class="terminal-title">noc@dinukawijesinghe.com</span>
+        </div>
+        <div class="terminal-body" id="terminalBody"></div>
+      </div>
+    </div>
+  </section>
 
-  revealTargets.forEach((el) => revealObserver.observe(el));
+  <!-- ABOUT -->
+  <section id="about" class="section wrap">
+    <p class="section-tag">01 · about</p>
+    <div class="about-grid">
+      <p class="about-text">
+        Network Engineer with 7+ years of experience in ISP and carrier-grade networking, specializing
+        in the design, deployment, optimization and operation of large-scale IP/MPLS backbone networks.
+        Proven track record maintaining mission-critical networks for leading Internet Service Providers
+        in Sri Lanka and Australia — ensuring optimal traffic engineering, rapid convergence, maximum
+        availability and efficient resource utilization, backed by deep protocol-level troubleshooting
+        expertise.
+      </p>
+      <ul class="about-meta">
+        <li><span>based</span>Sri Lanka</li>
+        <li><span>focus</span>IP/MPLS Backbone, ISP Core</li>
+        <li><span>languages</span>English, Sinhala</li>
+        <li><span>status</span><span class="led led-up"></span>Open to opportunities</li>
+      </ul>
+    </div>
+  </section>
 
-  /* ---------- animate skill bars once visible ---------- */
-  if (skillTable) {
-    const barObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const rows = entry.target.querySelectorAll('.iface-row[data-level]');
-            rows.forEach((row, i) => {
-              const fill = row.querySelector('.bar-fill');
-              const level = row.getAttribute('data-level');
-              if (fill && level) {
-                setTimeout(() => {
-                  fill.style.width = `${level}%`;
-                }, i * 90);
-              }
-            });
-            barObserver.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-    barObserver.observe(skillTable);
-  }
+  <!-- SKILLS -->
+  <section id="skills" class="section wrap">
+    <p class="section-tag">02 · skills</p>
+    <h2 class="section-title">show interfaces status</h2>
 
-  /* ---------- hero terminal: simulated boot / ping sequence ---------- */
-  const terminalBody = document.getElementById('terminalBody');
+    <div class="iface-table" role="table" aria-label="Skills shown as interface status">
+      <div class="iface-row iface-head" role="row">
+        <span role="columnheader">interface</span>
+        <span role="columnheader">skill area</span>
+        <span role="columnheader">status</span>
+        <span role="columnheader">proficiency</span>
+      </div>
 
-  if (terminalBody) {
-    const prompt = 'noc@dinukawijesinghe.com:~$';
+      <div class="iface-row" role="row" data-level="96">
+        <span class="iface-name">Gi0/1</span>
+        <span>MPLS &amp; MP-BGP</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="93">
+        <span class="iface-name">Gi0/2</span>
+        <span>IS-IS, OSPF &amp; EIGRP Routing</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="88">
+        <span class="iface-name">Gi0/3</span>
+        <span>EVPN &amp; VXLAN</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="85">
+        <span class="iface-name">Gi0/4</span>
+        <span>Traffic Engineering (RSVP-TE / Segment Routing)</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="82">
+        <span class="iface-name">Gi0/5</span>
+        <span>SD-WAN (FortiGate, FortiManager, FortiAnalyzer)</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+      <div class="iface-row" role="row" data-level="90">
+        <span class="iface-name">Gi0/6</span>
+        <span>Multi-vendor Ops (Cisco IOS-XR — NCS/ASR, Juniper)</span>
+        <span class="iface-status up"><span class="led led-up"></span>up</span>
+        <span class="bar"><span class="bar-fill"></span></span>
+      </div>
+    </div>
+  </section>
 
-    // Each entry is either a typed command, or pre-rendered output lines.
-    const script = [
-      { type: 'cmd', text: 'whoami' },
-      {
-        type: 'output',
-        lines: [
-          '<span class="tl-key">Dinuka Hasanka Wijesinghe</span>',
-          '<span class="tl-muted">Network Engineer — IP/MPLS Core · 7+ yrs</span>',
-        ],
-      },
-      { type: 'cmd', text: 'ping dinukawijesinghe.com -c 4' },
-      {
-        type: 'output',
-        lines: [
-          'PING dinukawijesinghe.com: 56 data bytes',
-          '64 bytes: icmp_seq=0 ttl=61 time=4.12 ms',
-          '64 bytes: icmp_seq=1 ttl=61 time=3.87 ms',
-          '64 bytes: icmp_seq=2 ttl=61 time=4.05 ms',
-          '64 bytes: icmp_seq=3 ttl=61 time=3.94 ms',
-          '<span class="tl-ok">4 packets transmitted, 4 received, 0% loss</span>',
-        ],
-      },
-      { type: 'cmd', text: 'show version | include status' },
-      {
-        type: 'output',
-        lines: [
-          'role       : IP/MPLS Backbone Engineer',
-          'based      : Sri Lanka',
-          'uptime     : 7+ years',
-          '<span class="tl-ok">status     : ● open to opportunities</span>',
-        ],
-      },
-    ];
+  <!-- EXPERIENCE -->
+  <section id="experience" class="section wrap">
+    <p class="section-tag">03 · experience</p>
+    <h2 class="section-title">show ip route</h2>
 
-    let reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    <ol class="timeline">
+      <li class="timeline-item">
+        <div class="timeline-date">Aug 2024 — present</div>
+        <div class="timeline-body">
+          <h3>Network Engineer, IP Core Network</h3>
+          <p class="timeline-org">Superloop Limited · Sydney, NSW (Remote)</p>
+          <ul>
+            <li>Manage NNIs across all 121 NBN Points of Interconnect in Australia, maintaining stable, high-performance interconnections.</li>
+            <li>Plan, design and implement core network upgrades, and coordinate interstate fibre optic link deployments.</li>
+            <li>Lead decommissioning of end-of-support devices and migrate customer services (Cisco, Juniper) with zero/minimal downtime.</li>
+            <li>Configure multi-vendor equipment — Cisco NCS-5500, NCS-5011, NCS-540 — and monitor infrastructure via Observium.</li>
+            <li>Prepare and execute detailed Methods of Procedure (MOPs) for network changes, ensuring minimal service impact.</li>
+          </ul>
+        </div>
+      </li>
+      <li class="timeline-item">
+        <div class="timeline-date">Jan 2019 — Aug 2024</div>
+        <div class="timeline-body">
+          <h3>Engineering Executive, Enterprise Solution Engineering</h3>
+          <p class="timeline-org">Dialog Axiata PLC · Colombo, Sri Lanka</p>
+          <ul>
+            <li>Delivered enterprise solutions: MPLS L2/L3 VPN, Internet Leased Lines, SD-WAN, VPLS, Managed Wi-Fi, SIP Trunk, Hosted Voice, NGFW and IDC services.</li>
+            <li>Configured and maintained routing/switching using BGP, OSPF, IS-IS, EIGRP, MPLS, VRF, QoS, HSRP, VRRP, IPv4 and IPv6.</li>
+            <li>Provisioned and commissioned enterprise services across Cisco routing and switching platforms end-to-end.</li>
+            <li>Performed advanced troubleshooting of routing, switching, MPLS and service issues, consistently meeting SLA targets.</li>
+            <li>Configured SD-WAN using FortiGate, FortiManager and FortiAnalyzer.</li>
+          </ul>
+        </div>
+      </li>
+    </ol>
+  </section>
 
-    const renderStatic = () => {
-      const html = script
-        .map((step) => {
-          if (step.type === 'cmd') {
-            return `<div class="tl-line"><span class="tl-prompt">${prompt}</span> <span class="tl-cmd">${step.text}</span></div>`;
-          }
-          return step.lines.map((l) => `<div class="tl-line">${l}</div>`).join('');
-        })
-        .join('');
-      terminalBody.innerHTML = html;
-    };
+  <!-- GALLERY -->
+  <section id="gallery" class="section wrap">
+    <p class="section-tag">04 · gallery</p>
+    <h2 class="section-title">ls -la ./gallery</h2>
+    <p class="section-intro">
+      Field shots, rack builds and deployment moments. Drop your own images into
+      <code>/assets/gallery/</code> and update the list in <code>script.js</code> — tiles without a
+      matching file automatically fall back to this placeholder frame.
+    </p>
 
-    if (reduceMotion) {
-      renderStatic();
-    } else {
-      terminalBody.innerHTML = '';
-      let stepIndex = 0;
+    <div class="gallery-grid" id="galleryGrid">
+      <!-- Populated from script.js (GALLERY_ITEMS). Structure kept here for no-JS fallback. -->
+      <figure class="gallery-item" data-src="assets/gallery/01.jpg" data-caption="Core router deployment — NBN POI, Sydney">
+        <img src="assets/gallery/01.jpg" alt="Core router deployment at an NBN Point of Interconnect" loading="lazy">
+        <figcaption>Core router deployment — NBN POI, Sydney</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/02.jpg" data-caption="IOS-XR upgrade — Cisco NCS-5500">
+        <img src="assets/gallery/02.jpg" alt="IOS-XR software upgrade on a Cisco NCS-5500" loading="lazy">
+        <figcaption>IOS-XR upgrade — Cisco NCS-5500</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/03.jpg" data-caption="Interstate fibre link commissioning">
+        <img src="assets/gallery/03.jpg" alt="Fibre optic link commissioning" loading="lazy">
+        <figcaption>Interstate fibre link commissioning</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/04.jpg" data-caption="MOP walkthrough before a maintenance window">
+        <img src="assets/gallery/04.jpg" alt="Method of Procedure walkthrough before a maintenance window" loading="lazy">
+        <figcaption>MOP walkthrough before a maintenance window</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/05.jpg" data-caption="SD-WAN rollout — FortiGate edge">
+        <img src="assets/gallery/05.jpg" alt="SD-WAN rollout on a FortiGate edge device" loading="lazy">
+        <figcaption>SD-WAN rollout — FortiGate edge</figcaption>
+      </figure>
+      <figure class="gallery-item" data-src="assets/gallery/06.jpg" data-caption="Rack &amp; cable cleanup — data centre visit">
+        <img src="assets/gallery/06.jpg" alt="Rack and cable cleanup during a data centre visit" loading="lazy">
+        <figcaption>Rack &amp; cable cleanup — data centre visit</figcaption>
+      </figure>
+    </div>
+  </section>
 
-      const typeCommand = (text, lineEl, done) => {
-        let i = 0;
-        const cursor = document.createElement('span');
-        cursor.className = 'terminal-cursor';
+  <!-- ARTICLES -->
+  <section id="articles" class="section wrap">
+    <p class="section-tag">05 · articles</p>
+    <h2 class="section-title">cat ./articles/index.md</h2>
+    <p class="section-intro">
+      Notes and write-ups on carrier routing, MPLS and network design. Drafts below — wire each
+      card's link up to the published post when it's live.
+    </p>
 
-        const promptSpan = document.createElement('span');
-        promptSpan.className = 'tl-prompt';
-        promptSpan.textContent = prompt + ' ';
+    <div class="article-grid">
+      <article class="article-card">
+        <p class="article-status">draft</p>
+        <h3>MPLS Traffic Engineering: RSVP-TE vs Segment Routing</h3>
+        <p class="article-excerpt">
+          A practical comparison of two ways to steer traffic across a backbone — where per-hop
+          signalling still wins, and where SR simplifies the core.
+        </p>
+        <span class="article-link">read article →</span>
+      </article>
 
-        const cmdSpan = document.createElement('span');
-        cmdSpan.className = 'tl-cmd';
+      <article class="article-card">
+        <p class="article-status">draft</p>
+        <h3>EVPN-VXLAN Fundamentals for Carrier Networks</h3>
+        <p class="article-excerpt">
+          Control-plane vs data-plane roles in EVPN-VXLAN, and why it's replacing traditional
+          VPLS for multi-tenant Layer 2 extension.
+        </p>
+        <span class="article-link">read article →</span>
+      </article>
 
-        lineEl.appendChild(promptSpan);
-        lineEl.appendChild(cmdSpan);
-        lineEl.appendChild(cursor);
+      <article class="article-card">
+        <p class="article-status">draft</p>
+        <h3>Zero-Downtime Migrations Across a National IP Core</h3>
+        <p class="article-excerpt">
+          Lessons from decommissioning end-of-support routers and migrating live customer
+          services without dropping traffic.
+        </p>
+        <span class="article-link">read article →</span>
+      </article>
 
-        const tick = () => {
-          if (i <= text.length) {
-            cmdSpan.textContent = text.slice(0, i);
-            i += 1;
-            setTimeout(tick, 32 + Math.random() * 28);
-          } else {
-            cursor.remove();
-            done();
-          }
-        };
-        tick();
-      };
+      <article class="article-card">
+        <p class="article-status">draft</p>
+        <h3>Writing an MOP Nobody Has to Guess At</h3>
+        <p class="article-excerpt">
+          What a good Method of Procedure actually needs — rollback steps, verification
+          commands, and clear go/no-go points.
+        </p>
+        <span class="article-link">read article →</span>
+      </article>
+    </div>
+  </section>
 
-      const printOutput = (lines, done) => {
-        let i = 0;
-        const next = () => {
-          if (i < lines.length) {
-            const div = document.createElement('div');
-            div.className = 'tl-line';
-            div.innerHTML = lines[i];
-            terminalBody.appendChild(div);
-            i += 1;
-            setTimeout(next, 90);
-          } else {
-            done();
-          }
-        };
-        next();
-      };
+  <!-- TOOLS -->
+  <section id="tools" class="section wrap">
+    <p class="section-tag">06 · tools</p>
+    <h2 class="section-title">run ./tools/</h2>
+    <p class="section-intro">
+      Small utilities built for day-to-day network work — right in the browser, nothing sent
+      anywhere.
+    </p>
 
-      const runStep = () => {
-        if (stepIndex >= script.length) return;
-        const step = script[stepIndex];
-        stepIndex += 1;
+    <div class="tool-tabs" role="tablist" aria-label="Tools">
+      <button class="tool-tab active" role="tab" aria-selected="true" data-tool="configgen">
+        <span class="tool-tab-num">01</span> Config Generator
+      </button>
+      <button class="tool-tab" role="tab" aria-selected="false" data-tool="compare">
+        <span class="tool-tab-num">02</span> Protocol Comparison
+      </button>
+    </div>
 
-        if (step.type === 'cmd') {
-          const line = document.createElement('div');
-          line.className = 'tl-line';
-          terminalBody.appendChild(line);
-          typeCommand(step.text, line, () => setTimeout(runStep, 260));
-        } else {
-          printOutput(step.lines, () => setTimeout(runStep, 420));
-        }
-      };
+    <!-- CONFIG GENERATOR -->
+    <div class="tool-panel active" id="tool-configgen" role="tabpanel">
+      <div class="tool-grid">
+        <form class="tool-form" id="configForm">
+          <div class="form-row">
+            <label for="cfgHostname">hostname</label>
+            <input type="text" id="cfgHostname" value="PE-ROUTER-01" autocomplete="off">
+          </div>
+          <div class="form-row">
+            <label for="cfgIface">interface</label>
+            <input type="text" id="cfgIface" value="GigabitEthernet0/0/0/1" autocomplete="off">
+          </div>
+          <div class="form-row">
+            <label for="cfgDesc">description</label>
+            <input type="text" id="cfgDesc" value="UPLINK-TO-CORE" autocomplete="off">
+          </div>
+          <div class="form-row form-row-split">
+            <div>
+              <label for="cfgIp">ip address</label>
+              <input type="text" id="cfgIp" value="10.10.10.1" autocomplete="off">
+            </div>
+            <div>
+              <label for="cfgMask">mask</label>
+              <input type="text" id="cfgMask" value="255.255.255.252" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row form-row-checkbox">
+            <label for="cfgMpls"><input type="checkbox" id="cfgMpls" checked> enable MPLS on interface</label>
+          </div>
 
-      // Kick off once the hero terminal scrolls into view (or immediately on load).
-      runStep();
-    }
-  }
+          <div class="form-row">
+            <label for="cfgProtocol">routing protocol</label>
+            <select id="cfgProtocol">
+              <option value="ospf">OSPF</option>
+              <option value="isis">IS-IS</option>
+              <option value="bgp">MP-BGP</option>
+            </select>
+          </div>
 
-  /* ==========================================================
-     GALLERY — placeholder fallback + lightbox
-     Replace files under /assets/gallery/ with your own photos;
-     tiles that fail to load automatically show a placeholder
-     frame instead of a broken image icon.
-     ========================================================== */
-  const galleryItems = document.querySelectorAll('.gallery-item');
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightboxImg');
-  const lightboxCaption = document.getElementById('lightboxCaption');
-  const lightboxClose = document.getElementById('lightboxClose');
+          <div id="cfgProtocolFields"></div>
+        </form>
 
-  const placeholderIconSVG = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-      <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-      <circle cx="8.5" cy="10" r="1.6"></circle>
-      <path d="M21 16l-5.5-5.5a2 2 0 0 0-2.8 0L3 19"></path>
-    </svg>`;
+        <div class="tool-output">
+          <div class="tool-output-bar">
+            <span>generated-config.txt</span>
+            <button class="copy-btn" id="copyConfigBtn" type="button">copy</button>
+          </div>
+          <pre class="tool-output-body" id="configOutput"></pre>
+        </div>
+      </div>
+    </div>
 
-  galleryItems.forEach((item) => {
-    const img = item.querySelector('img');
-    if (!img) return;
+    <!-- PROTOCOL COMPARISON -->
+    <div class="tool-panel" id="tool-compare" role="tabpanel">
+      <div class="compare-controls" id="compareControls"></div>
+      <div class="compare-table-wrap">
+        <table class="compare-table" id="compareTable"></table>
+      </div>
+    </div>
+  </section>
 
-    img.addEventListener('error', () => {
-      item.classList.add('is-placeholder');
-      const caption = item.getAttribute('data-caption') || 'Add photo';
-      const fallback = document.createElement('div');
-      fallback.className = 'gallery-placeholder-icon';
-      fallback.innerHTML = `${placeholderIconSVG}<span>${img.getAttribute('src')}</span>`;
-      item.insertBefore(fallback, item.querySelector('figcaption'));
-    });
+  <!-- EDUCATION -->
+  <section id="education" class="section wrap">
+    <p class="section-tag">07 · education</p>
+    <h2 class="section-title">show boot-history</h2>
 
-    item.addEventListener('click', () => {
-      if (item.classList.contains('is-placeholder')) return;
-      lightboxImg.src = item.getAttribute('data-src') || img.src;
-      lightboxImg.alt = img.alt;
-      lightboxCaption.textContent = item.getAttribute('data-caption') || '';
-      lightbox.classList.add('open');
-      lightbox.setAttribute('aria-hidden', 'false');
-    });
-  });
+    <ol class="timeline">
+      <li class="timeline-item">
+        <div class="timeline-date">Sep 2021 — Aug 2023</div>
+        <div class="timeline-body">
+          <h3>BSc (Hons) Computer Networks</h3>
+          <p class="timeline-org">University of Wolverhampton · Galle, Sri Lanka</p>
+        </div>
+      </li>
+      <li class="timeline-item">
+        <div class="timeline-date">Mar 2015 — Sep 2018</div>
+        <div class="timeline-body">
+          <h3>Higher National Diploma, Electrical &amp; Electronic Engineering</h3>
+          <p class="timeline-org">Advanced Technological Institute · Rathnapura, Sri Lanka</p>
+        </div>
+      </li>
+    </ol>
+  </section>
 
-  const closeLightbox = () => {
-    lightbox.classList.remove('open');
-    lightbox.setAttribute('aria-hidden', 'true');
-  };
+  <!-- CERTIFICATIONS -->
+  <section id="certifications" class="section wrap">
+    <p class="section-tag">08 · certifications</p>
+    <h2 class="section-title">show running-config</h2>
 
-  if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
-  if (lightbox) {
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) closeLightbox();
-    });
-  }
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeLightbox();
-  });
+    <div class="card-grid">
+      <article class="card">
+        <p class="card-tag">certification</p>
+        <h3>CCNP Service Provider</h3>
+        <p>Cisco Certified Network Professional — Service Provider track.</p>
+      </article>
+      <article class="card">
+        <p class="card-tag">certification</p>
+        <h3>Cisco Certified Specialist — Service Provider Core</h3>
+        <p>Core service provider network technologies.</p>
+      </article>
+      <article class="card">
+        <p class="card-tag">certification</p>
+        <h3>Cisco Certified Specialist — SP Advanced Routing Implementation</h3>
+        <p>Advanced service provider routing implementation.</p>
+      </article>
+      <article class="card">
+        <p class="card-tag">certification</p>
+        <h3>Cisco Certified Specialist — Enterprise Core</h3>
+        <p>Core enterprise networking technologies.</p>
+      </article>
+      <article class="card">
+        <p class="card-tag">certification</p>
+        <h3>RHCSA — Red Hat Certified System Administrator</h3>
+        <p>Linux system administration fundamentals.</p>
+      </article>
+    </div>
+  </section>
 
-  /* ==========================================================
-     TOOLS — tab switching
-     ========================================================== */
-  const toolTabs = document.querySelectorAll('.tool-tab');
-  const toolPanels = document.querySelectorAll('.tool-panel');
+  <!-- CONTACT -->
+  <section id="contact" class="section wrap contact-section">
+    <p class="section-tag">09 · contact</p>
+    <h2 class="section-title">establish connection</h2>
+    <p class="contact-sub">
+      Open to network engineering roles and carrier/ISP infrastructure projects — reach out any time.
+    </p>
+    <div class="contact-grid">
+      <a href="mailto:dinuka.info92@gmail.com" class="contact-card">
+        <span class="contact-label">email</span>
+        <span class="contact-value">dinuka.info92@gmail.com</span>
+      </a>
+      <a href="https://www.linkedin.com/in/dinuka-hasanka-wijesinghe-b3315a186" class="contact-card" target="_blank" rel="noopener">
+        <span class="contact-label">linkedin</span>
+        <span class="contact-value">/in/dinuka-hasanka-wijesinghe</span>
+      </a>
+      <a href="https://wa.me/94777332186" class="contact-card" target="_blank" rel="noopener">
+        <span class="contact-label">whatsapp</span>
+        <span class="contact-value">+94 77 733 2186</span>
+      </a>
+    </div>
+  </section>
 
-  toolTabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      toolTabs.forEach((t) => {
-        t.classList.remove('active');
-        t.setAttribute('aria-selected', 'false');
-      });
-      toolPanels.forEach((p) => p.classList.remove('active'));
+</main>
 
-      tab.classList.add('active');
-      tab.setAttribute('aria-selected', 'true');
-      const target = document.getElementById(`tool-${tab.getAttribute('data-tool')}`);
-      if (target) target.classList.add('active');
-    });
-  });
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>© <span id="year"></span> Dinuka Wijesinghe — built &amp; hosted from a terminal.</p>
+    <p class="footer-ping">status: <span class="led led-up"></span> all interfaces up</p>
+  </div>
+</footer>
 
-  /* ==========================================================
-     TOOL 1 — Router config generator
-     ========================================================== */
-  const cfgHostname = document.getElementById('cfgHostname');
-  const cfgIface = document.getElementById('cfgIface');
-  const cfgDesc = document.getElementById('cfgDesc');
-  const cfgIp = document.getElementById('cfgIp');
-  const cfgMask = document.getElementById('cfgMask');
-  const cfgMpls = document.getElementById('cfgMpls');
-  const cfgProtocol = document.getElementById('cfgProtocol');
-  const cfgProtocolFields = document.getElementById('cfgProtocolFields');
-  const configOutput = document.getElementById('configOutput');
-  const copyConfigBtn = document.getElementById('copyConfigBtn');
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close image">×</button>
+  <figure>
+    <img id="lightboxImg" src="" alt="">
+    <figcaption id="lightboxCaption"></figcaption>
+  </figure>
+</div>
 
-  const protocolFieldSets = {
-    ospf: [
-      { id: 'cfgOspfProcess', label: 'process id', value: '10' },
-      { id: 'cfgOspfArea', label: 'area', value: '0' },
-    ],
-    isis: [
-      { id: 'cfgIsisInstance', label: 'instance name', value: 'CORE' },
-      { id: 'cfgIsisLevel', label: 'level', value: 'level-2' },
-    ],
-    bgp: [
-      { id: 'cfgBgpAs', label: 'local AS', value: '65000' },
-      { id: 'cfgBgpNeighbor', label: 'neighbor ip', value: '10.10.10.2' },
-      { id: 'cfgBgpRemoteAs', label: 'remote AS', value: '65001' },
-    ],
-  };
-
-  const esc = (s) => (s || '').toString().replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
-
-  const renderProtocolFields = () => {
-    const proto = cfgProtocol.value;
-    const fields = protocolFieldSets[proto] || [];
-    cfgProtocolFields.innerHTML = fields
-      .map(
-        (f) => `
-        <div class="form-row">
-          <label for="${f.id}">${f.label}</label>
-          <input type="text" id="${f.id}" value="${f.value}" autocomplete="off">
-        </div>`
-      )
-      .join('');
-    fields.forEach((f) => {
-      document.getElementById(f.id).addEventListener('input', generateConfig);
-    });
-  };
-
-  function generateConfig() {
-    const hostname = cfgHostname.value.trim() || 'ROUTER';
-    const iface = cfgIface.value.trim() || 'GigabitEthernet0/0/0/1';
-    const desc = cfgDesc.value.trim();
-    const ip = cfgIp.value.trim() || '0.0.0.0';
-    const mask = cfgMask.value.trim() || '255.255.255.0';
-    const mpls = cfgMpls.checked;
-    const proto = cfgProtocol.value;
-
-    const kw = (s) => `<span class="cfg-kw">${esc(s)}</span>`;
-    const val = (s) => `<span class="cfg-val">${esc(s)}</span>`;
-    const cmt = (s) => `<span class="cfg-cmt">${esc(s)}</span>`;
-
-    let lines = [];
-    lines.push(`${cmt('!')} ${cmt('generated by dinukawijesinghe.github.io — config generator')}`);
-    lines.push(`${kw('hostname')} ${val(hostname)}`);
-    lines.push('!');
-    lines.push(`${kw('interface')} ${val(iface)}`);
-    if (desc) lines.push(` ${kw('description')} ${val(desc)}`);
-    lines.push(` ${kw('ipv4 address')} ${val(ip)} ${val(mask)}`);
-    if (mpls) lines.push(` ${kw('mpls ip')}`);
-    lines.push(' no shutdown');
-    lines.push('!');
-
-    if (proto === 'ospf') {
-      const pid = document.getElementById('cfgOspfProcess')?.value.trim() || '10';
-      const area = document.getElementById('cfgOspfArea')?.value.trim() || '0';
-      lines.push(`${kw('router ospf')} ${val(pid)}`);
-      lines.push(` ${kw('area')} ${val(area)}`);
-      lines.push(`  ${kw('interface')} ${val(iface)}`);
-    } else if (proto === 'isis') {
-      const inst = document.getElementById('cfgIsisInstance')?.value.trim() || 'CORE';
-      const level = document.getElementById('cfgIsisLevel')?.value.trim() || 'level-2';
-      lines.push(`${kw('router isis')} ${val(inst)}`);
-      lines.push(` ${kw('is-type')} ${val(level)}`);
-      lines.push(` ${kw('interface')} ${val(iface)}`);
-      lines.push(`  ${kw('circuit-type')} ${val(level)}`);
-      lines.push('  point-to-point');
-    } else if (proto === 'bgp') {
-      const as = document.getElementById('cfgBgpAs')?.value.trim() || '65000';
-      const nbr = document.getElementById('cfgBgpNeighbor')?.value.trim() || '10.10.10.2';
-      const rAs = document.getElementById('cfgBgpRemoteAs')?.value.trim() || '65001';
-      lines.push(`${kw('router bgp')} ${val(as)}`);
-      lines.push(` ${kw('neighbor')} ${val(nbr)}`);
-      lines.push(`  ${kw('remote-as')} ${val(rAs)}`);
-      lines.push('  address-family vpnv4 unicast');
-    }
-    lines.push('!');
-    lines.push('end');
-
-    configOutput.innerHTML = lines.join('\n');
-  }
-
-  if (cfgProtocol) {
-    renderProtocolFields();
-    generateConfig();
-
-    [cfgHostname, cfgIface, cfgDesc, cfgIp, cfgMask, cfgMpls].forEach((el) => {
-      el.addEventListener('input', generateConfig);
-      el.addEventListener('change', generateConfig);
-    });
-
-    cfgProtocol.addEventListener('change', () => {
-      renderProtocolFields();
-      generateConfig();
-    });
-  }
-
-  if (copyConfigBtn) {
-    copyConfigBtn.addEventListener('click', async () => {
-      const text = configOutput.textContent;
-      try {
-        await navigator.clipboard.writeText(text);
-        copyConfigBtn.textContent = 'copied ✓';
-        copyConfigBtn.classList.add('copied');
-      } catch {
-        copyConfigBtn.textContent = 'press ⌘/ctrl+C';
-      }
-      setTimeout(() => {
-        copyConfigBtn.textContent = 'copy';
-        copyConfigBtn.classList.remove('copied');
-      }, 1600);
-    });
-  }
-
-  /* ==========================================================
-     TOOL 2 — Protocol comparison
-     ========================================================== */
-  const PROTOCOL_DATA = {
-    OSPF: { type: 'IGP — link-state', scalability: 'Medium (area-based)', convergence: 'Fast', useCase: 'Enterprise & access networks', complexity: 'Medium' },
-    'IS-IS': { type: 'IGP — link-state', scalability: 'High (carrier-grade)', convergence: 'Fast', useCase: 'ISP / carrier backbones', complexity: 'Medium' },
-    'MP-BGP': { type: 'EGP / overlay control-plane', scalability: 'Very high (internet-scale)', convergence: 'Slower, policy-driven', useCase: 'VPNs, internet routing, EVPN control-plane', complexity: 'High' },
-    EVPN: { type: 'L2VPN control-plane over MP-BGP', scalability: 'High', convergence: 'Fast (BGP-driven)', useCase: 'Data-centre & metro L2 extension', complexity: 'High' },
-    VXLAN: { type: 'Data-plane overlay encapsulation', scalability: 'Very high (24-bit VNI)', convergence: 'N/A — data-plane only', useCase: 'DC fabric, multi-tenant overlay', complexity: 'Medium' },
-    'RSVP-TE': { type: 'Traffic-engineering signalling', scalability: 'Medium (per-flow state)', convergence: 'Medium', useCase: 'Strict bandwidth-guaranteed TE tunnels', complexity: 'High' },
-    'Segment Routing': { type: 'Traffic-engineering, source-routed', scalability: 'High (stateless core)', convergence: 'Fast', useCase: 'Simplified TE, no per-hop state', complexity: 'Medium' },
-  };
-
-  const compareControls = document.getElementById('compareControls');
-  const compareTable = document.getElementById('compareTable');
-
-  if (compareControls && compareTable) {
-    let selected = ['OSPF', 'IS-IS', 'MP-BGP'];
-
-    const rows = [
-      { key: 'type', label: 'Type' },
-      { key: 'scalability', label: 'Scalability' },
-      { key: 'convergence', label: 'Convergence' },
-      { key: 'useCase', label: 'Typical use case' },
-      { key: 'complexity', label: 'Operational complexity' },
-    ];
-
-    const renderChips = () => {
-      compareControls.innerHTML = Object.keys(PROTOCOL_DATA)
-        .map(
-          (name) =>
-            `<button type="button" class="compare-chip${selected.includes(name) ? ' active' : ''}" data-proto="${name}">${name}</button>`
-        )
-        .join('');
-
-      compareControls.querySelectorAll('.compare-chip').forEach((chip) => {
-        chip.addEventListener('click', () => {
-          const name = chip.getAttribute('data-proto');
-          if (selected.includes(name)) {
-            if (selected.length > 1) selected = selected.filter((p) => p !== name);
-          } else if (selected.length < 5) {
-            selected.push(name);
-          }
-          renderChips();
-          renderTable();
-        });
-      });
-    };
-
-    const renderTable = () => {
-      const head = `<tr><th>Attribute</th>${selected.map((s) => `<th>${s}</th>`).join('')}</tr>`;
-      const body = rows
-        .map(
-          (row) =>
-            `<tr><td>${row.label}</td>${selected
-              .map((s) => `<td>${PROTOCOL_DATA[s][row.key]}</td>`)
-              .join('')}</tr>`
-        )
-        .join('');
-      compareTable.innerHTML = head + body;
-    };
-
-    renderChips();
-    renderTable();
-  }
-})();
+<script src="script.js"></script>
+</body>
+</html>
