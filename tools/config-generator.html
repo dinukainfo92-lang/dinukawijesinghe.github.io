@@ -129,6 +129,16 @@ a{color:inherit;text-decoration:none}
 .cg-btn-green{border-color:var(--green-dim);color:var(--green)}
 .cg-btn-sm{padding:5px 10px;font-size:.72rem}
 .cg-btn.cg-active{border-color:var(--accent);color:var(--accent)}
+.cg-btn.cg-ready{
+  border-color:var(--green);
+  color:var(--green);
+  box-shadow:0 0 0 3px rgba(47,226,143,0.25);
+  animation:cg-glow 1.8s ease-in-out infinite;
+}
+@keyframes cg-glow{
+  0%,100%{box-shadow:0 0 0 3px rgba(47,226,143,0.2)}
+  50%{box-shadow:0 0 0 6px rgba(47,226,143,0.45)}
+}
 .cg-btn.cg-disabled{opacity:.4;pointer-events:none}
 
 /* ── device box ── */
@@ -221,8 +231,7 @@ a{color:inherit;text-decoration:none}
 
 <div class="topbar">
   <div class="topbar-logo"><span>~/</span>dinuka · tools</div>
-  <a href="https://dinukawijesinghe.com" class="topbar-back">← back to portfolio</a>
-</div>
+  <a href="https://dinukawijesinghe.com" class="topbar-back">← back to portfolio</a></div>
 
 <div class="page-header">
   <p class="page-tag">tools / 01</p>
@@ -435,8 +444,22 @@ a{color:inherit;text-decoration:none}
     (function step(ts){
       if(!start)start=ts;const p=Math.min((ts-start)/dur,1);
       fill.style.width=(p*100)+'%';pct.textContent=Math.round(p*100)+'%';
-      p<1?requestAnimationFrame(step):setTimeout(()=>{bar.style.display='none';cb();},100);
+      p<1?requestAnimationFrame(step):setTimeout(()=>{bar.style.display='none';cb();cgReadyPulse();},100);
     })(performance.now());
+  }
+
+  function cgReadyPulse(){
+    const btn=$('cgCopyBtn');
+    btn.classList.add('cg-ready');
+    btn.textContent='⎘ Copy Output';
+    // bounce animation
+    btn.animate([
+      {transform:'scale(1)',boxShadow:'0 0 0 0 rgba(47,226,143,0)'},
+      {transform:'scale(1.06)',boxShadow:'0 0 0 6px rgba(47,226,143,0.35)'},
+      {transform:'scale(1)',boxShadow:'0 0 0 10px rgba(47,226,143,0)'}
+    ],{duration:600,easing:'ease-out'});
+    // keep glowing until user clicks copy
+    btn.addEventListener('click',()=>btn.classList.remove('cg-ready'),{once:true});
   }
 
   window.cgGenerate=function(){if(!cgValidate()){alert('✖ Validation Failed!');return;}cgShowProgress(()=>{out().value=cgRows.map((r,i)=>cgFormat(r,i)).join('\n\n');});}
@@ -446,7 +469,7 @@ a{color:inherit;text-decoration:none}
     if(!sel.length){alert('Select at least one device');return;}
     cgShowProgress(()=>{out().value=sel.map(i=>cgFormat(cgRows[i],i)).join('\n\n');});
   };
-  window.cgClearOutput=function(){out().value='';}
+  window.cgClearOutput=function(){out().value='';$('cgCopyBtn').classList.remove('cg-ready');}
   window.cgDownload=function(){
     if(!out().value.trim()){alert('No output to download');return;}
     const a=document.createElement('a');
@@ -457,8 +480,9 @@ a{color:inherit;text-decoration:none}
     if(!out().value.trim()){alert('No output to copy');return;}
     await navigator.clipboard.writeText(out().value);
     const btn=$('cgCopyBtn');const orig=btn.textContent;
-    btn.textContent='✔ Copied';btn.classList.add('cg-active');
-    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('cg-active');},1600);
+    btn.classList.remove('cg-ready');
+    btn.textContent='✔ Copied!';btn.classList.add('cg-active');
+    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('cg-active');},1800);
   };
   window.cgAddCol=function(){const n=prompt('Column name');if(!n)return;cgRows.forEach(r=>r[n]='');cgRender();cgPopHeader();cgPopDevices();cgValidate();}
   window.cgDelCol=function(){const n=prompt('Delete column');if(!n)return;cgRows.forEach(r=>delete r[n]);cgRender();cgPopHeader();cgPopDevices();cgValidate();}
