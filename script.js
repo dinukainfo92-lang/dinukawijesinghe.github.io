@@ -70,7 +70,7 @@
   const terminalBody = document.getElementById('terminalBody');
 
   if (terminalBody) {
-    const prompt = 'noc@dinukawijesinghe.com:~$';
+    const prompt = '@dinukawijesinghe.com:~$';
 
     // Each entry is either a typed command, or pre-rendered output lines.
     const script = [
