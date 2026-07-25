@@ -720,6 +720,24 @@ button:focus-visible {
   margin-top: 4px;
 }
 
+.cert-verify {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  color: var(--accent);
+  border: 1px solid rgba(47,226,143,0.3);
+  border-radius: 20px;
+  padding: 3px 10px;
+  margin-top: 8px;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.cert-verify:hover {
+  background: rgba(47,226,143,0.08);
+  border-color: var(--accent);
+}
+
 /* ---------- gallery ---------- */
 .gallery-grid {
   display: grid;
