@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | Dinuka Hasanka Wijesinghe — Network Engineer</title>
+<meta name="description" content="Get in touch with Dinuka Hasanka Wijesinghe — Network Engineer specialising in IP/MPLS backbone networks. Open to network engineering roles and ISP infrastructure projects.">
+<meta name="author" content="Dinuka Hasanka Wijesinghe">
+<link rel="canonical" href="https://dinukawijesinghe.com/contact.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<meta property="og:title" content="Contact — Dinuka Hasanka Wijesinghe">
+<meta property="og:description" content="Network Engineer · IP/MPLS Core · Open to new opportunities">
+<meta property="og:url" content="https://dinukawijesinghe.com/contact.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#090c11;--bg-raised:#10151d;--bg-raised-2:#151b25;
+  --border:#1f2733;--border-soft:#171e28;
+  --text:#d9e0e8;--text-dim:#8891a1;--text-faint:#545e6d;
+  --green:#2fe28f;--green-dim:#1c8a5a;--amber:#ffb454;--blue:#5ec8ff;--red:#ff5f56;
+  --accent:#2fe28f;--accent-glow:rgba(47,226,143,.35);
+  --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  --font-sans:'IBM Plex Sans',-apple-system,sans-serif;
+  --radius:3px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--font-sans);font-size:16px;min-height:100vh;
+  background-image:linear-gradient(180deg,rgba(47,226,143,.05),transparent 300px);
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+
+/* ── topbar ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;border-bottom:1px solid var(--border-soft);
+  background:rgba(9,12,17,.88);backdrop-filter:blur(10px);
+  position:sticky;top:0;z-index:50;
+}
+.topbar-logo{
+  font-family:var(--font-mono);font-size:.95rem;font-weight:600;
+  color:var(--text);transition:opacity .2s;
+}
+.topbar-logo:hover{opacity:.8}
+.topbar-logo span{color:var(--accent)}
+.topbar-back{
+  font-family:var(--font-mono);font-size:.78rem;color:var(--text-dim);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:7px 14px;transition:border-color .2s,color .2s;
+}
+.topbar-back:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── page header ── */
+.page-header{max-width:700px;margin:0 auto;padding:44px 24px 28px}
+.page-tag{font-family:var(--font-mono);font-size:.75rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px}
+.page-title{font-family:var(--font-mono);font-size:1.8rem;font-weight:600;color:#f2f5f8;line-height:1.15}
+.page-title::before{content:'$ ';color:var(--text-faint)}
+.page-sub{color:var(--text-dim);font-size:.96rem;margin-top:12px;line-height:1.7}
+
+/* ── main ── */
+main{max-width:700px;margin:0 auto;padding:0 24px 60px;display:flex;flex-direction:column;gap:20px}
+
+/* ── social links grid ── */
+.social-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:12px;
+}
+.social-card{
+  display:flex;align-items:center;gap:14px;
+  background:var(--bg-raised);border:1px solid var(--border);
+  border-radius:8px;padding:15px 18px;
+  transition:transform .2s,border-color .2s;
+}
+.social-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.social-icon{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:1.1rem;
+}
+.si-email   {background:rgba(47,226,143,.12);color:var(--green)}
+.si-linkedin{background:rgba(10,102,194,.25);color:#5ec8ff}
+.si-github  {background:rgba(255,255,255,.06);color:var(--text)}
+.si-facebook{background:rgba(24,119,242,.2);color:#5c9dea}
+.si-whatsapp{background:rgba(37,211,102,.15);color:#4de079}
+.social-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.social-label{font-family:var(--font-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint)}
+.social-value{font-family:var(--font-mono);font-size:.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── contact form ── */
+.cf-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:24px}
+.cf-title{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:18px}
+.cf-title::before{content:'# ';color:var(--text-faint)}
+
+.cf-form{display:flex;flex-direction:column;gap:16px}
+.cf-row{display:flex;flex-direction:column;gap:6px}
+.cf-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.cf-row-2{grid-template-columns:1fr}}
+
+.cf-row label{
+  font-family:var(--font-mono);font-size:.68rem;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);
+}
+.cf-row input,.cf-row textarea,.cf-row select{
+  background:var(--bg);color:var(--text);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:11px 14px;font-family:var(--font-sans);font-size:.94rem;
+  line-height:1.5;transition:border-color .2s;resize:vertical;width:100%;
+}
+.cf-row input:focus,.cf-row textarea:focus,.cf-row select:focus{outline:none;border-color:var(--accent)}
+.cf-row input::placeholder,.cf-row textarea::placeholder{color:var(--text-faint)}
+.cf-row select option{background:var(--bg-raised)}
+
+.cf-submit{
+  font-family:var(--font-mono);font-size:.9rem;font-weight:600;
+  background:var(--accent);color:#06120c;border:none;
+  border-radius:var(--radius);padding:13px 28px;cursor:pointer;
+  transition:opacity .2s,transform .15s;align-self:flex-start;
+  display:flex;align-items:center;gap:8px;
+}
+.cf-submit:hover:not(:disabled){opacity:.88;transform:translateY(-1px)}
+.cf-submit:disabled{opacity:.5;cursor:not-allowed}
+
+.cf-status{font-family:var(--font-mono);font-size:.82rem;min-height:1.2em;padding-top:4px}
+.cf-status.ok{color:var(--green)}
+.cf-status.err{color:#fca5a5}
+
+/* ── mobile responsive ── */
+@media(max-width:600px){
+  .page-title{font-size:1.4rem}
+  .social-grid{grid-template-columns:1fr 1fr}
+  .cf-card{padding:18px}
+  .topbar{padding:12px 16px}
+  main{padding:0 16px 50px}
+  .page-header{padding:32px 16px 20px}
+}
+
+@media(max-width:400px){
+  .social-grid{grid-template-columns:1fr}
+}
+
+/* ── footer ── */
+.site-footer{
+  border-top:1px solid var(--border-soft);padding:20px 24px 32px;
+  font-family:var(--font-mono);font-size:.73rem;color:var(--text-faint);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  max-width:700px;margin:0 auto;
+}
+.footer-ping{display:flex;align-items:center;gap:6px}
+.led{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px 1px var(--accent-glow)}
+
+/* scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-raised-2)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="https://dinukawijesinghe.com" class="topbar-logo"><span>~/</span>dinuka</a>
+  <a href="https://dinukawijesinghe.com" class="topbar-back">← back to portfolio</a>
+</div>
+
+<div class="page-header">
+  <p class="page-tag">contact</p>
+  <h1 class="page-title">establish connection</h1>
+  <p class="page-sub">
+    Open to network engineering roles, ISP infrastructure projects and carrier network work.
+    Drop me a message — I'll reply within 24 hours.
+  </p>
+</div>
+
+<main>
+
+  <!-- Social / quick links -->
+  <div class="social-grid">
+
+    <a href="mailto:dinuka.info92@gmail.com" class="social-card">
+      <div class="social-icon si-email">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+      </div>
+      <div class="social-info">
+        <span class="social-label">Email</span>
+        <span class="social-value">dinuka.info92@gmail.com</span>
+      </div>
+    </a>
+
+    <a href="https://www.linkedin.com/in/dinuka-hasanka-wijesinghe-b3315a186" target="_blank" rel="noopener" class="social-card">
+      <div class="social-icon si-linkedin">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+        </svg>
+      </div>
+      <div class="social-info">
+        <span class="social-label">LinkedIn</span>
+        <span class="social-value">/in/dinuka-hasanka</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/dinukainfo92-lang" target="_blank" rel="noopener" class="social-card">
+      <div class="social-icon si-github">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
+        </svg>
+      </div>
+      <div class="social-info">
+        <span class="social-label">GitHub</span>
+        <span class="social-value">dinukainfo92-lang</span>
+      </div>
+    </a>
+
+    <!-- UPDATE: replace # with your Facebook profile URL -->
+    <a href="https://www.facebook.com/YOUR_FACEBOOK" target="_blank" rel="noopener" class="social-card" id="fbCard">
+      <div class="social-icon si-facebook">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+        </svg>
+      </div>
+      <div class="social-info">
+        <span class="social-label">Facebook</span>
+        <span class="social-value">Dinuka Wijesinghe</span>
+      </div>
+    </a>
+
+    <a href="https://wa.me/94777332186" target="_blank" rel="noopener" class="social-card">
+      <div class="social-icon si-whatsapp">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+        </svg>
+      </div>
+      <div class="social-info">
+        <span class="social-label">WhatsApp</span>
+        <span class="social-value">+94 77 733 2186</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Contact form -->
+  <div class="cf-card">
+    <p class="cf-title">Send a message</p>
+    <!-- SETUP: https://formspree.io → New Form → replace YOUR_FORM_ID -->
+    <form class="cf-form" id="contactForm"
+          action="https://formspree.io/f/YOUR_FORM_ID"
+          method="POST">
+
+      <div class="cf-row-2">
+        <div class="cf-row">
+          <label for="cf-name">Name</label>
+          <input type="text" id="cf-name" name="name" placeholder="Your name" required autocomplete="name">
+        </div>
+        <div class="cf-row">
+          <label for="cf-email">Email</label>
+          <input type="email" id="cf-email" name="email" placeholder="your@email.com" required autocomplete="email">
+        </div>
+      </div>
+
+      <div class="cf-row">
+        <label for="cf-subject">Subject</label>
+        <select id="cf-subject" name="subject">
+          <option value="">Select a topic…</option>
+          <option>Network Engineering Role</option>
+          <option>ISP / Carrier Infrastructure Project</option>
+          <option>Consulting / Contract Work</option>
+          <option>Technical Question</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="cf-row">
+        <label for="cf-msg">Message</label>
+        <textarea id="cf-msg" name="message" rows="6"
+                  placeholder="Tell me about the role or project…" required></textarea>
+      </div>
+
+      <!-- honeypot + meta -->
+      <input type="text" name="_gotcha" style="display:none">
+      <input type="hidden" name="_subject" value="New message — dinukawijesinghe.com">
+
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <button type="submit" class="cf-submit" id="cfSubmit">
+          <span id="cfBtnText">send message →</span>
+        </button>
+        <p class="cf-status" id="cfStatus"></p>
+      </div>
+
+    </form>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <span>© <span id="year"></span> Dinuka Wijesinghe — built &amp; hosted from a terminal.</span>
+  <span class="footer-ping"><span class="led"></span> all interfaces up · Last updated: <span id="lastUpdated">Jul 2025</span></span>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Contact form AJAX
+(function(){
+  const form   = document.getElementById('contactForm');
+  const btn    = document.getElementById('cfSubmit');
+  const txt    = document.getElementById('cfBtnText');
+  const status = document.getElementById('cfStatus');
+  if(!form) return;
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    txt.textContent = 'sending…';
+    btn.disabled = true;
+    status.textContent = '';
+    status.className = 'cf-status';
+
+    try {
+      const res = await fetch(form.action, {
+        method:'POST',
+        body: new FormData(form),
+        headers:{'Accept':'application/json'}
+      });
+      if(res.ok){
+        txt.textContent = '✔ sent!';
+        status.textContent = "Thanks — I'll reply within 24 hours.";
+        status.className = 'cf-status ok';
+        form.reset();
+        setTimeout(()=>{ txt.textContent='send message →'; btn.disabled=false; }, 4000);
+      } else { throw new Error(); }
+    } catch {
+      txt.textContent = 'send message →';
+      btn.disabled = false;
+      status.textContent = 'Something went wrong — email me at dinuka.info92@gmail.com';
+      status.className = 'cf-status err';
+    }
+  });
+})();
+</script>
+</body>
+</html>
