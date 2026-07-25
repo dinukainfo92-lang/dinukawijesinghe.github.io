@@ -57,7 +57,8 @@ a{color:inherit;text-decoration:none}
   background:rgba(9,12,17,.85);backdrop-filter:blur(10px);
   position:sticky;top:0;z-index:50;
 }
-.topbar-logo{font-family:var(--font-mono);font-size:.95rem;font-weight:600}
+.topbar-logo{font-family:var(--font-mono);font-size:.95rem;font-weight:600;color:var(--text);text-decoration:none;transition:opacity .2s}
+.topbar-logo:hover{opacity:.8}
 .topbar-logo span{color:var(--accent)}
 .topbar-back{
   font-family:var(--font-mono);font-size:.78rem;color:var(--text-dim);
@@ -139,7 +140,11 @@ a{color:inherit;text-decoration:none}
   0%,100%{box-shadow:0 0 0 3px rgba(47,226,143,0.2)}
   50%{box-shadow:0 0 0 6px rgba(47,226,143,0.45)}
 }
-.cg-btn.cg-disabled{opacity:.4;pointer-events:none}
+.cg-btn.cg-sample-btn{
+  display:block;text-align:center;text-decoration:none;
+  border-color:var(--blue);color:var(--blue);
+}
+.cg-btn.cg-sample-btn:hover{background:rgba(94,200,255,.08);border-color:var(--blue);color:#fff}
 
 /* ── device box ── */
 .cg-device-box{
@@ -230,7 +235,7 @@ a{color:inherit;text-decoration:none}
 <body>
 
 <div class="topbar">
-  <div class="topbar-logo"><span>~/</span>dinuka · tools</div>
+  <a href="https://dinukawijesinghe.com" class="topbar-logo"><span>~/</span>dinuka · tools</a>
   <a href="https://dinukawijesinghe.com" class="topbar-back">← back to portfolio</a></div>
 
 <div class="page-header">
@@ -284,6 +289,7 @@ a{color:inherit;text-decoration:none}
             </div>
           </div>
           <button type="button" class="cg-btn cg-full" id="cgGenSelBtn" onclick="cgGenerateSelected()">Generate Selected</button>
+          <a href="../assets/config_sample.xlsx" download class="cg-btn cg-full cg-sample-btn" id="cgSampleBtn">⬇ Download Sample Excel</a>
         </div>
         <div id="cgProgress">
           <div class="cg-prog-label"><span>Generating configs…</span><b id="cgProgressPct">0%</b></div>
@@ -323,7 +329,7 @@ a{color:inherit;text-decoration:none}
 
 <footer class="tool-footer">
   <span>Built by <a href="https://dinukawijesinghe.com">Dinuka Hasanka Wijesinghe</a> — Network Engineer, IP/MPLS Core</span>
-  <a href="https://dinukawijesinghe.com/tools/protocol-compare.html">Protocol Comparison Tool →</a>
+  <a href="https://dinukawijesinghe.com/tools/prepost-check.html">Pre/Post Check Tool →</a>
 </footer>
 
 <script>
@@ -488,6 +494,32 @@ a{color:inherit;text-decoration:none}
   window.cgDelCol=function(){const n=prompt('Delete column');if(!n)return;cgRows.forEach(r=>delete r[n]);cgRender();cgPopHeader();cgPopDevices();cgValidate();}
   window.cgAddRow=function(){if(!cgRows.length)cgRows=[{}];const o={};Object.keys(cgRows[0]).forEach(k=>o[k]='');cgRows.push(o);cgRender();cgPopHeader();cgPopDevices();cgValidate();}
   window.cgDelRow=function(){cgRows.pop();cgRender();cgPopHeader();cgPopDevices();cgValidate();}
+
+  // ── sample excel download (client-side fallback) ─────────
+  const sampleBtn = document.getElementById('cgSampleBtn');
+  if(sampleBtn){
+    sampleBtn.addEventListener('click', async function(e){
+      // Try server file first (href already set). If it 404s, generate client-side.
+      try {
+        const resp = await fetch(sampleBtn.href, {method:'HEAD'});
+        if(resp.ok) return; // server file exists, let browser handle download
+      } catch(_){}
+      // Server file missing — generate with XLSX
+      e.preventDefault();
+      const data = [
+        {INTERFACE:'GigabitEthernet0/0/0/1', DESCRIPTION:'PE1-to-P1-core',     MTU:'9000', VLAN:'100', VRF:'CUSTOMER-A',  IP:'10.10.10.1',  MASK:'255.255.255.252'},
+        {INTERFACE:'GigabitEthernet0/0/0/2', DESCRIPTION:'PE1-to-P2-core',     MTU:'9000', VLAN:'101', VRF:'CUSTOMER-A',  IP:'10.10.10.5',  MASK:'255.255.255.252'},
+        {INTERFACE:'GigabitEthernet0/0/0/3', DESCRIPTION:'PE1-to-CE1-cust',    MTU:'1500', VLAN:'200', VRF:'CUSTOMER-B',  IP:'192.168.1.1', MASK:'255.255.255.0'},
+        {INTERFACE:'GigabitEthernet0/0/0/4', DESCRIPTION:'PE1-to-CE2-cust',    MTU:'1500', VLAN:'201', VRF:'CUSTOMER-B',  IP:'192.168.2.1', MASK:'255.255.255.0'},
+        {INTERFACE:'TenGigE0/0/0/0',         DESCRIPTION:'PE1-uplink-NBN-POI', MTU:'9216', VLAN:'300', VRF:'NBN-TRANSIT', IP:'172.16.0.1',  MASK:'255.255.255.248'},
+      ];
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(data);
+      ws['!cols'] = [{wch:28},{wch:26},{wch:8},{wch:8},{wch:16},{wch:16},{wch:18}];
+      XLSX.utils.book_append_sheet(wb, ws, 'Interfaces');
+      XLSX.writeFile(wb, 'config_sample.xlsx');
+    });
+  }
 
   cgValidate();
 })();
