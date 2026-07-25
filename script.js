@@ -70,7 +70,7 @@
   const terminalBody = document.getElementById('terminalBody');
 
   if (terminalBody) {
-    const prompt = '@dinukawijesinghe.com:~$';
+    const prompt = 'noc@dinukawijesinghe.com:~$';
 
     // Each entry is either a typed command, or pre-rendered output lines.
     const script = [
@@ -99,7 +99,7 @@
         type: 'output',
         lines: [
           'role       : IP/MPLS Backbone Engineer',
-          'based      : Colombo, Sri Lanka',
+          'based      : Sri Lanka',
           'uptime     : 7+ years',
           '<span class="tl-ok">status     : ● open to opportunities</span>',
         ],
@@ -258,7 +258,7 @@
 
   const TOOL_PAGE_URLS = {
     configgen: 'tools/config-generator.html',
-    compare:   'tools/protocol-compare.html',
+    prepost:   'tools/prepost-check.html',
   };
 
   toolTabs.forEach((tab) => {
@@ -414,69 +414,5 @@
     });
   }
 
-  /* ==========================================================
-     TOOL 2 — Protocol comparison
-     ========================================================== */
-  const PROTOCOL_DATA = {
-    OSPF: { type: 'IGP — link-state', scalability: 'Medium (area-based)', convergence: 'Fast', useCase: 'Enterprise & access networks', complexity: 'Medium' },
-    'IS-IS': { type: 'IGP — link-state', scalability: 'High (carrier-grade)', convergence: 'Fast', useCase: 'ISP / carrier backbones', complexity: 'Medium' },
-    'MP-BGP': { type: 'EGP / overlay control-plane', scalability: 'Very high (internet-scale)', convergence: 'Slower, policy-driven', useCase: 'VPNs, internet routing, EVPN control-plane', complexity: 'High' },
-    EVPN: { type: 'L2VPN control-plane over MP-BGP', scalability: 'High', convergence: 'Fast (BGP-driven)', useCase: 'Data-centre & metro L2 extension', complexity: 'High' },
-    VXLAN: { type: 'Data-plane overlay encapsulation', scalability: 'Very high (24-bit VNI)', convergence: 'N/A — data-plane only', useCase: 'DC fabric, multi-tenant overlay', complexity: 'Medium' },
-    'RSVP-TE': { type: 'Traffic-engineering signalling', scalability: 'Medium (per-flow state)', convergence: 'Medium', useCase: 'Strict bandwidth-guaranteed TE tunnels', complexity: 'High' },
-    'Segment Routing': { type: 'Traffic-engineering, source-routed', scalability: 'High (stateless core)', convergence: 'Fast', useCase: 'Simplified TE, no per-hop state', complexity: 'Medium' },
-  };
-
-  const compareControls = document.getElementById('compareControls');
-  const compareTable = document.getElementById('compareTable');
-
-  if (compareControls && compareTable) {
-    let selected = ['OSPF', 'IS-IS', 'MP-BGP'];
-
-    const rows = [
-      { key: 'type', label: 'Type' },
-      { key: 'scalability', label: 'Scalability' },
-      { key: 'convergence', label: 'Convergence' },
-      { key: 'useCase', label: 'Typical use case' },
-      { key: 'complexity', label: 'Operational complexity' },
-    ];
-
-    const renderChips = () => {
-      compareControls.innerHTML = Object.keys(PROTOCOL_DATA)
-        .map(
-          (name) =>
-            `<button type="button" class="compare-chip${selected.includes(name) ? ' active' : ''}" data-proto="${name}">${name}</button>`
-        )
-        .join('');
-
-      compareControls.querySelectorAll('.compare-chip').forEach((chip) => {
-        chip.addEventListener('click', () => {
-          const name = chip.getAttribute('data-proto');
-          if (selected.includes(name)) {
-            if (selected.length > 1) selected = selected.filter((p) => p !== name);
-          } else if (selected.length < 5) {
-            selected.push(name);
-          }
-          renderChips();
-          renderTable();
-        });
-      });
-    };
-
-    const renderTable = () => {
-      const head = `<tr><th>Attribute</th>${selected.map((s) => `<th>${s}</th>`).join('')}</tr>`;
-      const body = rows
-        .map(
-          (row) =>
-            `<tr><td>${row.label}</td>${selected
-              .map((s) => `<td>${PROTOCOL_DATA[s][row.key]}</td>`)
-              .join('')}</tr>`
-        )
-        .join('');
-      compareTable.innerHTML = head + body;
-    };
-
-    renderChips();
-    renderTable();
-  }
 })();
+
