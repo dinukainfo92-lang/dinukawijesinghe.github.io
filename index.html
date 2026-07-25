@@ -67,6 +67,7 @@
 }
 </script>
 
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -104,7 +105,7 @@
   <section class="hero wrap">
     <div class="hero-grid">
       <div class="hero-text">
-        <p class="eyebrow">// ISP &amp; Carrier network engineer</p>
+        <p class="eyebrow">// ISP &amp; carrier network engineer</p>
         <h1>Dinuka Hasanka<br>Wijesinghe</h1>
         <p class="hero-sub">
           IP/MPLS Core Network Engineer designing and operating carrier-grade backbone networks across Australia and Sri Lanka. Specialized in MPLS, 
@@ -225,7 +226,7 @@
         </div>
       </li>
       <li class="timeline-item">
-        <div class="timeline-date">Jan 2020 — Aug 2024</div>
+        <div class="timeline-date">Jan 2019 — Aug 2024</div>
         <div class="timeline-body">
           <h3>Engineering Executive, Enterprise Solution Engineering</h3>
           <p class="timeline-org">Dialog Axiata PLC · Colombo, Sri Lanka</p>
@@ -235,20 +236,6 @@
             <li>Provisioned and commissioned enterprise services across Cisco routing and switching platforms end-to-end.</li>
             <li>Performed advanced troubleshooting of routing, switching, MPLS and service issues, consistently meeting SLA targets.</li>
             <li>Configured SD-WAN using FortiGate, FortiManager and FortiAnalyzer.</li>
-          </ul>
-        </div>
-      </li>
-      <li class="timeline-item">
-        <div class="timeline-date">Jan 2018 — Aug 2019</div>
-        <div class="timeline-body">
-          <h3>Technical Officer, Digital Services and VAS Operations</h3>
-          <p class="timeline-org">Dialog Axiata PLC · Colombo, Sri Lanka</p>
-          <ul>
-            <li>Managed and maintained several Linux servers, including Red Hat Enterprise Linux, CentOS, and Ubuntu also Monitored system performance and identified and resolved potential problems.</li>
-            <li>Performed thorough Linux server health assessments in collaboration with vendors to ensure optimal system functionality and reliability, Load test and capacity planning.</li>
-            <li>CDR (call details record) management, encompassing storage, backup, and analysis. Proficient in ensuring secure and efficient handling of CDR data in multiple Linux servers</li>
-            <li>Troubleshooting and resolving SMS-related issues within SLA. Analyzing and optimizing the SMS flow across SMSC, SMPP, Advanced SMSC, and Firewalls.</li>
-            <li>Monitored network health and performance using tools such as Nagios, and Wireshark, proactively identifying and resolving issues.</li>
           </ul>
         </div>
       </li>
@@ -359,8 +346,8 @@
       <button class="tool-tab active" role="tab" aria-selected="true" data-tool="configgen">
         <span class="tool-tab-num">01</span> Config Generator
       </button>
-      <button class="tool-tab" role="tab" aria-selected="false" data-tool="compare">
-        <span class="tool-tab-num">02</span> Protocol Comparison
+      <button class="tool-tab" role="tab" aria-selected="false" data-tool="prepost">
+        <span class="tool-tab-num">02</span> Pre/Post Check
       </button>
       <a href="tools/config-generator.html" target="_blank" class="tool-tab-open" id="toolFullPageLink" title="Open in full page">↗ Full page</a>
     </div>
@@ -889,11 +876,275 @@
     </div>
 
     <!-- PROTOCOL COMPARISON -->
-    <div class="tool-panel" id="tool-compare" role="tabpanel">
-      <div class="compare-controls" id="compareControls"></div>
-      <div class="compare-table-wrap">
-        <table class="compare-table" id="compareTable"></table>
+    <div class="tool-panel" id="tool-prepost" role="tabpanel">
+
+      <div class="pp-wrap">
+
+        <!-- LEFT: checks -->
+        <div class="pp-left">
+          <div class="pp-toolbar">
+            <button type="button" class="pp-btn pp-btn-green" onclick="ppAddCheck()">+ Add Check</button>
+            <button type="button" class="pp-btn pp-btn-primary" onclick="ppRunAll()">▶ Run All Diffs</button>
+            <button type="button" class="pp-btn" onclick="ppLoadSample()">Load Sample</button>
+            <button type="button" class="pp-btn pp-btn-danger" onclick="ppClearAll()">✕ Clear All</button>
+          </div>
+          <div id="ppChecks"></div>
+          <div class="pp-empty" id="ppEmpty">No checks yet — click <b>+ Add Check</b> or <b>Load Sample</b> to get started.</div>
+        </div>
+
+        <!-- RIGHT: summary + notes -->
+        <div class="pp-right">
+          <div class="pp-card">
+            <p class="pp-eyebrow">Result Summary</p>
+            <div id="ppBanner" class="pp-banner pending">Add checks and run a diff to see results.</div>
+            <div class="pp-stat"><span>Total Checks</span><b id="ppTotal">0</b></div>
+            <div class="pp-stat pp-ok"><span>✔ Passed</span><b id="ppPass">0</b></div>
+            <div class="pp-stat pp-bad"><span>✖ Failed</span><b id="ppFail">0</b></div>
+            <div class="pp-stat pp-warn"><span>⚠ Pending</span><b id="ppPending">0</b></div>
+            <div style="display:flex;gap:8px;margin-top:14px">
+              <button type="button" class="pp-btn pp-btn-primary" style="flex:1" onclick="ppDownload()">↓ Download Report</button>
+              <button type="button" class="pp-btn" style="flex:1" onclick="ppCopyReport()">⎘ Copy Report</button>
+            </div>
+          </div>
+          <div class="pp-card">
+            <p class="pp-eyebrow">Maintenance Notes</p>
+            <textarea class="pp-notes" id="ppNotes" placeholder="Change ticket #, maintenance window, engineer name, remarks…"></textarea>
+          </div>
+        </div>
+
       </div>
+
+      <style>
+      .pp-wrap{display:grid;grid-template-columns:1fr 280px;gap:16px;margin-top:8px}
+      @media(max-width:860px){.pp-wrap{grid-template-columns:1fr}}
+
+      .pp-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:14px}
+      .pp-card:last-child{margin-bottom:0}
+
+      .pp-eyebrow{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin:0 0 12px}
+      .pp-eyebrow::before{content:'# ';color:var(--text-faint)}
+
+      .pp-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+      .pp-btn{
+        font-family:var(--font-mono);font-size:.78rem;font-weight:500;
+        background:var(--bg-raised-2);color:var(--text-dim);border:1px solid var(--border);
+        border-radius:var(--radius);padding:9px 14px;cursor:pointer;white-space:nowrap;
+        transition:border-color .15s,color .15s;
+      }
+      .pp-btn:hover{border-color:var(--accent);color:var(--text)}
+      .pp-btn-primary{background:var(--accent);color:#06120c;border-color:var(--accent)}
+      .pp-btn-primary:hover{opacity:.88}
+      .pp-btn-green{border-color:var(--green-dim);color:var(--green)}
+      .pp-btn-danger{color:#ff5f56;border-color:rgba(255,95,86,.35)}
+      .pp-btn-danger:hover{background:rgba(255,95,86,.08);border-color:#ff5f56}
+
+      .pp-empty{display:none;text-align:center;padding:32px 16px;font-family:var(--font-mono);font-size:.82rem;color:var(--text-faint);border:1px dashed var(--border);border-radius:8px}
+      .pp-empty b{color:var(--text-dim)}
+
+      .pp-banner{font-family:var(--font-mono);font-size:.82rem;padding:11px 14px;border-radius:6px;border-left:3px solid var(--border-soft);background:var(--bg);margin-bottom:12px}
+      .pp-banner.pass{border-left-color:var(--green);color:var(--green)}
+      .pp-banner.fail{border-left-color:#ff5f56;color:#fca5a5}
+      .pp-banner.pending{border-left-color:var(--amber);color:var(--amber)}
+
+      .pp-stat{display:flex;justify-content:space-between;align-items:center;background:var(--bg);padding:9px 12px;border-radius:6px;margin-bottom:7px;border-left:3px solid var(--border-soft);font-size:.88rem}
+      .pp-stat b{font-family:var(--font-mono);font-size:.9rem;color:var(--text)}
+      .pp-ok{border-left-color:var(--green)}
+      .pp-bad{border-left-color:#ff5f56}
+      .pp-warn{border-left-color:var(--amber)}
+
+      .pp-notes{width:100%;min-height:110px;background:var(--bg);color:var(--text-dim);border:1px solid var(--border);border-radius:var(--radius);padding:10px;font-family:var(--font-mono);font-size:.8rem;resize:vertical}
+      .pp-notes:focus{outline:none;border-color:var(--accent)}
+
+      /* check cards */
+      #ppChecks{display:flex;flex-direction:column;gap:14px}
+      .pp-check{background:var(--bg-raised);border:1px solid var(--border);border-radius:8px;padding:15px}
+      .pp-check-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+      .pp-check-name{
+        flex:1;background:transparent;border:none;border-bottom:1px dashed var(--border);
+        color:var(--text);font-family:var(--font-mono);font-size:.9rem;font-weight:600;padding:4px 2px;
+      }
+      .pp-check-name:focus{outline:none;border-bottom-color:var(--accent)}
+      .pp-badge{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.05em;padding:4px 10px;border-radius:20px;border:1px solid var(--border-soft);color:var(--text-faint);white-space:nowrap}
+      .pp-badge.pass{color:var(--green);border-color:rgba(47,226,143,.4);background:rgba(47,226,143,.06)}
+      .pp-badge.fail{color:#fca5a5;border-color:rgba(255,95,86,.4);background:rgba(255,95,86,.06)}
+      .pp-badge.pending{color:var(--amber);border-color:rgba(255,180,84,.4);background:rgba(255,180,84,.06)}
+      .pp-remove{background:transparent;border:none;color:var(--text-faint);cursor:pointer;font-size:1rem;padding:3px 6px}
+      .pp-remove:hover{color:#ff5f56}
+
+      .pp-io{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      @media(max-width:600px){.pp-io{grid-template-columns:1fr}}
+      .pp-io-field label{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint);display:block;margin-bottom:5px}
+      .pp-io-field textarea{width:100%;height:120px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px;font-family:var(--font-mono);font-size:.78rem;line-height:1.5;resize:vertical;transition:border-color .15s}
+      .pp-io-field textarea:focus{outline:none;border-color:var(--accent)}
+      .pp-io-field.pre textarea{color:#ffd9b3}
+      .pp-io-field.post textarea{color:#b9f5d0}
+
+      .pp-actions{display:flex;gap:8px;align-items:center;margin-top:10px}
+      .pp-ctx{font-family:var(--font-mono);font-size:.75rem;color:var(--text-dim);display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+      .pp-ctx input{accent-color:var(--accent);cursor:pointer}
+
+      .pp-diff{margin-top:12px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+      .pp-diff-meta{font-family:var(--font-mono);font-size:.72rem;color:var(--text-dim);padding:7px 10px;background:var(--bg-raised-2);border-bottom:1px solid var(--border-soft);display:flex;gap:14px}
+      .pp-diff-line{font-family:var(--font-mono);font-size:.78rem;padding:3px 10px;white-space:pre-wrap;word-break:break-all;border-left:3px solid transparent}
+      .pp-diff-line.same{color:var(--text-faint);background:var(--bg)}
+      .pp-diff-line.added{color:#bbf7d0;background:rgba(47,226,143,.07);border-left-color:var(--green)}
+      .pp-diff-line.removed{color:#fecaca;background:rgba(255,95,86,.07);border-left-color:#ff5f56}
+      </style>
+
+      <script>
+      (function(){
+        let ppChecks=[],ppId=1;
+        const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+        function ppNew(name,pre,post){return{id:ppId++,name:name||('Check '+(ppId-1)),pre:pre||'',post:post||'',status:'pending',diff:null,ctx:true};}
+
+        window.ppAddCheck=function(n,p,o){ppChecks.push(ppNew(n,p,o));ppRender();ppSummary();}
+        window.ppRemove=function(id){ppChecks=ppChecks.filter(c=>c.id!==id);ppRender();ppSummary();}
+        window.ppClearAll=function(){if(ppChecks.length&&!confirm('Clear all checks?'))return;ppChecks=[];ppRender();ppSummary();}
+        window.ppField=function(id,f,v){const c=ppChecks.find(x=>x.id===id);if(c)c[f]=v;}
+        window.ppToggleCtx=function(id){const c=ppChecks.find(x=>x.id===id);if(c){c.ctx=!c.ctx;ppRender();}}
+
+        window.ppLoadSample=function(){
+          ppChecks=[];
+          ppAddCheck('Interface Status',
+`GigabitEthernet0/0/0/1 is up, line protocol is up
+GigabitEthernet0/0/0/2 is up, line protocol is up
+GigabitEthernet0/0/0/3 is down, line protocol is down`,
+`GigabitEthernet0/0/0/1 is up, line protocol is up
+GigabitEthernet0/0/0/2 is up, line protocol is up
+GigabitEthernet0/0/0/3 is up, line protocol is up`);
+          ppAddCheck('BGP Neighbor Summary',
+`Neighbor     V   AS      State
+10.0.0.1     4   65001   Established
+10.0.0.2     4   65002   Established`,
+`Neighbor     V   AS      State
+10.0.0.1     4   65001   Established
+10.0.0.2     4   65002   Established`);
+          ppAddCheck('IS-IS Neighbors','','');
+        }
+
+        function ppDiff(a,b){
+          a=(a||'').split(/\r?\n/);b=(b||'').split(/\r?\n/);
+          const n=a.length,m=b.length;
+          const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+          for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
+            dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+          let i=0,j=0;const r=[];
+          while(i<n&&j<m){
+            if(a[i]===b[j]){r.push({t:'same',s:a[i]});i++;j++;}
+            else if(dp[i+1][j]>=dp[i][j+1]){r.push({t:'removed',s:a[i]});i++;}
+            else{r.push({t:'added',s:b[j]});j++;}
+          }
+          while(i<n){r.push({t:'removed',s:a[i]});i++;}
+          while(j<m){r.push({t:'added',s:b[j]});j++;}
+          return r;
+        }
+
+        window.ppRunDiff=function(id){
+          const c=ppChecks.find(x=>x.id===id);if(!c)return;
+          if(!c.pre.trim()&&!c.post.trim()){c.status='pending';c.diff=null;}
+          else{c.diff=ppDiff(c.pre,c.post);c.status=c.diff.some(l=>l.t!=='same')?'fail':'pass';}
+          ppRender();ppSummary();
+        }
+        window.ppRunAll=function(){ppChecks.forEach(c=>{
+          if(!c.pre.trim()&&!c.post.trim()){c.status='pending';c.diff=null;}
+          else{c.diff=ppDiff(c.pre,c.post);c.status=c.diff.some(l=>l.t!=='same')?'fail':'pass';}
+        });ppRender();ppSummary();}
+
+        function ppRenderDiff(c){
+          if(!c.diff)return'';
+          const lines=c.ctx?c.diff:c.diff.filter(l=>l.t!=='same');
+          if(!lines.length)return'<div class="pp-diff"><div class="pp-diff-meta">No differences found.</div></div>';
+          const add=c.diff.filter(l=>l.t==='added').length;
+          const rem=c.diff.filter(l=>l.t==='removed').length;
+          const same=c.diff.filter(l=>l.t==='same').length;
+          return`<div class="pp-diff">
+            <div class="pp-diff-meta"><span style="color:var(--green)">+${add} added</span><span style="color:#ff5f56">-${rem} removed</span><span>${same} unchanged</span></div>
+            ${lines.map(l=>`<div class="pp-diff-line ${l.t}">${l.t==='added'?'+ ':l.t==='removed'?'- ':'  '}${esc(l.s)}</div>`).join('')}
+          </div>`;
+        }
+
+        function ppBadgeClass(s){return s==='pass'?'pass':s==='fail'?'fail':'pending';}
+        function ppBadgeLabel(s){return s==='pass'?'PASS':s==='fail'?'FAIL':'PENDING';}
+
+        function ppRender(){
+          const box=document.getElementById('ppChecks');
+          const empty=document.getElementById('ppEmpty');
+          if(!ppChecks.length){box.innerHTML='';empty.style.display='block';return;}
+          empty.style.display='none';
+          box.innerHTML=ppChecks.map(c=>`
+            <div class="pp-check">
+              <div class="pp-check-head">
+                <input class="pp-check-name" value="${esc(c.name)}" oninput="ppField(${c.id},'name',this.value)">
+                <span class="pp-badge ${ppBadgeClass(c.status)}">${ppBadgeLabel(c.status)}</span>
+                <button class="pp-remove" onclick="ppRemove(${c.id})" title="Remove">✕</button>
+              </div>
+              <div class="pp-io">
+                <div class="pp-io-field pre">
+                  <label>Pre-Check Output</label>
+                  <textarea placeholder="Paste pre-maintenance output…" oninput="ppField(${c.id},'pre',this.value)">${esc(c.pre)}</textarea>
+                </div>
+                <div class="pp-io-field post">
+                  <label>Post-Check Output</label>
+                  <textarea placeholder="Paste post-maintenance output…" oninput="ppField(${c.id},'post',this.value)">${esc(c.post)}</textarea>
+                </div>
+              </div>
+              <div class="pp-actions">
+                <button type="button" class="pp-btn pp-btn-primary" style="flex:1" onclick="ppRunDiff(${c.id})">▶ Run Diff</button>
+                <label class="pp-ctx"><input type="checkbox" ${c.ctx?'checked':''} onchange="ppToggleCtx(${c.id})"> Show unchanged lines</label>
+              </div>
+              ${ppRenderDiff(c)}
+            </div>`).join('');
+        }
+
+        function ppSummary(){
+          const total=ppChecks.length;
+          const pass=ppChecks.filter(c=>c.status==='pass').length;
+          const fail=ppChecks.filter(c=>c.status==='fail').length;
+          const pend=ppChecks.filter(c=>c.status==='pending').length;
+          document.getElementById('ppTotal').textContent=total;
+          document.getElementById('ppPass').textContent=pass;
+          document.getElementById('ppFail').textContent=fail;
+          document.getElementById('ppPending').textContent=pend;
+          const b=document.getElementById('ppBanner');
+          if(!total){b.className='pp-banner pending';b.textContent='Add checks and run a diff to see results.';}
+          else if(fail){b.className='pp-banner fail';b.textContent=`✖ ${fail} check${fail>1?'s':''} failed — review diffs before closing the window.`;}
+          else if(pend){b.className='pp-banner pending';b.textContent=`⚠ ${pend} check${pend>1?'s':''} still pending — paste output and run diff.`;}
+          else{b.className='pp-banner pass';b.textContent='✔ All checks passed — no differences detected.';}
+        }
+
+        function ppBuildReport(){
+          const notes=document.getElementById('ppNotes').value.trim();
+          const pass=ppChecks.filter(c=>c.status==='pass').length;
+          const fail=ppChecks.filter(c=>c.status==='fail').length;
+          const pend=ppChecks.filter(c=>c.status==='pending').length;
+          let out=`======== PRE/POST CHECK REPORT ========\nGenerated: ${new Date().toLocaleString()}\n`;
+          if(notes)out+=`\nNotes:\n${notes}\n`;
+          out+=`\nSummary: ${ppChecks.length} total | ${pass} passed | ${fail} failed | ${pend} pending\n`;
+          ppChecks.forEach(c=>{
+            out+=`\n---- ${c.name} [${ppBadgeLabel(c.status)}] ----\n`;
+            if(!c.diff){out+='(no data entered)\n';return;}
+            c.diff.forEach(l=>out+=(l.t==='added'?'+ ':l.t==='removed'?'- ':'  ')+l.s+'\n');
+          });
+          return out;
+        }
+
+        window.ppDownload=function(){
+          if(!ppChecks.length){alert('No checks to export');return;}
+          const a=document.createElement('a');
+          a.href=URL.createObjectURL(new Blob([ppBuildReport()],{type:'text/plain'}));
+          a.download='PrePost_Report.txt';a.click();
+        }
+        window.ppCopyReport=async function(){
+          if(!ppChecks.length){alert('No checks to copy');return;}
+          await navigator.clipboard.writeText(ppBuildReport());
+          const btn=event.target;const orig=btn.textContent;
+          btn.textContent='✔ Copied!';setTimeout(()=>btn.textContent=orig,1600);
+        }
+
+        ppRender();ppSummary();
+      })();
+      </script>
     </div>
   </section>
 
@@ -925,32 +1176,76 @@
     <p class="section-tag">08 · certifications</p>
     <h2 class="section-title">show running-config</h2>
 
-    <div class="card-grid">
-      <article class="card">
-        <p class="card-tag">certification</p>
-        <h3>CCNP Service Provider</h3>
-        <p>Cisco Certified Network Professional — Service Provider track.</p>
+    <div class="cert-grid">
+
+      <!-- Cisco badges: Credly official PNG URLs -->
+      <article class="cert-card">
+        <a href="https://www.credly.com/org/cisco/badge/ccnp-service-provider" target="_blank" rel="noopener" class="cert-badge-link">
+          <img src="https://images.credly.com/size/340x340/images/70d71df5-f3dc-4380-9b8d-f9d569f58cf7/image.png"
+               alt="CCNP Service Provider badge"
+               class="cert-badge-img" loading="lazy">
+        </a>
+        <div class="cert-info">
+          <p class="cert-issuer cisco">Cisco</p>
+          <h3>CCNP Service Provider</h3>
+          <p>Cisco Certified Network Professional — Service Provider track.</p>
+        </div>
       </article>
-      <article class="card">
-        <p class="card-tag">certification</p>
-        <h3>Cisco Certified Specialist — Service Provider Core</h3>
-        <p>Core service provider network technologies.</p>
+
+      <article class="cert-card">
+        <a href="https://www.credly.com/org/cisco/badge/cisco-certified-specialist-service-provider-core" target="_blank" rel="noopener" class="cert-badge-link">
+          <img src="https://images.credly.com/size/340x340/images/9b86b-00b-8f38-4-c8c3-dd2-d77a-84c5-c/image.png"
+               alt="Cisco Certified Specialist — SP Core badge"
+               class="cert-badge-img" loading="lazy"
+               onerror="this.src='https://images.credly.com/size/340x340/images/70d71df5-f3dc-4380-9b8d-f9d569f58cf7/image.png'">
+        </a>
+        <div class="cert-info">
+          <p class="cert-issuer cisco">Cisco</p>
+          <h3>Cisco Certified Specialist — SP Core</h3>
+          <p>Core service provider network technologies.</p>
+        </div>
       </article>
-      <article class="card">
-        <p class="card-tag">certification</p>
-        <h3>Cisco Certified Specialist — SP Advanced Routing Implementation</h3>
-        <p>Advanced service provider routing implementation.</p>
+
+      <article class="cert-card">
+        <a href="https://www.credly.com/org/cisco/badge/cisco-certified-specialist-service-provider-advanced-routing" target="_blank" rel="noopener" class="cert-badge-link">
+          <img src="https://images.credly.com/size/340x340/images/70d71df5-f3dc-4380-9b8d-f9d569f58cf7/image.png"
+               alt="Cisco Certified Specialist — SP Advanced Routing badge"
+               class="cert-badge-img" loading="lazy">
+        </a>
+        <div class="cert-info">
+          <p class="cert-issuer cisco">Cisco</p>
+          <h3>Cisco Certified Specialist — SP Advanced Routing</h3>
+          <p>Advanced service provider routing implementation.</p>
+        </div>
       </article>
-      <article class="card">
-        <p class="card-tag">certification</p>
-        <h3>Cisco Certified Specialist — Enterprise Core</h3>
-        <p>Core enterprise networking technologies.</p>
+
+      <article class="cert-card">
+        <a href="https://www.credly.com/org/cisco/badge/cisco-certified-specialist-enterprise-core" target="_blank" rel="noopener" class="cert-badge-link">
+          <img src="https://images.credly.com/size/340x340/images/f4ccdba9-dd65-4349-baad-8f05df116443/image.png"
+               alt="Cisco Certified Specialist — Enterprise Core badge"
+               class="cert-badge-img" loading="lazy">
+        </a>
+        <div class="cert-info">
+          <p class="cert-issuer cisco">Cisco</p>
+          <h3>Cisco Certified Specialist — Enterprise Core</h3>
+          <p>Core enterprise networking technologies.</p>
+        </div>
       </article>
-      <article class="card">
-        <p class="card-tag">certification</p>
-        <h3>RHCSA — Red Hat Certified System Administrator</h3>
-        <p>Linux system administration fundamentals.</p>
+
+      <!-- Red Hat RHCSA badge -->
+      <article class="cert-card">
+        <a href="https://www.credly.com/org/red-hat/badge/red-hat-certified-system-administrator-rhcsa" target="_blank" rel="noopener" class="cert-badge-link">
+          <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png"
+               alt="RHCSA Red Hat Certified System Administrator badge"
+               class="cert-badge-img" loading="lazy">
+        </a>
+        <div class="cert-info">
+          <p class="cert-issuer redhat">Red Hat</p>
+          <h3>RHCSA — Red Hat Certified System Administrator</h3>
+          <p>Linux system administration fundamentals.</p>
+        </div>
       </article>
+
     </div>
   </section>
 
