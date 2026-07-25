@@ -713,6 +713,13 @@ button:focus-visible {
   line-height: 1.5;
 }
 
+.cert-expiry {
+  font-family: var(--font-mono);
+  font-size: 0.72rem !important;
+  color: var(--amber) !important;
+  margin-top: 4px;
+}
+
 /* ---------- gallery ---------- */
 .gallery-grid {
   display: grid;
