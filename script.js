@@ -99,7 +99,7 @@
         type: 'output',
         lines: [
           'role       : IP/MPLS Backbone Engineer',
-          'based      : Sri Lanka',
+          'based      : Colombo, Sri Lanka',
           'uptime     : 7+ years',
           '<span class="tl-ok">status     : ● open to opportunities</span>',
         ],
