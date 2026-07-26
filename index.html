@@ -357,39 +357,102 @@
     </div>
 
 
-    <!-- Tool preview cards — click to open in new tab -->
+    <!-- Tool visual previews — click to open in new tab -->
     <div class="tool-preview-grid">
 
+      <!-- Config Generator preview -->
       <a href="tools/config-generator.html" target="_blank" rel="noopener" class="tool-preview-card">
-        <div class="tp-header">
-          <span class="tp-num">01</span>
-          <span class="tp-badge">free tool</span>
+        <div class="tp-mock tp-mock-cg">
+          <div class="tp-mock-bar">
+            <span class="tp-dot" style="background:#ff5f56"></span>
+            <span class="tp-dot" style="background:#ffb454"></span>
+            <span class="tp-dot" style="background:#2fe28f"></span>
+            <span class="tp-mock-title">config-generator</span>
+          </div>
+          <div class="tp-mock-body">
+            <div class="tp-mock-row">
+              <span class="tp-mock-label">template</span>
+              <div class="tp-mock-field">
+                <span class="tp-kw">interface</span> <span class="tp-val">{{INTERFACE}}</span><br>
+                &nbsp;<span class="tp-kw">description</span> <span class="tp-val">{{DESCRIPTION}}</span><br>
+                &nbsp;<span class="tp-kw">ipv4 address</span> <span class="tp-val">{{IP}} {{MASK}}</span><br>
+                &nbsp;<span class="tp-kw">no shutdown</span>
+              </div>
+            </div>
+            <div class="tp-mock-row">
+              <span class="tp-mock-label">upload</span>
+              <div class="tp-mock-upload">📂 interfaces.xlsx &nbsp;<span class="tp-ok">5 rows matched</span></div>
+            </div>
+            <div class="tp-mock-actions">
+              <span class="tp-btn-g">⚙ Generate All</span>
+              <span class="tp-btn-s">↓ Download</span>
+            </div>
+            <div class="tp-mock-output">
+              <span style="color:var(--text-faint)"># ROW 01 — GigabitEthernet0/0/0/1</span><br>
+              <span class="tp-kw">interface</span> <span style="color:#a3f7c5">GigabitEthernet0/0/0/1</span><br>
+              &nbsp;<span class="tp-kw">description</span> <span style="color:#a3f7c5">PE1-to-P1-core</span><br>
+              &nbsp;<span class="tp-kw">ipv4 address</span> <span style="color:#a3f7c5">10.10.10.1 255.255.255.252</span>
+            </div>
+          </div>
         </div>
-        <h3>Network Config Generator</h3>
-        <p>Upload a CSV or Excel file, write a Cisco IOS XR / Juniper CLI template with <code>{{VARIABLES}}</code>, and bulk-generate router configs instantly.</p>
-        <ul class="tp-features">
-          <li>✓ CSV &amp; Excel upload</li>
-          <li>✓ Validation dashboard</li>
-          <li>✓ Bulk &amp; selective generate</li>
-          <li>✓ Download or copy output</li>
-        </ul>
-        <span class="tp-cta">Open Config Generator ↗</span>
+        <div class="tp-footer">
+          <div>
+            <p class="tp-name">Config Generator</p>
+            <p class="tp-desc">Upload CSV/Excel · CLI template · Bulk generate</p>
+          </div>
+          <span class="tp-open">Open ↗</span>
+        </div>
       </a>
 
+      <!-- Pre/Post Check preview -->
       <a href="tools/prepost-check.html" target="_blank" rel="noopener" class="tool-preview-card">
-        <div class="tp-header">
-          <span class="tp-num">02</span>
-          <span class="tp-badge">free tool</span>
+        <div class="tp-mock tp-mock-pp">
+          <div class="tp-mock-bar">
+            <span class="tp-dot" style="background:#ff5f56"></span>
+            <span class="tp-dot" style="background:#ffb454"></span>
+            <span class="tp-dot" style="background:#2fe28f"></span>
+            <span class="tp-mock-title">prepost-check</span>
+          </div>
+          <div class="tp-mock-body">
+            <div class="tp-pp-cols">
+              <div>
+                <span class="tp-mock-label" style="color:#ffa07a">PRE</span>
+                <div class="tp-pp-ta pre-ta">
+                  Gi0/0/0/1 is <span style="color:#fca5a5">down</span><br>
+                  Gi0/0/0/2 is up<br>
+                  BGP state: Active
+                </div>
+              </div>
+              <div>
+                <span class="tp-mock-label" style="color:#4de079">POST</span>
+                <div class="tp-pp-ta post-ta">
+                  Gi0/0/0/1 is <span style="color:#86efac">up</span><br>
+                  Gi0/0/0/2 is up<br>
+                  BGP state: Established
+                </div>
+              </div>
+            </div>
+            <div class="tp-pp-diff">
+              <div class="tp-diff-line removed">- Gi0/0/0/1 is down</div>
+              <div class="tp-diff-line added">+ Gi0/0/0/1 is up</div>
+              <div class="tp-diff-line same">&nbsp; Gi0/0/0/2 is up</div>
+              <div class="tp-diff-line removed">- BGP state: Active</div>
+              <div class="tp-diff-line added">+ BGP state: Established</div>
+            </div>
+            <div class="tp-pp-summary">
+              <span class="tp-stat-ok">✔ 1 passed</span>
+              <span class="tp-stat-fail">✖ 0 failed</span>
+              <span class="tp-stat-pend">⚠ 1 pending</span>
+            </div>
+          </div>
         </div>
-        <h3>Pre/Post Check</h3>
-        <p>Paste CLI output before and after a maintenance window, run a line-by-line diff, and export a signed report — all in the browser.</p>
-        <ul class="tp-features">
-          <li>✓ Line-by-line diff engine</li>
-          <li>✓ Pass / Fail / Pending status</li>
-          <li>✓ Maintenance notes</li>
-          <li>✓ Download TXT report</li>
-        </ul>
-        <span class="tp-cta">Open Pre/Post Check ↗</span>
+        <div class="tp-footer">
+          <div>
+            <p class="tp-name">Pre/Post Check</p>
+            <p class="tp-desc">Diff CLI output · Pass/Fail status · Export report</p>
+          </div>
+          <span class="tp-open">Open ↗</span>
+        </div>
       </a>
 
     </div>
