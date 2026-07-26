@@ -3,17 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Network Config Generator | Dinuka Wijesinghe — IP/MPLS Tools</title>
-<meta name="description" content="Free browser-based network config generator by Dinuka Wijesinghe. Upload a CSV or Excel file, write a CLI template with {{VARIABLES}}, and bulk-generate router configs — Cisco IOS XR, Juniper, and more.">
-<meta name="keywords" content="network config generator, Cisco IOS XR config, MPLS config template, bulk router configuration, IP/MPLS, service provider tools, Dinuka Wijesinghe">
+
+<!-- ═══ Primary SEO ═══ -->
+<title>Free Network Config Generator — Cisco IOS XR, Juniper, MPLS | Dinuka Wijesinghe</title>
+<meta name="description" content="Free browser-based network config generator. Upload a CSV or Excel file, write a Cisco IOS XR / Juniper CLI template with {{VARIABLES}}, and bulk-generate router configs instantly. No data leaves your browser. Built by Dinuka Wijesinghe, IP/MPLS Core Network Engineer.">
+<meta name="keywords" content="network config generator, free router config generator, Cisco IOS XR config template, Juniper config generator, MPLS config, bulk router configuration, network automation tool, CLI template generator, service provider config, ISP config tool, NCS-5500 config, network engineer tools, Dinuka Wijesinghe, IP/MPLS tools, CSV to router config, Excel to router config">
 <meta name="author" content="Dinuka Hasanka Wijesinghe">
+<meta name="robots" content="index, follow">
 <link rel="canonical" href="https://dinukawijesinghe.com/tools/config-generator.html">
 
-<!-- Open Graph -->
-<meta property="og:title" content="Network Config Generator — Dinuka Wijesinghe">
-<meta property="og:description" content="Bulk-generate router configs from CSV/Excel data and a CLI template. No data leaves your browser.">
-<meta property="og:url" content="https://dinukawijesinghe.com/tools/config-generator.html">
+<!-- ═══ Open Graph (LinkedIn / Facebook previews) ═══ -->
 <meta property="og:type" content="website">
+<meta property="og:title" content="Free Network Config Generator — Cisco IOS XR, Juniper, MPLS">
+<meta property="og:description" content="Upload a CSV or Excel file, write a CLI template with {{VARIABLES}}, and bulk-generate router configs. Free, browser-based, no data sent anywhere.">
+<meta property="og:url" content="https://dinukawijesinghe.com/tools/config-generator.html">
+<meta property="og:site_name" content="Dinuka Wijesinghe — Network Engineering Tools">
+
+<!-- ═══ Twitter / X Card ═══ -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free Network Config Generator — Cisco IOS XR, MPLS, Juniper">
+<meta name="twitter:description" content="Bulk-generate router configs from CSV/Excel + a CLI template. Free, runs in your browser, no server.">
+
+<!-- ═══ Structured Data: SoftwareApplication ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Network Config Generator",
+  "url": "https://dinukawijesinghe.com/tools/config-generator.html",
+  "description": "Free browser-based network config generator. Upload a CSV or Excel file, write a Cisco IOS XR or Juniper CLI template with {{VARIABLES}}, and bulk-generate router configurations instantly. No data leaves your browser.",
+  "applicationCategory": "NetworkingApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "CSV and Excel file upload",
+    "Custom CLI template with variable substitution",
+    "Bulk config generation",
+    "Cisco IOS XR support",
+    "Juniper JunOS support",
+    "Config validation dashboard",
+    "Download as TXT",
+    "Copy to clipboard",
+    "In-browser data editor",
+    "No server — runs entirely in your browser"
+  ],
+  "author": {
+    "@type": "Person",
+    "name": "Dinuka Hasanka Wijesinghe",
+    "url": "https://dinukawijesinghe.com",
+    "jobTitle": "Network Engineer — IP/MPLS Core"
+  },
+  "keywords": "network config generator, Cisco IOS XR, Juniper, MPLS, bulk router configuration, CLI template, service provider"
+}
+</script>
+
+<!-- ═══ Structured Data: FAQPage (boosts rich results) ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the Network Config Generator?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A free browser-based tool that lets network engineers upload a CSV or Excel file with device data, write a CLI template using {{VARIABLE}} placeholders, and bulk-generate router configurations for Cisco IOS XR, Juniper, MPLS, and other platforms — all without sending any data to a server."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does this tool support Cisco IOS XR?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The template engine is vendor-neutral — paste any CLI syntax including Cisco IOS XR, Juniper JunOS, Nokia SR OS, or Arista EOS. The tool substitutes your CSV/Excel data into the template and generates ready-to-paste configs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my data sent to any server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The config generator runs entirely in your browser using JavaScript. Your CSV, Excel files, templates, and generated configs never leave your device."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I generate configs for multiple devices at once?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Upload a CSV or Excel sheet where each row is a device, write a single CLI template, and the tool generates individual configs for all rows — or select specific devices using the device picker."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- ═══ Structured Data: BreadcrumbList ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Dinuka Wijesinghe","item":"https://dinukawijesinghe.com"},
+    {"@type":"ListItem","position":2,"name":"Tools","item":"https://dinukawijesinghe.com/#tools"},
+    {"@type":"ListItem","position":3,"name":"Network Config Generator","item":"https://dinukawijesinghe.com/tools/config-generator.html"}
+  ]
+}
+</script>
 
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -73,7 +174,14 @@ a{color:inherit;text-decoration:none}
 .page-tag{font-family:var(--font-mono);font-size:.75rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px}
 .page-title{font-family:var(--font-mono);font-size:1.7rem;font-weight:600;color:#f2f5f8}
 .page-title::before{content:'$ ';color:var(--text-faint)}
-.page-sub{color:var(--text-dim);font-size:.93rem;margin-top:10px;max-width:58ch;line-height:1.65}
+.page-sub{color:var(--text-dim);font-size:.93rem;margin-top:10px;max-width:60ch;line-height:1.65}
+.cg-feature-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.cg-feature-chips span{
+  font-family:var(--font-mono);font-size:.72rem;
+  color:var(--green);background:rgba(47,226,143,.08);
+  border:1px solid rgba(47,226,143,.25);border-radius:20px;
+  padding:4px 12px;white-space:nowrap;
+}
 
 /* ── main layout ── */
 .cg-page{max-width:1200px;margin:0 auto;padding:0 28px 60px}
@@ -223,6 +331,39 @@ a{color:inherit;text-decoration:none}
 #cgGrid td[contenteditable]:focus{outline:2px solid var(--accent);outline-offset:-2px}
 #cgGrid td.cg-edited{background:#2a2200;color:#fde68a}
 
+/* ── seo body section ── */
+.cg-seo-section{
+  background:var(--bg-raised);border-top:1px solid var(--border-soft);
+  padding:40px 28px;
+}
+.cg-seo-inner{max-width:1200px;margin:0 auto}
+.cg-seo-section h2{
+  font-family:var(--font-mono);font-size:1rem;font-weight:600;
+  color:var(--text);margin-bottom:12px;
+}
+.cg-seo-section h3{
+  font-family:var(--font-mono);font-size:.82rem;color:var(--accent);
+  margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;
+}
+.cg-seo-section p{
+  font-size:.88rem;color:var(--text-dim);line-height:1.75;max-width:72ch;margin-bottom:20px;
+}
+.cg-seo-cols{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:20px}
+@media(max-width:600px){.cg-seo-cols{grid-template-columns:1fr}}
+.cg-seo-section ol,.cg-seo-section ul{
+  padding-left:18px;display:flex;flex-direction:column;gap:6px;
+}
+.cg-seo-section li{font-size:.85rem;color:var(--text-dim);line-height:1.6}
+.cg-seo-section code{
+  font-family:var(--font-mono);font-size:.82em;color:var(--blue);
+  background:var(--bg);border:1px solid var(--border);
+  padding:1px 5px;border-radius:3px;
+}
+.cg-seo-section strong{color:var(--text)}
+.cg-seo-credit{font-size:.82rem!important;color:var(--text-faint)!important;margin-top:16px}
+.cg-seo-credit a{color:var(--accent);text-decoration:none}
+.cg-seo-credit a:hover{text-decoration:underline}
+
 /* ── footer ── */
 .tool-footer{
   border-top:1px solid var(--border-soft);padding:22px 28px;
@@ -243,9 +384,21 @@ a{color:inherit;text-decoration:none}
   <p class="page-tag">tools / 01</p>
   <h1 class="page-title">Network Config Generator</h1>
   <p class="page-sub">
-    Upload a CSV or Excel file, write a CLI template with <code style="font-family:var(--font-mono);color:var(--blue);font-size:.9em">{{VARIABLE}}</code> placeholders,
-    and bulk-generate router configs. Everything runs in your browser — no data is sent anywhere.
+    Upload a <strong style="color:var(--text)">CSV or Excel</strong> file, write a
+    <strong style="color:var(--text)">Cisco IOS XR</strong>, Juniper or any vendor CLI template
+    with <code style="font-family:var(--font-mono);color:var(--blue);font-size:.9em">{{VARIABLE}}</code> placeholders,
+    and bulk-generate router configs instantly. Free — runs entirely in your browser, nothing sent anywhere.
   </p>
+  <div class="cg-feature-chips">
+    <span>✓ Cisco IOS XR</span>
+    <span>✓ Juniper JunOS</span>
+    <span>✓ Nokia SR OS</span>
+    <span>✓ CSV / Excel upload</span>
+    <span>✓ Bulk generation</span>
+    <span>✓ Validation dashboard</span>
+    <span>✓ Free — no signup</span>
+    <span>✓ 100% browser-side</span>
+  </div>
 </div>
 
 <main class="cg-page">
@@ -327,6 +480,46 @@ a{color:inherit;text-decoration:none}
 
   </div>
 </main>
+
+<section class="cg-seo-section" aria-label="About this tool">
+  <div class="cg-seo-inner">
+    <h2>About the Network Config Generator</h2>
+    <p>
+      This free network config generator is built for service provider and enterprise network engineers
+      who need to provision or migrate large numbers of devices quickly. Instead of writing repetitive
+      Cisco IOS XR, Juniper JunOS, or Nokia SR OS configurations by hand, you define a single CLI
+      template once — then let the tool substitute your device-specific data automatically.
+    </p>
+    <div class="cg-seo-cols">
+      <div>
+        <h3>How it works</h3>
+        <ol>
+          <li>Write a CLI template using <code>{{VARIABLE}}</code> placeholders (e.g. <code>{{INTERFACE}}</code>, <code>{{IP}}</code>, <code>{{VRF}}</code>)</li>
+          <li>Upload a CSV or Excel file — one row per device</li>
+          <li>Click <strong>Validate</strong> to confirm all variables are matched</li>
+          <li>Click <strong>Generate All</strong> or select specific devices and generate</li>
+          <li>Download as a <code>.txt</code> file or copy to clipboard</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Supported platforms</h3>
+        <ul>
+          <li>Cisco IOS XR (NCS-5500, NCS-540, ASR9k)</li>
+          <li>Cisco IOS / IOS-XE</li>
+          <li>Juniper JunOS (MX, QFX, EX)</li>
+          <li>Nokia SR OS</li>
+          <li>Arista EOS</li>
+          <li>Any vendor with a text-based CLI</li>
+        </ul>
+      </div>
+    </div>
+    <p class="cg-seo-credit">
+      Built by <a href="https://dinukawijesinghe.com">Dinuka Hasanka Wijesinghe</a> —
+      IP/MPLS Core Network Engineer with 7+ years at ISPs in Sri Lanka and Australia,
+      specialising in MPLS backbone, EVPN, Segment Routing and Cisco IOS XR.
+    </p>
+  </div>
+</section>
 
 <footer class="tool-footer">
   <span>Built by <a href="https://dinukawijesinghe.com">Dinuka Hasanka Wijesinghe</a> — Network Engineer, IP/MPLS Core</span>
