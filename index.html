@@ -226,7 +226,7 @@
         </div>
       </li>
       <li class="timeline-item">
-        <div class="timeline-date">Jan 2020 — Aug 2024</div>
+        <div class="timeline-date">Jan 2019 — Aug 2024</div>
         <div class="timeline-body">
           <h3>Engineering Executive, Enterprise Solution Engineering</h3>
           <p class="timeline-org">Dialog Axiata PLC · Colombo, Sri Lanka</p>
@@ -239,20 +239,6 @@
           </ul>
         </div>
       </li>
-      <li class="timeline-item">
-        <div class="timeline-date">Jan 2018 — Jan 2020</div>
-        <div class="timeline-body">
-          <h3>Technical Officer, Digital Services and VAS Operations</h3>
-          <p class="timeline-org">Dialog Axiata PLC · Colombo, Sri Lanka</p>
-          <ul>
-            <li>Managed and maintained several Linux servers, including Red Hat Enterprise Linux, CentOS, and Ubuntu also Monitored system performance and identified and resolved potential problems.</li>
-            <li>Performed thorough Linux server health assessments in collaboration with vendors to ensure optimal system functionality and reliability, Load test/ and capacity planning.</li>
-            <li>CDR (call details record) management, encompassing storage, backup, and analysis. Proficient in ensuring secure and efficient handling of CDR data in multiple Linux servers.</li>
-            <li>Troubleshooting and resolving SMS-related issues within SLA. Analyzing and optimizing the SMS flow across SMSC, SMPP, Advanced SMSC, and Firewalls.</li>
-            <li>Monitored network health and performance using tools such as Nagios, and Wireshark, proactively identifying and resolving issues.</li>
-          </ul>
-        </div>
-      </li>
     </ol>
   </section>
 
@@ -261,9 +247,9 @@
     <p class="section-tag">04 · gallery</p>
     <h2 class="section-title">ls -la ./gallery</h2>
     <p class="section-intro">
-      This gallery showcases selected network engineering activities, including ISP backbone deployments, maintenance windows, Cisco IOS XR upgrades, optical transport infrastructure, and carrier-grade network operations.
-
-      Photos will be added as new projects are completed.
+      Field shots, rack builds and deployment moments. Drop your own images into
+      <code>/assets/gallery/</code> and update the list in <code>script.js</code> — tiles without a
+      matching file automatically fall back to this placeholder frame.
     </p>
 
     <div class="gallery-grid" id="galleryGrid">
@@ -931,9 +917,17 @@
             <div class="pp-stat pp-ok"><span>✔ Passed</span><b id="ppPass">0</b></div>
             <div class="pp-stat pp-bad"><span>✖ Failed</span><b id="ppFail">0</b></div>
             <div class="pp-stat pp-warn"><span>⚠ Pending</span><b id="ppPending">0</b></div>
-            <div style="display:flex;gap:8px;margin-top:14px">
-              <button type="button" class="pp-btn pp-btn-primary" style="flex:1" onclick="ppDownload()">↓ Download Report</button>
-              <button type="button" class="pp-btn" style="flex:1" onclick="ppCopyReport()">⎘ Copy Report</button>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;">
+              <button type="button" id="ppCopyReportBtn" onclick="ppCopyReport()"
+                style="width:100%;font-family:var(--font-mono);font-size:.82rem;font-weight:600;
+                       padding:11px;border-radius:3px;cursor:pointer;border:1px solid var(--green);
+                       background:rgba(47,226,143,.08);color:var(--green);
+                       transition:background .15s,color .15s;">⎘ Copy Report</button>
+              <button type="button" onclick="ppDownload()"
+                style="width:100%;font-family:var(--font-mono);font-size:.78rem;
+                       padding:9px;border-radius:3px;cursor:pointer;border:1px solid var(--border);
+                       background:var(--bg-raised-2);color:var(--text-dim);
+                       transition:border-color .15s,color .15s;">↓ Download Report</button>
             </div>
           </div>
           <div class="pp-card">
@@ -1304,57 +1298,57 @@ GigabitEthernet0/0/0/3 is up, line protocol is up`);
       Open to network engineering roles and carrier/ISP infrastructure projects — reach out any time.
     </p>
 
-    <div class="contact-layout">
+    <div class="contact-cards-row">
 
-      <!-- Quick links -->
-      <div class="contact-cards">
-        <a href="mailto:dinuka.info92@gmail.com" class="contact-card">
-          <span class="contact-label">email</span>
-          <span class="contact-value">dinuka.info92@gmail.com</span>
-        </a>
-        <a href="https://www.linkedin.com/in/dinuka-hasanka-wijesinghe-b3315a186" class="contact-card" target="_blank" rel="noopener">
-          <span class="contact-label">linkedin</span>
-          <span class="contact-value">www.linkedin.com/in/dinuka-hasanka-wijesinghe-b3315a186</span>
-        </a>
-        <a href="https://wa.me/94777332186" class="contact-card" target="_blank" rel="noopener">
-          <span class="contact-label">whatsapp</span>
-          <span class="contact-value">+94 77 733 2186</span>
-        </a>
-      </div>
+      <a href="mailto:dinuka.info92@gmail.com" class="contact-card">
+        <span class="contact-icon ci-email">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </span>
+        <span class="contact-label">email</span>
+        <span class="contact-value">dinuka.info92@gmail.com</span>
+      </a>
 
-      <!-- Contact form — powered by Formspree -->
-      <!-- SETUP (one-time): https://formspree.io → New Form → replace YOUR_FORM_ID below with your id -->
-      <form class="contact-form" id="contactForm"
-            action="https://formspree.io/f/xjgnpevo"
-            method="POST">
-        <div class="cf-row">
-          <label for="cf-name">name</label>
-          <input type="text" id="cf-name" name="name"
-                 placeholder="Your name" required autocomplete="name">
-        </div>
-        <div class="cf-row">
-          <label for="cf-email">email</label>
-          <input type="email" id="cf-email" name="email"
-                 placeholder="your@email.com" required autocomplete="email">
-        </div>
-        <div class="cf-row">
-          <label for="cf-subject">subject</label>
-          <input type="text" id="cf-subject" name="subject"
-                 placeholder="Network engineering role / project / other">
-        </div>
-        <div class="cf-row">
-          <label for="cf-msg">message</label>
-          <textarea id="cf-msg" name="message" rows="5"
-                    placeholder="Tell me about the role or project…" required></textarea>
-        </div>
-        <!-- honeypot anti-spam -->
-        <input type="text" name="_gotcha" style="display:none">
-        <input type="hidden" name="_subject" value="New message — dinukawijesinghe.com">
-        <button type="submit" class="cf-submit" id="cfSubmit">
-          <span id="cfBtnText">send message →</span>
-        </button>
-        <p class="cf-status" id="cfStatus"></p>
-      </form>
+      <a href="https://www.linkedin.com/in/dinuka-hasanka-wijesinghe-b3315a186" class="contact-card" target="_blank" rel="noopener">
+        <span class="contact-icon ci-linkedin">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </span>
+        <span class="contact-label">linkedin</span>
+        <span class="contact-value">www.linkedin.com/in/dinuka-hasanka-wijesinghe-b3315a186</span>
+      </a>
+
+      <a href="https://github.com/dinukainfo92-lang" class="contact-card" target="_blank" rel="noopener">
+        <span class="contact-icon ci-github">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        </span>
+        <span class="contact-label">github</span>
+        <span class="contact-value">https://github.com/dinukainfo92-lang</span>
+      </a>
+
+      <!-- UPDATE: replace YOUR_FACEBOOK with your Facebook profile URL slug -->
+      <a href="https://www.facebook.com/YOUR_FACEBOOK" class="contact-card" target="_blank" rel="noopener">
+        <span class="contact-icon ci-facebook">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </span>
+        <span class="contact-label">facebook</span>
+        <span class="contact-value">Dinuka Wijesinghe</span>
+      </a>
+
+      <a href="https://wa.me/94777332186" class="contact-card" target="_blank" rel="noopener">
+        <span class="contact-icon ci-whatsapp">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        </span>
+        <span class="contact-label">whatsapp</span>
+        <span class="contact-value">+94 77 733 2186</span>
+      </a>
+
+      <a href="contact.html" class="contact-card contact-card-cta">
+        <span class="contact-icon ci-msg">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        <span class="contact-label">send a message</span>
+        <span class="contact-value">Open contact form →</span>
+      </a>
+
     </div>
   </section>
 
@@ -1375,46 +1369,6 @@ GigabitEthernet0/0/0/3 is up, line protocol is up`);
   </figure>
 </div>
 
-<script>
-// Contact form — AJAX submit via Formspree
-(function(){
-  const form = document.getElementById('contactForm');
-  const btn  = document.getElementById('cfSubmit');
-  const txt  = document.getElementById('cfBtnText');
-  const status = document.getElementById('cfStatus');
-  if(!form) return;
-
-  form.addEventListener('submit', async function(e){
-    e.preventDefault();
-    txt.textContent = 'sending…';
-    btn.disabled = true;
-    status.textContent = '';
-    status.className = 'cf-status';
-
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
-      });
-      if(res.ok){
-        txt.textContent = '✔ message sent!';
-        status.textContent = "Thanks — I'll get back to you shortly.";
-        status.className = 'cf-status ok';
-        form.reset();
-        setTimeout(()=>{ txt.textContent='send message →'; btn.disabled=false; },4000);
-      } else {
-        throw new Error('server');
-      }
-    } catch(err){
-      txt.textContent = 'send message →';
-      btn.disabled = false;
-      status.textContent = 'Something went wrong — please email me directly at dinuka.info92@gmail.com';
-      status.className = 'cf-status err';
-    }
-  });
-})();
-</script>
 <script src="script.js"></script>
 </body>
 </html>
