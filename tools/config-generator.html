@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- ═══ Primary SEO ═══ -->
-<title>Free Network Config Generator — Cisco IOS XR, Juniper, MPLS | Dinuka Wijesinghe</title>
-<meta name="description" content="Free browser-based network config generator. Upload a CSV or Excel file, write a Cisco IOS XR / Juniper CLI template with {{VARIABLES}}, and bulk-generate router configs instantly. No data leaves your browser. Built by Dinuka Wijesinghe, IP/MPLS Core Network Engineer.">
-<meta name="keywords" content="network config generator, free router config generator, Cisco IOS XR config template, Juniper config generator, MPLS config, bulk router configuration, network automation tool, CLI template generator, service provider config, ISP config tool, NCS-5500 config, network engineer tools, Dinuka Wijesinghe, IP/MPLS tools, CSV to router config, Excel to router config">
+<title>Free Network Config Generator — Cisco IOS XR, Juniper, MPLS Bulk Config Tool</title>
+<meta name="description" content="Free browser-based network config generator. Upload CSV or Excel, write a Cisco IOS XR or Juniper CLI template with {{VARIABLES}}, bulk-generate router configs instantly. No signup, no server. Built by Dinuka Hasanka Wijesinghe, IP/MPLS Network Engineer.">
+<meta name="keywords" content="free network config generator, router config generator, Cisco IOS XR config tool, bulk config generator, MPLS config template, Juniper config generator, network automation browser tool, CLI template generator, CSV to router config, Excel to router config, NCS-5500 config, service provider config tool, ISP config generator, network engineer tools, Dinuka Wijesinghe">
 <meta name="author" content="Dinuka Hasanka Wijesinghe">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://dinukawijesinghe.com/tools/config-generator.html">
@@ -180,6 +180,18 @@ a{color:inherit;text-decoration:none}
 .page-title::before{content:'$ ';color:var(--text-faint)}
 .page-sub{color:var(--text-dim);font-size:.93rem;margin-top:10px;max-width:60ch;line-height:1.65}
 .cg-feature-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.cg-show-instructions{
+  display:inline-block;
+  margin-top:10px;
+  font-family:var(--font-mono);
+  font-size:.82rem;
+  color:var(--accent);
+  text-decoration:none;
+  border:1px solid rgba(47,226,143,.3);
+  border-radius:20px;
+  padding:5px 14px;
+  transition:background .2s,border-color .2s;
+}
 .cg-feature-chips span{
   font-family:var(--font-mono);font-size:.72rem;
   color:var(--green);background:rgba(47,226,143,.08);
@@ -399,6 +411,7 @@ a{color:inherit;text-decoration:none}
     <strong style="color:var(--text)">Cisco IOS XR</strong>, Juniper or any vendor CLI template
     with <code style="font-family:var(--font-mono);color:var(--blue);font-size:.9em">{{VARIABLE}}</code> placeholders,
     and bulk-generate router configs instantly. Free — runs entirely in your browser, nothing sent anywhere.
+    <a href="#how-it-works" class="cg-show-instructions">Show instructions ↓</a>
   </p>
   <div class="cg-feature-chips">
     <span>✓ Cisco IOS XR</span>
@@ -503,7 +516,7 @@ a{color:inherit;text-decoration:none}
     </p>
     <div class="cg-seo-cols">
       <div>
-        <h3>How it works</h3>
+        <h3 id="how-it-works">How it works</h3>
         <ol>
           <li>Write a CLI template using <code>{{VARIABLE}}</code> placeholders (e.g. <code>{{INTERFACE}}</code>, <code>{{IP}}</code>, <code>{{VRF}}</code>). <a href="#" class="cg-seo-dl" onclick="cgDownloadSampleDirect(event)">Download</a> the sample Excel file to see the required format.</li>
           <li>Upload a CSV or Excel file with column names that match the template variables (e.g., <code>{{VARIABLE}}</code>). Each row generates one configuration.</li>
@@ -526,7 +539,7 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
     <p class="cg-seo-credit">
-      Built by <a href="https://dinukawijesinghe.com">Dinuka Hasanka Wijesinghe</a> —
+      Built by <a href="https://dinukawijesinghe.com" target="_blank" rel="noopener">Dinuka Hasanka Wijesinghe</a> —
       IP/MPLS Core Network Engineer with 7+ years at ISPs in Sri Lanka and Australia,
       specialising in MPLS backbone, EVPN, Segment Routing and Cisco IOS XR.
     </p>
