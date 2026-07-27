@@ -148,6 +148,7 @@
   --radius:      3px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 body{
   background:var(--bg);color:var(--text);
   font-family:var(--font-sans);font-size:15px;
@@ -416,7 +417,10 @@ a{color:inherit;text-decoration:none}
     <strong style="color:var(--text)">Cisco IOS XR</strong>, Juniper or any vendor CLI template
     with <code style="font-family:var(--font-mono);color:var(--blue);font-size:.9em">{{VARIABLE}}</code> placeholders,
     and bulk-generate router configs instantly. Free — runs entirely in your browser, nothing sent anywhere.
-    <a href="#how-it-works" class="cg-show-instructions">Show instructions ↓</a>
+    <a href="#how-it-works" class="cg-show-instructions"
+       onclick="event.preventDefault();document.getElementById('how-it-works').scrollIntoView({behavior:'smooth',block:'start'})">
+      Show instructions ↓
+    </a>
   </p>
   <hr class="cg-divider">
   <div class="cg-feature-chips">
