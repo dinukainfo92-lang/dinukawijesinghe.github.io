@@ -803,13 +803,13 @@ a{color:inherit;text-decoration:none}
   };
   window.cgClearOutput=function(){out().value='';$('cgCopyBtn').classList.remove('cg-ready');}
   window.cgDownload=function(){
-    if(!out().value.trim()){alert('No output to download');return;}
+    if(!out().value.trim()){cgToast('✖ No output to download','fail');return;}
     const a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([out().value],{type:'text/plain'}));
     a.download='Generated_Configs.txt';a.click();
   };
   window.cgCopy=async function(){
-    if(!out().value.trim()){alert('No output to copy');return;}
+    if(!out().value.trim()){cgToast('✖ No output to copy','fail');return;}
     await navigator.clipboard.writeText(out().value);
     const btn=$('cgCopyBtn');const orig=btn.textContent;
     btn.classList.remove('cg-ready');
