@@ -643,6 +643,7 @@ select.cg-modal-input{cursor:pointer}
           <button type="button" class="cg-btn cg-btn-validate" id="cgValidateBtn" onclick="cgOnValidate()">✓ Validate</button>
           <button type="button" class="cg-btn" id="cgGenBtn" onclick="cgGenerate()">⚙ Generate All</button>
           <button type="button" class="cg-btn" id="cgDownloadBtn" onclick="cgDownload()">↓ Download TXT</button>
+          <button type="button" class="cg-btn" id="cgDownloadXlsxBtn" onclick="cgDownloadExcel()">↓ Download Excel</button>
           <button type="button" class="cg-btn" id="cgCopyBtn" onclick="cgCopy()">⎘ Copy Output</button>
           <div class="cg-field">
             <label>Label by column</label>
@@ -848,7 +849,7 @@ select.cg-modal-input{cursor:pointer}
   function cgVars(){return[...new Set((tpl().value.match(/{{(.*?)}}/g)||[]).map(v=>v.slice(2,-2).trim()))]}
 
   window.cgLoadDefault=function(){tpl().value=defaultTpl;cgValidated=false;const vb=$('cgValidateBtn');if(vb)vb.classList.remove('cg-validate-ok');cgValidate();}
-  window.cgResetTpl=function(){tpl().value='';out().value='';$('cgCopyBtn').classList.remove('cg-ready');cgValidate();}
+  window.cgResetTpl=function(){tpl().value='';out().value='';cgLastGenerated=[];$('cgCopyBtn').classList.remove('cg-ready');cgValidate();}
   window.cgGenerateTemplate=function(){
     const headers=cgRows[0]?Object.keys(cgRows[0]):[];
     if(!headers.length){cgToast('✖ Upload a file first','fail');return;}
@@ -857,7 +858,7 @@ select.cg-modal-input{cursor:pointer}
     cgToast('✔ Template generated from file variables',null,'Customise the template as you like');
   };
   window.cgResetFile=function(){
-    $('cgFile').value='';cgRows=[];out().value='';cgValidated=false;cgManualCols=[];
+    $('cgFile').value='';cgRows=[];out().value='';cgValidated=false;cgManualCols=[];cgLastGenerated=[];
     $('cgGrid').innerHTML='';$('cgDash').innerHTML='';$('cgDeviceList').innerHTML='';
     $('cgHeaderVar').innerHTML='<option value="">ROW Number</option>';
     $('cgCopyBtn').classList.remove('cg-ready');
@@ -986,9 +987,13 @@ select.cg-modal-input{cursor:pointer}
   };
 
   function cgApply(r){let t=tpl().value;cgVars().forEach(v=>t=t.replaceAll('{{'+v+'}}',r[v]||''));return t;}
+  function cgRowExportLabel(r,i){
+    const hv=$('cgHeaderVar').value;
+    return (hv&&r[hv])?r[hv]:String(i+1).padStart(2,'0');
+  }
   function cgFormat(r,i){
     const hv=$('cgHeaderVar').value;
-    const hdr=(hv&&r[hv])?r[hv]:String(i+1).padStart(2,'0');
+    const hdr=cgRowExportLabel(r,i);
     const title=(hv&&r[hv])?(hv+' - '+hdr):('ROW NUMBER - '+hdr);
     return '######## '+title+' ########\n\n'+cgApply(r);
   }
@@ -1027,24 +1032,42 @@ select.cg-modal-input{cursor:pointer}
     }catch(_){}
   }
 
+  let cgLastGenerated=[]; // full original rows + a 'Generated Config' column, for the last successful generate
+
   window.cgGenerate=function(){
     if(!cgValidated){cgToast('✖ Please press <span class="cg-toast-validate">Validate ✓</span> first','fail',null,2800);return;}
     if(!cgValidate()){cgToast('✖ Validation Failed — fix Missing Variables first.','fail',null,2800);return;}
-    cgShowProgress(()=>{out().value=cgRows.map((r,i)=>cgFormat(r,i)).join('\n\n');cgTrackGenerate();});
+    cgShowProgress(()=>{
+      out().value=cgRows.map((r,i)=>cgFormat(r,i)).join('\n\n');
+      cgLastGenerated=cgRows.map(r=>({...r,'Generated Config':cgApply(r)}));
+      cgTrackGenerate();
+    });
   }
   window.cgGenerateSelected=function(){
     if(!cgValidated){cgToast('✖ Please press <span class="cg-toast-validate">Validate ✓</span> first','fail',null,2800);return;}
     if(!cgValidate()){cgToast('✖ Validation Failed — fix Missing Variables first.','fail',null,2800);return;}
     const sel=[...document.querySelectorAll('.cgChk:checked')].map(x=>+x.dataset.i);
     if(!sel.length){alert('Select at least one device');return;}
-    cgShowProgress(()=>{out().value=sel.map(i=>cgFormat(cgRows[i],i)).join('\n\n');cgTrackGenerate();});
+    cgShowProgress(()=>{
+      out().value=sel.map(i=>cgFormat(cgRows[i],i)).join('\n\n');
+      const selSet=new Set(sel);
+      cgLastGenerated=cgRows.map((r,i)=>({...r,'Generated Config':selSet.has(i)?cgApply(r):''}));
+      cgTrackGenerate();
+    });
   };
-  window.cgClearOutput=function(){out().value='';$('cgCopyBtn').classList.remove('cg-ready');}
+  window.cgClearOutput=function(){out().value='';cgLastGenerated=[];$('cgCopyBtn').classList.remove('cg-ready');}
   window.cgDownload=function(){
     if(!out().value.trim()){cgToast('✖ No output to download','fail',null,2800);return;}
     const a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([out().value],{type:'text/plain'}));
     a.download='Generated_Configs.txt';a.click();
+  };
+  window.cgDownloadExcel=function(){
+    if(!cgLastGenerated.length){cgToast('✖ No output to download — click Generate first','fail',null,2800);return;}
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.json_to_sheet(cgLastGenerated);
+    XLSX.utils.book_append_sheet(wb,ws,'Configs');
+    XLSX.writeFile(wb,'Generated_Configs.xlsx');
   };
   window.cgCopy=async function(){
     if(!out().value.trim()){cgToast('✖ No output to copy','fail',null,2800);return;}
