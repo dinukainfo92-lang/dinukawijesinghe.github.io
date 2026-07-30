@@ -210,6 +210,22 @@ a{color:inherit;text-decoration:none}
   border:1px solid rgba(47,226,143,.25);border-radius:20px;
   padding:4px 12px;white-space:nowrap;
 }
+.cg-chip-link{
+  font-family:var(--font-mono);font-size:.72rem;
+  color:var(--bg);background:var(--accent);
+  border:1px solid var(--accent);border-radius:20px;
+  padding:4px 12px;white-space:nowrap;cursor:pointer;
+  font-weight:600;transition:opacity .2s;
+}
+.cg-chip-link:hover{opacity:.85}
+#cgAddDataBtn.cg-highlight-pulse{
+  animation:cgAddDataPulse 1.1s ease-out 3;
+}
+@keyframes cgAddDataPulse{
+  0%{box-shadow:0 0 0 0 var(--accent-glow)}
+  70%{box-shadow:0 0 0 10px rgba(47,226,143,0)}
+  100%{box-shadow:0 0 0 0 rgba(47,226,143,0)}
+}
 
 /* ── main layout ── */
 .cg-page{max-width:1200px;margin:0 auto;padding:0 28px 60px;display:flex;flex-direction:column;gap:16px}
@@ -575,6 +591,7 @@ select.cg-modal-input{cursor:pointer}
   </p>
   <hr class="cg-divider">
   <div class="cg-feature-chips">
+    <a href="#cgDataEditorCard" class="cg-chip-link" onclick="event.preventDefault();cgHighlightAddData()">⚡ Generate without file</a>
     <span>✓ Cisco IOS XR</span>
     <span>✓ Juniper JunOS</span>
     <span>✓ Nokia SR OS</span>
@@ -661,11 +678,11 @@ select.cg-modal-input{cursor:pointer}
   <div class="cg-card" id="cgDataEditorCard">
     <p class="cg-eyebrow">Data Editor</p>
     <div class="cg-editor-toolbar">
+      <button type="button" class="cg-btn cg-btn-green" id="cgAddDataBtn" onclick="cgAddData()">+ Add Data</button>
       <button type="button" class="cg-btn" onclick="cgAddCol()">+ Col</button>
       <button type="button" class="cg-btn" onclick="cgDelCol()">− Col</button>
       <button type="button" class="cg-btn" onclick="cgAddRow()">+ Row</button>
       <button type="button" class="cg-btn" onclick="cgDelRow()">− Row</button>
-      <button type="button" class="cg-btn cg-btn-green" onclick="cgAddData()">+ Add Data</button>
     </div>
     <div class="cg-table-shell"><table id="cgGrid"></table></div>
   </div>
@@ -763,6 +780,7 @@ select.cg-modal-input{cursor:pointer}
   let cgRows=[];
   let cgValidated=false;
   let cgLastMiss=[];
+  let cgManualCols=[]; // columns added via +Col, tracked separately from template vars
   const $=id=>document.getElementById(id);
   const tpl=()=>$('cgTpl');
   const out=()=>$('cgOut');
@@ -777,6 +795,7 @@ select.cg-modal-input{cursor:pointer}
     $('cgLoadingOverlay').classList.add('cg-loading-show');
     const reader=new FileReader();
     reader.onload=function(e){
+      cgManualCols=[];
       if(file.name.toLowerCase().endsWith('.csv')){
         const lines=e.target.result.split(/\r?\n/).filter(Boolean);
         const h=lines[0].split(',');
@@ -834,7 +853,7 @@ select.cg-modal-input{cursor:pointer}
     cgToast('✔ Template generated from file variables',null,'Customise the template as you like');
   };
   window.cgResetFile=function(){
-    $('cgFile').value='';cgRows=[];out().value='';cgValidated=false;
+    $('cgFile').value='';cgRows=[];out().value='';cgValidated=false;cgManualCols=[];
     $('cgGrid').innerHTML='';$('cgDash').innerHTML='';$('cgDeviceList').innerHTML='';
     $('cgHeaderVar').innerHTML='<option value="">ROW Number</option>';
     $('cgCopyBtn').classList.remove('cg-ready');
@@ -942,6 +961,16 @@ select.cg-modal-input{cursor:pointer}
     const gb=$('cgGenBtn');if(gb)gb.classList.toggle('cg-disabled',!ok);
     return ok;
   }
+
+  window.cgHighlightAddData=function(){
+    const btn=$('cgAddDataBtn');
+    if(!btn)return;
+    btn.scrollIntoView({behavior:'smooth',block:'center'});
+    btn.classList.remove('cg-highlight-pulse');
+    void btn.offsetWidth; // restart animation if clicked again
+    btn.classList.add('cg-highlight-pulse');
+    setTimeout(()=>btn.classList.remove('cg-highlight-pulse'),3500);
+  };
 
   window.cgToggleStat=function(id){
     const el=document.getElementById(id);
@@ -1144,6 +1173,7 @@ select.cg-modal-input{cursor:pointer}
         if(cgRows[0]&&Object.prototype.hasOwnProperty.call(cgRows[0],name))return'That column already exists.';
         if(!cgRows.length)cgRows=[{}];
         cgRows.forEach(r=>r[name]='');
+        if(!cgManualCols.includes(name))cgManualCols.push(name);
         cgRender();cgPopHeader();cgPopDevices();cgValidate();
       }
     });
@@ -1162,14 +1192,16 @@ select.cg-modal-input{cursor:pointer}
       onConfirm:(name)=>{
         if(!name)return'Select a column.';
         cgRows.forEach(r=>delete r[name]);
+        cgManualCols=cgManualCols.filter(c=>c!==name);
         cgRender();cgPopHeader();cgPopDevices();cgValidate();
       }
     });
   };
 
   window.cgAddData=function(){
-    let headers=cgRows[0]?Object.keys(cgRows[0]):(cgVars().length?cgVars():[]);
-    if(!headers.length){cgToast('✖ Add a column first (or upload a file)','fail');return;}
+    const tplVars=cgVars();
+    const headers=[...new Set([...tplVars,...cgManualCols])];
+    if(!headers.length){cgToast('✖ Add variables to the template first (e.g. {{VARIABLE}}) or add a column','fail');return;}
     cgModalOpen({
       title:'+ Add Data',
       sub:'Fill in the values for a new row, then add it.',
@@ -1177,8 +1209,7 @@ select.cg-modal-input{cursor:pointer}
       fields:headers.map(h=>({key:h,label:h,value:''})),
       confirmLabel:'Add',
       onConfirm:(vals)=>{
-        if(!cgRows.length)cgRows=[{}];
-        const keys=Object.keys(cgRows[0]||{});
+        const keys=cgRows.length?Object.keys(cgRows[0]):headers;
         const o={};keys.forEach(k=>o[k]='');
         headers.forEach(h=>{o[h]=(vals[h]||'').trim();});
         cgRows.push(o);
@@ -1200,8 +1231,8 @@ select.cg-modal-input{cursor:pointer}
       onConfirm:(v)=>{
         const n=parseInt(v,10);
         if(!n||n<1)return'Enter a number of 1 or more.';
-        if(!cgRows.length)cgRows=[{}];
-        const keys=Object.keys(cgRows[0]||{});
+        const keys=cgRows.length?Object.keys(cgRows[0]):cgVars();
+        if(!keys.length){cgToast('✖ Add a column first (or upload a file)','fail');return'Add a column first (or upload a file).';}
         for(let i=0;i<n;i++){const o={};keys.forEach(k=>o[k]='');cgRows.push(o);}
         cgRender();cgPopHeader();cgPopDevices();cgValidate();
         setTimeout(()=>cgScrollToRow(cgRows.length-1),80);
