@@ -18,11 +18,13 @@
 <meta property="og:description" content="Upload a CSV or Excel file, write a CLI template with {{VARIABLES}}, and bulk-generate router configs. Free, browser-based, no data sent anywhere.">
 <meta property="og:url" content="https://dinukawijesinghe.com/tools/config-generator.html">
 <meta property="og:site_name" content="Dinuka Wijesinghe — Network Engineering Tools">
+<meta property="og:image" content="https://dinukawijesinghe.com/favicon-192.png">
 
 <!-- ═══ Twitter / X Card ═══ -->
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Free Network Config Generator — Cisco IOS XR, MPLS, Juniper">
 <meta name="twitter:description" content="Bulk-generate router configs from CSV/Excel + a CLI template. Free, runs in your browser, no server.">
+<meta name="twitter:image" content="https://dinukawijesinghe.com/favicon-192.png">
 
 <!-- ═══ Structured Data: SoftwareApplication ═══ -->
 <script type="application/ld+json">
@@ -177,6 +179,10 @@ a{color:inherit;text-decoration:none}
 /* ── page header ── */
 .page-header{padding:40px 28px 24px;max-width:1200px;margin:0 auto}
 .page-tag{font-family:var(--font-mono);font-size:.75rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px}
+.cg-breadcrumb{font-family:var(--font-mono);font-size:.75rem;color:var(--text-faint);letter-spacing:.02em;margin-bottom:10px}
+.cg-breadcrumb a{color:var(--text-dim);transition:color .2s}
+.cg-breadcrumb a:hover{color:var(--accent)}
+.cg-breadcrumb span{margin:0 6px;color:var(--text-faint)}
 .page-title{font-family:var(--font-mono);font-size:1.7rem;font-weight:600;color:#f2f5f8}
 .page-title::before{content:'$ ';color:var(--text-faint)}
 .page-sub{color:var(--text-dim);font-size:.93rem;margin-top:10px;max-width:60ch;line-height:1.65}
@@ -207,6 +213,11 @@ a{color:inherit;text-decoration:none}
 
 /* ── main layout ── */
 .cg-page{max-width:1200px;margin:0 auto;padding:0 28px 60px;display:flex;flex-direction:column;gap:16px}
+@media(max-width:480px){
+  .topbar{padding:12px 14px}
+  .page-header{padding:28px 14px 18px}
+  .cg-page{padding:0 14px 40px}
+}
 .cg-top-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
 @media(max-width:860px){.cg-top-row{grid-template-columns:1fr}}
 .cg-col-left{display:flex;flex-direction:column;gap:16px}
@@ -240,6 +251,7 @@ a{color:inherit;text-decoration:none}
 /* ── controls ── */
 .cg-tpl-actions{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .cg-controls{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:end}
+@media(max-width:480px){.cg-controls{grid-template-columns:1fr}}
 .cg-full{grid-column:1/-1}
 
 .cg-field{display:flex;flex-direction:column;gap:5px;grid-column:1/-1}
@@ -546,6 +558,9 @@ select.cg-modal-input{cursor:pointer}
   <a href="https://dinukawijesinghe.com" class="topbar-back">← back to portfolio</a></div>
 
 <div class="page-header">
+  <nav class="cg-breadcrumb" aria-label="Breadcrumb">
+    <a href="https://dinukawijesinghe.com">Dinuka Wijesinghe</a><span>/</span><a href="https://dinukawijesinghe.com/#tools">Tools</a><span>/</span><span aria-current="page">Network Config Generator</span>
+  </nav>
   <p class="page-tag">tools / 01</p>
   <h1 class="page-title">Network Config Generator</h1>
   <p class="page-sub">
@@ -781,7 +796,7 @@ select.cg-modal-input{cursor:pointer}
     file.name.toLowerCase().endsWith('.csv')?reader.readAsText(file):reader.readAsArrayBuffer(file);
   };
 
-  function cgToast(msg,type,sub){
+  function cgToast(msg,type,sub,duration){
     let t=$('cgToast');
     if(!t){
       t=document.createElement('div');
@@ -798,7 +813,7 @@ select.cg-modal-input{cursor:pointer}
     requestAnimationFrame(()=>{
       requestAnimationFrame(()=>{
         clearTimeout(t._cgTimer);
-        t._cgTimer=setTimeout(()=>t.classList.remove('cg-toast-show'),4500);
+        t._cgTimer=setTimeout(()=>t.classList.remove('cg-toast-show'),duration||4500);
       });
     });
   }
@@ -874,12 +889,12 @@ select.cg-modal-input{cursor:pointer}
       btn.classList.remove('cg-validate-ok');
       cgValidated=false;
       const fixSub=cgLastMiss.length?`<button type="button" class="cg-btn cg-toast-fixbtn" onclick="cgAddMissingVars()">+ Add Missing Variables</button>`:'';
-      cgToast('✖ Validation Failed — fix Missing Variables first.','fail',fixSub);
+      cgToast('✖ Validation Failed — fix Missing Variables first.','fail',fixSub,2800);
     }else{
       btn.classList.add('cg-validate-ok');
       cgValidated=true;
       cgValidatePulse();
-      cgToast('✔ Validation successful');
+      cgToast('✔ Validation successful',null,null,2800);
     }
   }
 
@@ -971,26 +986,26 @@ select.cg-modal-input{cursor:pointer}
   }
 
   window.cgGenerate=function(){
-    if(!cgValidated){cgToast('✖ Please press <span class="cg-toast-validate">Validate ✓</span> first','fail');return;}
-    if(!cgValidate()){cgToast('✖ Validation Failed — fix Missing Variables first.','fail');return;}
+    if(!cgValidated){cgToast('✖ Please press <span class="cg-toast-validate">Validate ✓</span> first','fail',null,2800);return;}
+    if(!cgValidate()){cgToast('✖ Validation Failed — fix Missing Variables first.','fail',null,2800);return;}
     cgShowProgress(()=>{out().value=cgRows.map((r,i)=>cgFormat(r,i)).join('\n\n');});
   }
   window.cgGenerateSelected=function(){
-    if(!cgValidated){cgToast('✖ Please press <span class="cg-toast-validate">Validate ✓</span> first','fail');return;}
-    if(!cgValidate()){cgToast('✖ Validation Failed — fix Missing Variables first.','fail');return;}
+    if(!cgValidated){cgToast('✖ Please press <span class="cg-toast-validate">Validate ✓</span> first','fail',null,2800);return;}
+    if(!cgValidate()){cgToast('✖ Validation Failed — fix Missing Variables first.','fail',null,2800);return;}
     const sel=[...document.querySelectorAll('.cgChk:checked')].map(x=>+x.dataset.i);
     if(!sel.length){alert('Select at least one device');return;}
     cgShowProgress(()=>{out().value=sel.map(i=>cgFormat(cgRows[i],i)).join('\n\n');});
   };
   window.cgClearOutput=function(){out().value='';$('cgCopyBtn').classList.remove('cg-ready');}
   window.cgDownload=function(){
-    if(!out().value.trim()){cgToast('✖ No output to download','fail');return;}
+    if(!out().value.trim()){cgToast('✖ No output to download','fail',null,2800);return;}
     const a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([out().value],{type:'text/plain'}));
     a.download='Generated_Configs.txt';a.click();
   };
   window.cgCopy=async function(){
-    if(!out().value.trim()){cgToast('✖ No output to copy','fail');return;}
+    if(!out().value.trim()){cgToast('✖ No output to copy','fail',null,2800);return;}
     await navigator.clipboard.writeText(out().value);
     const btn=$('cgCopyBtn');const orig=btn.textContent;
     btn.classList.remove('cg-ready');
