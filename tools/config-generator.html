@@ -1014,17 +1014,26 @@ select.cg-modal-input{cursor:pointer}
     btn.addEventListener('click',()=>btn.classList.remove('cg-ready'),{once:true});
   }
 
+  function cgTrackGenerate(){
+    // silent, fire-and-forget hit to a free public counter — no personal
+    // data is sent, just a +1 ping. Check the total anytime by visiting
+    // https://api.counterapi.dev/v1/dinuka-config-generator/generates
+    try{
+      fetch('https://api.counterapi.dev/v1/dinuka-config-generator/generates/up').catch(()=>{});
+    }catch(_){}
+  }
+
   window.cgGenerate=function(){
     if(!cgValidated){cgToast('✖ Please press <span class="cg-toast-validate">Validate ✓</span> first','fail',null,2800);return;}
     if(!cgValidate()){cgToast('✖ Validation Failed — fix Missing Variables first.','fail',null,2800);return;}
-    cgShowProgress(()=>{out().value=cgRows.map((r,i)=>cgFormat(r,i)).join('\n\n');});
+    cgShowProgress(()=>{out().value=cgRows.map((r,i)=>cgFormat(r,i)).join('\n\n');cgTrackGenerate();});
   }
   window.cgGenerateSelected=function(){
     if(!cgValidated){cgToast('✖ Please press <span class="cg-toast-validate">Validate ✓</span> first','fail',null,2800);return;}
     if(!cgValidate()){cgToast('✖ Validation Failed — fix Missing Variables first.','fail',null,2800);return;}
     const sel=[...document.querySelectorAll('.cgChk:checked')].map(x=>+x.dataset.i);
     if(!sel.length){alert('Select at least one device');return;}
-    cgShowProgress(()=>{out().value=sel.map(i=>cgFormat(cgRows[i],i)).join('\n\n');});
+    cgShowProgress(()=>{out().value=sel.map(i=>cgFormat(cgRows[i],i)).join('\n\n');cgTrackGenerate();});
   };
   window.cgClearOutput=function(){out().value='';$('cgCopyBtn').classList.remove('cg-ready');}
   window.cgDownload=function(){
