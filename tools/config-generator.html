@@ -127,6 +127,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <style>
 :root {
@@ -156,6 +157,7 @@ body{
   font-family:var(--font-sans);font-size:15px;
   min-height:100vh;
   background-image:linear-gradient(180deg,rgba(47,226,143,.05),transparent 280px);
+  transition:background-color .2s,color .2s;
 }
 a{color:inherit;text-decoration:none}
 
@@ -175,6 +177,7 @@ a{color:inherit;text-decoration:none}
   padding:7px 14px;transition:border-color .2s,color .2s;
 }
 .topbar-back:hover{border-color:var(--accent);color:var(--accent)}
+.topbar-right{display:flex;align-items:center;gap:10px}
 
 /* ── page header ── */
 .page-header{padding:40px 28px 24px;max-width:1200px;margin:0 auto}
@@ -221,6 +224,19 @@ a{color:inherit;text-decoration:none}
 #cgAddDataBtn.cg-highlight-pulse{
   animation:cgAddDataPulse 1.1s ease-out 3;
 }
+.cg-row-summary{
+  margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-family:var(--font-mono);font-size:.78rem;
+}
+.cg-summary-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  color:var(--text-dim);background:rgba(94,200,255,.08);
+  border:1px solid rgba(94,200,255,.25);border-radius:20px;
+  padding:5px 12px;white-space:nowrap;
+}
+.cg-summary-pill b{color:var(--blue)}
+.cg-summary-pill-gen{background:rgba(47,226,143,.1);border-color:rgba(47,226,143,.3)}
+.cg-summary-pill-gen b{color:var(--accent)}
 @keyframes cgAddDataPulse{
   0%{box-shadow:0 0 0 0 var(--accent-glow)}
   70%{box-shadow:0 0 0 10px rgba(47,226,143,0)}
@@ -229,14 +245,25 @@ a{color:inherit;text-decoration:none}
 
 /* ── main layout ── */
 .cg-page{max-width:1200px;margin:0 auto;padding:0 28px 60px;display:flex;flex-direction:column;gap:16px}
+@media(max-width:600px){
+  .topbar{flex-wrap:wrap;gap:8px}
+  .topbar-back{padding:6px 10px;font-size:.72rem}
+  .page-title{font-size:1.3rem}
+  .cg-editor-toolbar .cg-btn{flex:1 1 100%}
+  #cgTableSearch{max-width:100%}
+}
 @media(max-width:480px){
   .topbar{padding:12px 14px}
   .page-header{padding:28px 14px 18px}
   .cg-page{padding:0 14px 40px}
+  .cg-card{padding:14px}
   .cg-btn{min-height:42px;padding:10px 12px}
   .cg-modal-input{font-size:16px}
   .cg-stat{flex-wrap:wrap;gap:4px 10px}
   .cg-stat-detail{font-size:.7rem;word-break:break-word}
+  .cg-tpl-actions .cg-btn{flex:1 1 calc(50% - 4px)}
+  .cg-device-toolbar{flex-direction:column}
+  .tool-footer{flex-direction:column;align-items:flex-start}
 }
 .cg-top-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
 @media(max-width:860px){.cg-top-row{grid-template-columns:1fr}}
@@ -285,6 +312,19 @@ a{color:inherit;text-decoration:none}
   font-family:var(--font-mono);font-size:.82rem;width:100%;
 }
 .cg-field input[type=file]{color:var(--text-dim);border-style:dashed}
+#cgDropZone{border-radius:var(--radius);transition:background .15s,border-color .15s}
+#cgDropZone.cg-dragover{background:rgba(47,226,143,.08)}
+#cgDropZone.cg-dragover input[type=file]{border-color:var(--accent);color:var(--accent)}
+
+#cgTplCard{position:relative}
+.cg-tpl-ac{
+  position:absolute;display:none;z-index:60;
+  background:var(--bg-raised-2);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:0 8px 24px rgba(0,0,0,.35);max-height:180px;overflow:auto;min-width:150px;
+  font-family:var(--font-mono);font-size:.78rem;
+}
+.cg-ac-item{padding:6px 10px;cursor:pointer;color:var(--text-dim);white-space:nowrap}
+.cg-ac-item:hover,.cg-ac-item.cg-ac-active{background:rgba(47,226,143,.14);color:var(--accent)}
 
 /* ── buttons ── */
 .cg-btn{
@@ -448,6 +488,12 @@ select.cg-modal-input{cursor:pointer}
   padding:7px 10px;font-family:var(--font-mono);font-size:.78rem;margin-bottom:6px;
 }
 #cgDeviceSearch:focus{outline:none;border-color:var(--accent)}
+#cgTableSearch{
+  width:100%;max-width:280px;background:var(--bg-raised);color:var(--text);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:7px 10px;font-family:var(--font-mono);font-size:.78rem;
+}
+#cgTableSearch:focus{outline:none;border-color:var(--accent)}
 #cgDeviceList{max-height:140px;overflow-y:auto}
 #cgDeviceList div{
   padding:5px 6px;border-radius:4px;font-size:.8rem;
@@ -498,6 +544,25 @@ select.cg-modal-input{cursor:pointer}
 .cg-stat-arrow{font-size:.8rem;color:var(--text-faint);transition:transform .2s}
 .cg-stat-toggle:hover{opacity:.85}
 
+.cg-dup-dash{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.cg-dup-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  flex-wrap:wrap;margin-top:14px;
+  font-family:var(--font-mono);font-size:.72rem;
+}
+.cg-dup-head-label{
+  text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);
+}
+.cg-dup-head-label::before{content:'# ';color:var(--text-faint)}
+.cg-dup-toggle{
+  display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+  color:var(--text-dim);border:1px solid var(--border);border-radius:20px;
+  padding:4px 12px;transition:border-color .2s,color .2s;
+}
+.cg-dup-toggle:hover{border-color:var(--amber);color:var(--amber)}
+.cg-dup-toggle input{accent-color:var(--amber);cursor:pointer;margin:0}
+.cg-dup-scanned{color:var(--text-faint);font-style:italic}
+
 /* ── editor table ── */
 .cg-editor-toolbar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .cg-editor-toolbar .cg-btn{flex:1;min-width:60px}
@@ -520,6 +585,107 @@ select.cg-modal-input{cursor:pointer}
 #cgGrid td[contenteditable]{background:#1a2a1a;color:#d0ffd0}
 #cgGrid td[contenteditable]:focus{outline:2px solid var(--accent);outline-offset:-2px}
 #cgGrid td.cg-edited{background:#2a2200;color:#fde68a}
+
+/* ── data editor: duplicate flags ── */
+#cgGrid tr.cg-dup-row>td{background:rgba(255,180,84,.07)}
+#cgGrid tr.cg-dup-row>td:first-child{
+  color:var(--amber);font-weight:600;cursor:pointer;
+  background:rgba(255,180,84,.14);
+  border-left:2px solid var(--amber);
+  transition:background .15s;
+}
+#cgGrid tr.cg-dup-row>td:first-child:hover{background:rgba(255,180,84,.26)}
+#cgGrid tr>td.cg-dup-cell{
+  background:rgba(255,180,84,.18);
+  box-shadow:inset 0 0 0 1px rgba(255,180,84,.5);
+  color:#ffd9a3;
+}
+.cg-dup-badge{
+  display:inline-block;margin-left:6px;padding:0 5px;
+  border:1px solid rgba(255,180,84,.45);border-radius:9px;
+  background:rgba(255,180,84,.14);color:var(--amber);
+  font-size:.6rem;letter-spacing:.04em;vertical-align:1px;
+}
+#cgGrid tr.cg-menu-active>td{background:rgba(255,180,84,.2)}
+
+/* ── data editor: row action menu ── */
+.cg-rowmenu{
+  position:fixed;z-index:1200;display:none;min-width:200px;
+  background:var(--bg-raised-2);border:1px solid var(--border);
+  border-radius:6px;padding:5px;
+  box-shadow:0 14px 36px rgba(0,0,0,.5);
+  font-family:var(--font-mono);font-size:.76rem;
+  opacity:0;transform:translateY(-4px);
+  transition:opacity .14s ease,transform .14s ease;
+}
+.cg-rowmenu.cg-rowmenu-show{opacity:1;transform:translateY(0)}
+.cg-rowmenu-head{
+  padding:5px 9px 7px;margin-bottom:4px;
+  border-bottom:1px solid var(--border-soft);
+  color:var(--text-faint);font-size:.68rem;letter-spacing:.03em;
+  max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.cg-rowmenu-note{
+  padding:0 9px 6px;color:var(--amber);font-size:.66rem;line-height:1.4;
+  max-width:240px;white-space:normal;
+}
+.cg-rowmenu-item{
+  padding:7px 9px;border-radius:4px;color:var(--text-dim);
+  cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;
+}
+.cg-rowmenu-item:hover{background:rgba(47,226,143,.12);color:var(--accent)}
+.cg-rowmenu-item.cg-rowmenu-danger:hover{background:rgba(255,95,86,.12);color:var(--red)}
+
+/* ── data editor: search hit glow ── */
+#cgGrid tr.cg-row-glow>td{
+  background:rgba(47,226,143,.16);
+  box-shadow:inset 0 0 0 1px rgba(47,226,143,.55);
+  animation:cgRowGlow 1s ease-out 2;
+}
+@keyframes cgRowGlow{
+  0%{background:rgba(47,226,143,.45)}
+  100%{background:rgba(47,226,143,.16)}
+}
+.cg-search-wrap{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.cg-search-info{
+  font-family:var(--font-mono);font-size:.7rem;color:var(--text-faint);
+  white-space:nowrap;min-width:62px;text-align:right;
+}
+.cg-search-info.cg-search-hit{color:var(--accent)}
+.cg-search-info.cg-search-miss{color:var(--red)}
+#cgTableSearch.cg-search-miss{border-color:var(--red);color:var(--red)}
+@media(max-width:600px){
+  .cg-search-wrap{width:100%}
+  .cg-search-info{min-width:auto}
+}
+
+/* ── hover tooltips ── */
+.cg-tip{position:relative}
+.cg-tip::after{
+  content:attr(data-cg-tip);
+  position:absolute;bottom:calc(100% + 10px);left:50%;
+  transform:translateX(-50%) translateY(4px);
+  width:max-content;max-width:280px;
+  white-space:normal;text-align:left;
+  background:#182029;color:#f2f6fa;
+  border:1px solid #2c3846;border-radius:6px;
+  padding:10px 13px;
+  font-family:var(--font-sans);font-size:.82rem;font-weight:400;
+  line-height:1.6;letter-spacing:.005em;
+  box-shadow:0 12px 30px rgba(0,0,0,.55);
+  opacity:0;pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease;
+  z-index:90;
+}
+.cg-tip::before{
+  content:'';position:absolute;bottom:calc(100% + 5px);left:50%;
+  transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:#2c3846;
+  opacity:0;transition:opacity .18s ease;z-index:91;
+}
+.cg-tip:hover::after,.cg-tip:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
+.cg-tip:hover::before,.cg-tip:focus-visible::before{opacity:1}
+@media(hover:none){.cg-tip::after,.cg-tip::before{display:none}}
 
 /* ── seo body section ── */
 .cg-seo-section{
@@ -575,7 +741,10 @@ select.cg-modal-input{cursor:pointer}
 
 <div class="topbar">
   <a href="https://dinukawijesinghe.com" class="topbar-logo"><span>~/</span>dinuka · tools</a>
-  <a href="https://dinukawijesinghe.com" class="topbar-back">← back to portfolio</a></div>
+  <div class="topbar-right">
+    <a href="https://dinukawijesinghe.com" class="topbar-back">← back to portfolio</a>
+  </div>
+</div>
 
 <div class="page-header">
   <nav class="cg-breadcrumb" aria-label="Breadcrumb">
@@ -605,6 +774,7 @@ select.cg-modal-input{cursor:pointer}
     <span>✓ Free — no signup</span>
     <span>✓ 100% browser-side</span>
   </div>
+  <div class="cg-row-summary" id="cgRowSummary"><span class="cg-summary-pill">📊 No data loaded yet</span></div>
 </div>
 
 <main class="cg-page">
@@ -612,14 +782,16 @@ select.cg-modal-input{cursor:pointer}
   <!-- ROW 1: Template | Validation -->
   <div class="cg-top-row">
 
-    <div class="cg-card">
+    <div class="cg-card" id="cgTplCard">
       <p class="cg-eyebrow">Template</p>
       <div class="cg-tpl-actions">
         <button type="button" class="cg-btn" onclick="cgLoadDefault()">Default Template</button>
         <button type="button" class="cg-btn" onclick="cgResetTpl()">Clear Template</button>
+        <button type="button" class="cg-btn cg-btn-green" onclick="cgSaveTemplate()">💾 Save Template</button>
         <button type="button" class="cg-btn cg-btn-green" id="cgGenTplBtn" onclick="cgGenerateTemplate()">⚙ Generate Template</button>
       </div>
       <textarea id="cgTpl" class="cg-textarea" spellcheck="false"></textarea>
+      <div id="cgTplAutocomplete" class="cg-tpl-ac"></div>
     </div>
 
     <div class="cg-card">
@@ -635,15 +807,16 @@ select.cg-modal-input{cursor:pointer}
     <div class="cg-card cg-card-full-h">
       <p class="cg-eyebrow">Data Source &amp; Controls</p>
         <div class="cg-controls">
-          <div class="cg-field cg-full">
-            <label>Upload CSV / Excel</label>
+          <div class="cg-field cg-full" id="cgDropZone">
+            <label>Upload CSV / Excel <span style="text-transform:none;letter-spacing:0;color:var(--text-faint)">— or drag &amp; drop a file here</span></label>
             <input type="file" id="cgFile" accept=".xlsx,.xls,.csv">
           </div>
           <button type="button" class="cg-btn cg-btn-green" id="cgResetFileBtn" onclick="cgResetFile()">↺ Reset File</button>
           <button type="button" class="cg-btn cg-btn-validate" id="cgValidateBtn" onclick="cgOnValidate()">✓ Validate</button>
           <button type="button" class="cg-btn" id="cgGenBtn" onclick="cgGenerate()">⚙ Generate All</button>
           <button type="button" class="cg-btn" id="cgDownloadBtn" onclick="cgDownload()">↓ Download TXT</button>
-          <button type="button" class="cg-btn" id="cgDownloadXlsxBtn" onclick="cgDownloadExcel()">↓ Download Excel</button>
+          <button type="button" class="cg-btn cg-tip" id="cgDownloadXlsxBtn" onclick="cgDownloadExcel()" data-cg-tip="Saves one Excel sheet with all your original columns plus a “Generated Config” column for each row.">↓ Download Excel</button>
+          <button type="button" class="cg-btn cg-tip" id="cgDownloadZipBtn" onclick="cgDownloadZip()" data-cg-tip="Saves every generated config as its own .txt file, bundled into one ZIP — named by the “Label by column” value.">↓ Download ZIP</button>
           <button type="button" class="cg-btn" id="cgCopyBtn" onclick="cgCopy()">⎘ Copy Output</button>
           <div class="cg-field">
             <label>Label by column</label>
@@ -681,15 +854,30 @@ select.cg-modal-input{cursor:pointer}
 
   <!-- DATA EDITOR — full width -->
   <div class="cg-card" id="cgDataEditorCard">
-    <p class="cg-eyebrow">Data Editor</p>
+    <div class="cg-output-head">
+      <p class="cg-eyebrow">Data Editor</p>
+      <div class="cg-search-wrap">
+        <input type="text" id="cgTableSearch" placeholder="Search rows or row #…" oninput="cgFilterTable()">
+        <span class="cg-search-info" id="cgSearchInfo"></span>
+      </div>
+    </div>
     <div class="cg-editor-toolbar">
       <button type="button" class="cg-btn cg-btn-green" id="cgAddDataBtn" onclick="cgAddData()">+ Add Data</button>
+      <button type="button" class="cg-btn cg-btn-green cg-tip" onclick="cgPasteData()" data-cg-tip="Copy cells straight from Excel — include the header row — then paste them here to replace the table data.">📋 Paste Data</button>
       <button type="button" class="cg-btn" onclick="cgAddCol()">+ Col</button>
       <button type="button" class="cg-btn" onclick="cgDelCol()">− Col</button>
       <button type="button" class="cg-btn" onclick="cgAddRow()">+ Row</button>
       <button type="button" class="cg-btn" onclick="cgDelRow()">− Row</button>
+      <button type="button" class="cg-btn" onclick="cgDuplicateRow()">⎘ Duplicate Row</button>
     </div>
     <div class="cg-table-shell"><table id="cgGrid"></table></div>
+    <div class="cg-dup-head">
+      <span class="cg-dup-head-label">Duplicate check</span>
+      <label class="cg-dup-toggle cg-tip" data-cg-tip="By default only identifier-like columns are checked (IP, VLAN, hostname, interface…). Shared config values such as MTU or MASK are ignored. Tick this to compare every column.">
+        <input type="checkbox" id="cgDupAllCols"> scan every column
+      </label>
+    </div>
+    <div id="cgDupDash" class="cg-dup-dash"></div>
   </div>
 
 </main>
@@ -707,12 +895,12 @@ select.cg-modal-input{cursor:pointer}
       <div>
         <h3 id="how-it-works">How it works</h3>
         <ol>
-          <li>Write a CLI template using <code>{{VARIABLE}}</code> placeholders (e.g. <code>{{INTERFACE}}</code>, <code>{{IP}}</code>, <code>{{VRF}}</code>). <a href="#" class="cg-seo-dl" onclick="cgDownloadSampleDirect(event)">Download</a> the sample Excel file to see the required format.</li>
-          <li>Upload a CSV or Excel file with column names that match the template variables (e.g., <code>{{VARIABLE}}</code>). Each row generates one configuration. <em>No file? Click <strong>+ Add Data</strong> in the Data Editor to type rows in manually instead.</em></li>
-          <li>Generate 10,000+ configurations in milliseconds.</li>
-          <li>Click <strong>Validate</strong> to confirm all variables are matched</li>
-          <li>Click <strong>Generate All</strong> or select specific devices and generate</li>
-          <li>Download as a <code>.txt</code> file or copy to clipboard</li>
+          <li><strong>Write the template.</strong> Paste one working config into the Template box and swap the parts that change per device for <code>{{VARIABLE}}</code> placeholders — for example <code>{{INTERFACE}}</code>, <code>{{IP}}</code>, <code>{{VRF}}</code>. <strong>Save Template</strong> keeps it for your next visit.</li>
+          <li><strong>Load your data.</strong> Upload (or drag in) a CSV / Excel file whose column names match those variables — one row per device. <a href="#" class="cg-seo-dl" onclick="cgDownloadSampleDirect(event)">Download the sample Excel</a> to see the format. No file? <strong>Paste Data</strong> takes cells copied straight from Excel, and <strong>+ Add Data</strong> lets you type a row in by hand.</li>
+          <li><strong>Check the data.</strong> The Validation panel lists matched, missing and unused variables. Under the table, <strong>Duplicate check</strong> flags identical rows and repeated values such as a reused IP, VLAN, hostname or interface — click the <code>DUP</code> row number to edit, duplicate or delete that row. The search box filters rows, or jumps straight to a row number.</li>
+          <li><strong>Validate.</strong> Confirms every <code>{{VARIABLE}}</code> has a matching column before you generate anything.</li>
+          <li><strong>Generate.</strong> <strong>Generate All</strong> builds a config for every row — 10,000+ in milliseconds — or tick devices under <em>Select configs</em> and use <strong>Generate Selected</strong>.</li>
+          <li><strong>Export.</strong> Copy the output, or download it as a single <code>.txt</code>, an Excel sheet with a <em>Generated Config</em> column, or a <code>.zip</code> holding one file per device (named by your <em>Label by column</em> choice).</li>
         </ol>
       </div>
       <div>
@@ -768,6 +956,10 @@ select.cg-modal-input{cursor:pointer}
       <div class="cg-modal-form-fields" id="cgModalFormFields"></div>
     </div>
 
+    <div class="cg-modal-field" id="cgModalPasteWrap" style="display:none">
+      <textarea id="cgModalTextarea" class="cg-modal-input" rows="10" spellcheck="false" placeholder="Paste cells copied from Excel here (include the header row)…" style="resize:vertical;font-family:var(--font-mono)"></textarea>
+    </div>
+
     <p class="cg-modal-error" id="cgModalError"></p>
 
     <div class="cg-modal-actions">
@@ -786,16 +978,20 @@ select.cg-modal-input{cursor:pointer}
   let cgValidated=false;
   let cgLastMiss=[];
   let cgManualCols=[]; // columns added via +Col, tracked separately from template vars
+  let cgLastGenCount=0; // number of configs produced by the last Generate action
+  let cgTplAcActive=0; // active index in template variable autocomplete dropdown
   const $=id=>document.getElementById(id);
   const tpl=()=>$('cgTpl');
   const out=()=>$('cgOut');
-  tpl().value=defaultTpl;
+  function cgEscapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  tpl().value=(localStorage.getItem('cgSavedTemplate')||'').trim()||defaultTpl;
 
-  $('cgFile').onchange=function(){
-    const file=this.files[0];if(!file)return;
+  function cgHandleFile(file){
+    if(!file)return;
     $('cgValidateBtn').classList.remove('cg-validate-ok');
     out().value='';
-    $('cgCopyBtn').classList.remove('cg-ready');
+    cgLastGenerated=[];cgLastGenCount=0;
+    cgClearReady();
     cgValidated=false;
     $('cgLoadingOverlay').classList.add('cg-loading-show');
     const reader=new FileReader();
@@ -818,7 +1014,32 @@ select.cg-modal-input{cursor:pointer}
       if(editorCard)editorCard.scrollIntoView({behavior:'smooth',block:'start'});
     };
     file.name.toLowerCase().endsWith('.csv')?reader.readAsText(file):reader.readAsArrayBuffer(file);
-  };
+  }
+
+  $('cgFile').onchange=function(){cgHandleFile(this.files[0]);};
+
+  // ── drag & drop upload ──
+  (function(){
+    const zone=$('cgDropZone');
+    if(!zone)return;
+    ['dragenter','dragover'].forEach(evt=>zone.addEventListener(evt,e=>{
+      e.preventDefault();e.stopPropagation();zone.classList.add('cg-dragover');
+    }));
+    ['dragleave','dragend'].forEach(evt=>zone.addEventListener(evt,e=>{
+      e.preventDefault();e.stopPropagation();zone.classList.remove('cg-dragover');
+    }));
+    zone.addEventListener('drop',e=>{
+      e.preventDefault();e.stopPropagation();
+      zone.classList.remove('cg-dragover');
+      const dt=e.dataTransfer;
+      if(!dt||!dt.files||!dt.files.length)return;
+      const file=dt.files[0];
+      const okExt=/\.(xlsx|xls|csv)$/i.test(file.name);
+      if(!okExt){cgToast('✖ Unsupported file type — use .csv, .xls or .xlsx','fail');return;}
+      try{$('cgFile').files=dt.files;}catch(_){}
+      cgHandleFile(file);
+    });
+  })();
 
   function cgToast(msg,type,sub,duration){
     let t=$('cgToast');
@@ -849,7 +1070,16 @@ select.cg-modal-input{cursor:pointer}
   function cgVars(){return[...new Set((tpl().value.match(/{{(.*?)}}/g)||[]).map(v=>v.slice(2,-2).trim()))]}
 
   window.cgLoadDefault=function(){tpl().value=defaultTpl;cgValidated=false;const vb=$('cgValidateBtn');if(vb)vb.classList.remove('cg-validate-ok');cgValidate();}
-  window.cgResetTpl=function(){tpl().value='';out().value='';cgLastGenerated=[];$('cgCopyBtn').classList.remove('cg-ready');cgValidate();}
+  window.cgResetTpl=function(){tpl().value='';out().value='';cgLastGenerated=[];cgLastGenCount=0;cgClearReady();cgValidate();}
+  window.cgSaveTemplate=function(){
+    if(!tpl().value.trim()){cgToast('✖ Nothing to save — the template is empty','fail');return;}
+    try{
+      localStorage.setItem('cgSavedTemplate',tpl().value);
+      cgToast('✔ Template saved',null,'It will load automatically next time you open this tool');
+    }catch(_){
+      cgToast('✖ Could not save — browser storage unavailable','fail');
+    }
+  };
   window.cgGenerateTemplate=function(){
     const headers=cgRows[0]?Object.keys(cgRows[0]):[];
     if(!headers.length){cgToast('✖ Upload a file first','fail');return;}
@@ -858,11 +1088,21 @@ select.cg-modal-input{cursor:pointer}
     cgToast('✔ Template generated from file variables',null,'Customise the template as you like');
   };
   window.cgResetFile=function(){
-    $('cgFile').value='';cgRows=[];out().value='';cgValidated=false;cgManualCols=[];cgLastGenerated=[];
+    $('cgFile').value='';cgRows=[];out().value='';cgValidated=false;cgManualCols=[];cgLastGenerated=[];cgLastGenCount=0;
     $('cgGrid').innerHTML='';$('cgDash').innerHTML='';$('cgDeviceList').innerHTML='';
     $('cgHeaderVar').innerHTML='<option value="">ROW Number</option>';
-    $('cgCopyBtn').classList.remove('cg-ready');
+    cgClearReady();
     $('cgValidateBtn').classList.remove('cg-validate-ok');
+    // duplicate check + row search state
+    const dupDash=$('cgDupDash');if(dupDash)dupDash.innerHTML='';
+    cgDupRowMap={};cgDupPrevRows=new Set();
+    cgCloseRowMenu();
+    const ts=$('cgTableSearch');
+    if(ts){ts.value='';ts.classList.remove('cg-search-miss');}
+    const si=$('cgSearchInfo');
+    if(si){si.textContent='';si.classList.remove('cg-search-hit','cg-search-miss');}
+    cgSearchMatches=[];cgSearchPos=0;
+    cgUpdateSummary();
   };
 
   function cgRender(){
@@ -871,23 +1111,65 @@ select.cg-modal-input{cursor:pointer}
     let t='<tr><th>#</th>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr>';
     cgRows.forEach((r,i)=>{
       t+='<tr><td>'+(i+1)+'</td>';
-      h.forEach(k=>t+=`<td contenteditable data-r="${i}" data-k="${k}">${r[k]||''}</td>`);
+      h.forEach(k=>t+=`<td contenteditable tabindex="0" data-r="${i}" data-k="${k}">${r[k]||''}</td>`);
       t+='</tr>';
     });
     $('cgGrid').innerHTML=t;
-    $('cgGrid').querySelectorAll('[contenteditable]').forEach(c=>{
+    const cells=[...$('cgGrid').querySelectorAll('[contenteditable]')];
+    cells.forEach((c,idx)=>{
       c.oninput=()=>{cgRows[+c.dataset.r][c.dataset.k]=c.textContent;c.classList.add('cg-edited');cgValidate();};
+      c.addEventListener('keydown',e=>{
+        if(e.key!=='Tab')return;
+        e.preventDefault();
+        const next=cells[e.shiftKey?idx-1:idx+1];
+        if(next){
+          next.focus();
+          const range=document.createRange();range.selectNodeContents(next);range.collapse(false);
+          const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);
+        }
+      });
     });
   }
 
+  function cgHeaderSignature(headers){return headers.slice().sort().join('|').toLowerCase();}
+  function cgLoadHeaderVarMap(headers){
+    try{
+      const map=JSON.parse(localStorage.getItem('cgHeaderVarMap')||'{}');
+      const val=map[cgHeaderSignature(headers)];
+      return(val&&headers.includes(val))?val:null;
+    }catch(_){return null;}
+  }
+  function cgSaveHeaderVarMap(){
+    if(!cgRows.length)return;
+    const headers=Object.keys(cgRows[0]);
+    const val=$('cgHeaderVar').value;
+    try{
+      const map=JSON.parse(localStorage.getItem('cgHeaderVarMap')||'{}');
+      const sig=cgHeaderSignature(headers);
+      if(val)map[sig]=val;else delete map[sig];
+      localStorage.setItem('cgHeaderVarMap',JSON.stringify(map));
+    }catch(_){}
+  }
+  function cgGuessHeaderVar(headers){
+    const priority=['hostname','host_name','device_name','devicename','device','router_name','routername','name','router','site','interface'];
+    for(const p of priority){const hit=headers.find(h=>h.toLowerCase()===p);if(hit)return hit;}
+    for(const p of priority){const hit=headers.find(h=>h.toLowerCase().includes(p));if(hit)return hit;}
+    return'';
+  }
   function cgPopHeader(){
     const sel=$('cgHeaderVar');const cur=sel.value;
     sel.innerHTML='<option value="">ROW Number</option>';
+    let matchedCur=false;
     if(cgRows.length)Object.keys(cgRows[0]).forEach(h=>{
       const o=document.createElement('option');o.value=h;o.textContent=h;
-      if(h===cur)o.selected=true;sel.appendChild(o);
+      if(h===cur){o.selected=true;matchedCur=true;}sel.appendChild(o);
     });
-    sel.onchange=cgPopDevices;
+    if(!matchedCur&&cgRows.length){
+      const headers=Object.keys(cgRows[0]);
+      const guess=cgLoadHeaderVarMap(headers)||cgGuessHeaderVar(headers);
+      if(guess)sel.value=guess;
+    }
+    sel.onchange=()=>{cgSaveHeaderVarMap();cgPopDevices();};
   }
 
   function cgPopDevices(){
@@ -904,6 +1186,85 @@ select.cg-modal-input{cursor:pointer}
     const q=$('cgDeviceSearch').value.toLowerCase();
     $('cgDeviceList').querySelectorAll('div').forEach(d=>{d.style.display=d.textContent.toLowerCase().includes(q)?'':'none';});
   };
+  // ── data editor: row glow + in-table smooth scroll ──
+  let cgGlowTimer=null;
+  function cgClearRowGlow(){
+    const g=$('cgGrid');if(!g)return;
+    [...g.rows].forEach(t=>t.classList.remove('cg-row-glow'));
+  }
+  function cgScrollShellTo(tr){
+    const shell=tr.closest('.cg-table-shell');
+    if(!shell){tr.scrollIntoView({behavior:'smooth',block:'center'});return;}
+    const delta=tr.getBoundingClientRect().top-shell.getBoundingClientRect().top;
+    const target=shell.scrollTop+delta-(shell.clientHeight/2-tr.offsetHeight/2);
+    shell.scrollTo({top:Math.max(0,target),behavior:'smooth'});
+  }
+  function cgGlowRows(list,fade){
+    const grid=$('cgGrid');if(!grid)return;
+    clearTimeout(cgGlowTimer);cgClearRowGlow();
+    const trs=list.map(i=>grid.rows[i+1]).filter(Boolean);
+    if(!trs.length)return;
+    trs.forEach(t=>t.classList.add('cg-row-glow'));
+    cgScrollShellTo(trs[0]);
+    if(fade)cgGlowTimer=setTimeout(()=>trs.forEach(t=>t.classList.remove('cg-row-glow')),fade);
+  }
+  function cgGlowRow(idx,fade){cgGlowRows([idx],fade);}
+
+  // ── data editor: search (row number jump + text filter) ──
+  let cgSearchMatches=[];
+  let cgSearchPos=0;
+  window.cgFilterTable=function(){
+    const inp=$('cgTableSearch'),info=$('cgSearchInfo'),grid=$('cgGrid');
+    if(!inp||!grid)return;
+    const raw=inp.value.trim(),q=raw.toLowerCase();
+    const trs=[...grid.rows].slice(1); // skip header row
+    cgSearchMatches=[];cgSearchPos=0;
+    clearTimeout(cgGlowTimer);cgClearRowGlow();
+    inp.classList.remove('cg-search-miss');
+    if(info){info.textContent='';info.classList.remove('cg-search-hit','cg-search-miss');}
+    if(!raw){trs.forEach(t=>t.style.display='');return;}
+
+    if(/^\d+$/.test(raw)){
+      // pure number → treat as a row number, keep every row visible
+      const n=parseInt(raw,10);
+      trs.forEach(t=>t.style.display='');
+      if(n>=1&&n<=trs.length){
+        cgSearchMatches=[n-1];
+        if(info){info.textContent='row '+n;info.classList.add('cg-search-hit');}
+      }else{
+        inp.classList.add('cg-search-miss');
+        if(info){info.textContent='no row '+n;info.classList.add('cg-search-miss');}
+      }
+    }else{
+      trs.forEach((tr,i)=>{
+        const hit=[...tr.cells].slice(1).some(c=>c.textContent.toLowerCase().includes(q));
+        tr.style.display=hit?'':'none';
+        if(hit)cgSearchMatches.push(i);
+      });
+      const n=cgSearchMatches.length;
+      if(info){
+        info.textContent=n?(n+' match'+(n===1?'':'es')):'no match';
+        info.classList.add(n?'cg-search-hit':'cg-search-miss');
+      }
+      if(!n)inp.classList.add('cg-search-miss');
+    }
+    if(cgSearchMatches.length)cgGlowRow(cgSearchMatches[0]);
+  };
+  (function(){
+    const inp=$('cgTableSearch');
+    if(!inp)return;
+    inp.addEventListener('keydown',e=>{
+      if(e.key==='Escape'){inp.value='';cgFilterTable();return;}
+      if(e.key!=='Enter'||!cgSearchMatches.length)return;
+      e.preventDefault();
+      cgSearchPos=(cgSearchPos+(e.shiftKey?-1:1)+cgSearchMatches.length)%cgSearchMatches.length;
+      cgGlowRow(cgSearchMatches[cgSearchPos]);
+      const info=$('cgSearchInfo');
+      if(info&&cgSearchMatches.length>1){
+        info.textContent=(cgSearchPos+1)+'/'+cgSearchMatches.length+' · row '+(cgSearchMatches[cgSearchPos]+1);
+      }
+    });
+  })();
   window.cgSelectAll=function(){document.querySelectorAll('.cgChk').forEach(c=>c.checked=true);}
   window.cgClearSel=function(){document.querySelectorAll('.cgChk').forEach(c=>c.checked=false);}
 
@@ -930,12 +1291,90 @@ select.cg-modal-input{cursor:pointer}
     cgToast('✔ Missing variables added to the data');
   };
 
+  // ── duplicate scanning ─────────────────────────────────────
+  // Columns are auto-classified: identifier-like columns (mostly unique
+  // values, or names like IP / VLAN / HOSTNAME / INTERFACE) are checked for
+  // duplicates, while shared config values (MTU, MASK, VRF, STATE…) are not,
+  // since repeating those is normal. "Scan every column" overrides this.
+  const CG_DUP_NAME_HINT=/(ip|ipv4|ipv6|addr|address|prefix|subnet|loopback|vlan|host|hostname|name|interface|intf|port|circuit|serial|mac|node|site|device|link|desc|description|label|tag|rd|rt|asn|lag|bundle|sid|id)$|^(id|ip|rd|rt)/i;
+  const CG_DUP_SKIP_HINT=/^(mtu|mask|netmask|prefixlen|prefix_len|vrf|status|state|type|mode|speed|duplex|region|vendor|platform|model|domain|community|area|metric|cost|priority|weight|enabled|disabled|shutdown|encapsulation|encap|family|unit|role|group|tier|environment|env)$/i;
+
+  function cgDupAllCols(){
+    const box=$('cgDupAllCols');
+    return !!(box&&box.checked);
+  }
+  function cgDupCandidateCols(headers){
+    if(!headers.length||!cgRows.length)return[];
+    if(cgDupAllCols())return headers.slice();
+    return headers.filter(h=>{
+      const vals=cgRows.map(r=>(r[h]||'').toString().trim()).filter(Boolean);
+      if(vals.length<2)return false;
+      const distinct=new Set(vals.map(v=>v.toLowerCase())).size;
+      if(distinct<2)return false; // one constant value for every row → config value
+      const ratio=distinct/vals.length;
+      const name=h.trim();
+      if(CG_DUP_SKIP_HINT.test(name))return ratio>=0.9;
+      if(CG_DUP_NAME_HINT.test(name))return true;
+      return ratio>=0.5; // mostly-unique column → behaves like an identifier
+    });
+  }
+
+  function cgDupScan(){
+    const headers=cgRows[0]?Object.keys(cgRows[0]):[];
+    const cols=cgDupCandidateCols(headers);
+    const cellDups={},rowDups={},findings=[],rowFindings=[];
+    cols.forEach(col=>{
+      const seen={};
+      cgRows.forEach((r,i)=>{
+        const val=(r[col]||'').toString().trim();
+        if(!val)return;
+        (seen[val]=seen[val]||[]).push(i);
+      });
+      Object.keys(seen).forEach(val=>{
+        const list=seen[val];
+        if(list.length<2)return;
+        findings.push(`<b>${cgEscapeHtml(col)}</b> · ${cgEscapeHtml(val)} — rows ${list.map(x=>x+1).join(', ')}`);
+        list.forEach(i=>{
+          const others=list.filter(x=>x!==i).map(x=>x+1);
+          cellDups[i+'|'+col]=col+' "'+val+'" also in row'+(others.length>1?'s':'')+' '+others.join(', ');
+        });
+      });
+    });
+    if(headers.length){
+      const seen={};
+      cgRows.forEach((r,i)=>{
+        const sig=headers.map(h=>(r[h]||'').toString().trim().toLowerCase()).join('␟');
+        if(!sig.replace(/␟/g,'').trim())return; // skip fully empty rows
+        (seen[sig]=seen[sig]||[]).push(i);
+      });
+      Object.values(seen).forEach(list=>{
+        if(list.length<2)return;
+        list.forEach(i=>{rowDups[i]=list.slice();});
+        rowFindings.push('Rows '+list.map(x=>x+1).join(', ')+' are identical');
+      });
+    }
+    return {headers,cols,cellDups,rowDups,findings,rowFindings};
+  }
+
+  function cgUpdateSummary(){
+    const el=$('cgRowSummary');
+    if(!el)return;
+    const rowCount=cgRows.length;
+    const varCount=cgVars().length;
+    if(!rowCount&&!varCount){el.innerHTML='<span class="cg-summary-pill">📊 No data loaded yet</span>';return;}
+    let html=`<span class="cg-summary-pill">📊 <b>${rowCount}</b> row${rowCount===1?'':'s'} loaded</span>`+
+      `<span class="cg-summary-pill">🧩 <b>${varCount}</b> template variable${varCount===1?'':'s'}</span>`;
+    if(cgLastGenCount>0)html+=`<span class="cg-summary-pill cg-summary-pill-gen">⚙ <b>${cgLastGenCount}</b> config${cgLastGenCount===1?'':'s'} generated</span>`;
+    el.innerHTML=html;
+  }
+
   function cgValidate(){
     const headers=cgRows[0]?Object.keys(cgRows[0]):[];
     const v=cgVars();
     const miss=v.filter(x=>!headers.includes(x));
     const matched=v.filter(x=>headers.includes(x));
     const unused=headers.filter(h=>!v.includes(h));
+    const dupScan=cgDupScan();
     const tplEmpty=!tpl().value.trim();
     const dash=$('cgDash');
     cgLastMiss=miss;
@@ -962,9 +1401,174 @@ select.cg-modal-input{cursor:pointer}
       statRow('warn','⚠','Unused Columns',unused.length,unused.length?unused:['None'])+
       `<div class="cg-stat ${miss.length||tplEmpty?'bad':'ok'}"><span>${miss.length||tplEmpty?'✖ Validation Failed':'✔ Ready to Generate'}</span></div>`;
 
+    const dupDash=$('cgDupDash');
+    if(dupDash){
+      const valItems=dupScan.findings.length?dupScan.findings.slice():['None'];
+      valItems.push(dupScan.cols.length
+        ? `<span class="cg-dup-scanned">Checked columns: ${dupScan.cols.map(cgEscapeHtml).join(', ')}</span>`
+        : `<span class="cg-dup-scanned">No identifier-like columns found — tick “scan every column” to check all of them.</span>`);
+      dupDash.innerHTML=
+        statRow('warn','⚠','Duplicate Rows',dupScan.rowFindings.length,dupScan.rowFindings.length?dupScan.rowFindings:['None'])+
+        statRow('warn','⚠','Duplicate Values',dupScan.findings.length,valItems);
+    }
+
+    cgUpdateSummary();
+    cgMarkDuplicates(dupScan);
+
     const ok=miss.length===0&&cgRows.length>0&&!tplEmpty;
     const gb=$('cgGenBtn');if(gb)gb.classList.toggle('cg-disabled',!ok);
     return ok;
+  }
+
+  // ── data editor: duplicate detection in the grid ──
+  let cgDupRowMap={};
+  let cgDupPrevRows=new Set();
+  function cgDupClearRow(grid,i){
+    const tr=grid.rows[i+1];
+    if(!tr)return;
+    tr.classList.remove('cg-dup-row');
+    [...tr.cells].forEach(td=>{
+      if(!td.dataset||!td.dataset.k)return;
+      td.classList.remove('cg-dup-cell');
+      td.removeAttribute('title');
+    });
+    const num=tr.cells[0];
+    if(!num)return;
+    num.onclick=null;
+    num.removeAttribute('title');
+    num.textContent=String(i+1);
+  }
+  function cgMarkDuplicates(scan){
+    const grid=$('cgGrid');
+    cgDupRowMap={};
+    if(!grid||!grid.rows.length||!cgRows.length){cgDupPrevRows=new Set();return;}
+    const {cellDups,rowDups}=scan||cgDupScan();
+    cgDupRowMap=rowDups;
+
+    const flagged=new Set(),byRow={};
+    Object.keys(cellDups).forEach(key=>{
+      const p=key.indexOf('|'),i=+key.slice(0,p),k=key.slice(p+1);
+      (byRow[i]=byRow[i]||new Set()).add(k);
+      flagged.add(i);
+    });
+    Object.keys(rowDups).forEach(i=>flagged.add(+i));
+
+    // clear rows that are no longer duplicates
+    cgDupPrevRows.forEach(i=>{if(!flagged.has(i))cgDupClearRow(grid,i);});
+
+    flagged.forEach(i=>{
+      const tr=grid.rows[i+1];
+      if(!tr)return;
+      tr.classList.add('cg-dup-row');
+      const keys=byRow[i];
+      [...tr.cells].forEach(td=>{
+        const k=td.dataset?td.dataset.k:null;
+        if(!k)return;
+        if(keys&&keys.has(k)){
+          td.classList.add('cg-dup-cell');
+          td.title='⚠ '+cellDups[i+'|'+k];
+        }else if(td.classList.contains('cg-dup-cell')){
+          td.classList.remove('cg-dup-cell');
+          td.removeAttribute('title');
+        }
+      });
+      const num=tr.cells[0];
+      if(!num)return;
+      const peers=(rowDups[i]||[]).filter(x=>x!==i).map(x=>x+1);
+      const title=peers.length
+        ? 'Identical to row '+peers.join(', ')+' — click for options'
+        : 'Duplicate value in this row — click for options';
+      if(num.title!==title)num.title=title;
+      const want=(i+1)+' <span class="cg-dup-badge">DUP</span>';
+      if(num.innerHTML!==want)num.innerHTML=want;
+      num.onclick=ev=>cgOpenRowMenu(i,ev);
+    });
+    cgDupPrevRows=flagged;
+  }
+
+  // ── data editor: duplicate row action menu ──
+  function cgRowMenuEl(){
+    let m=$('cgRowMenu');
+    if(!m){
+      m=document.createElement('div');
+      m.id='cgRowMenu';m.className='cg-rowmenu';
+      document.body.appendChild(m);
+    }
+    return m;
+  }
+  window.cgCloseRowMenu=function(){
+    const m=$('cgRowMenu');
+    if(m){m.classList.remove('cg-rowmenu-show');m.style.display='none';}
+    const grid=$('cgGrid');
+    if(grid)[...grid.rows].forEach(t=>t.classList.remove('cg-menu-active'));
+  };
+  window.cgOpenRowMenu=function(idx,ev){
+    if(ev){ev.stopPropagation();ev.preventDefault();}
+    const row=cgRows[idx];
+    if(!row)return;
+    const label=String(cgRowLabel(row,idx));
+    const peers=(cgDupRowMap[idx]||[]).filter(x=>x!==idx).map(x=>x+1);
+    const m=cgRowMenuEl();
+    m.innerHTML=
+      `<div class="cg-rowmenu-head">Row ${idx+1} — ${cgEscapeHtml(label)}</div>`+
+      (peers.length?`<div class="cg-rowmenu-note">⚠ Identical to row ${peers.join(', ')}</div>`:'')+
+      `<div class="cg-rowmenu-item" data-act="edit">✎ Edit row…</div>`+
+      (peers.length?`<div class="cg-rowmenu-item" data-act="peers">◎ Show identical row${peers.length>1?'s':''}</div>`:'')+
+      `<div class="cg-rowmenu-item" data-act="dup">⎘ Duplicate row</div>`+
+      `<div class="cg-rowmenu-item cg-rowmenu-danger" data-act="del">− Delete row…</div>`;
+    m.querySelectorAll('.cg-rowmenu-item').forEach(it=>{
+      it.onclick=()=>{
+        const act=it.dataset.act;
+        cgCloseRowMenu();
+        if(act==='edit')cgEditRow(idx);
+        else if(act==='peers')cgGlowRows((cgDupRowMap[idx]||[]),3200);
+        else if(act==='dup'){
+          cgRows.splice(idx+1,0,{...cgRows[idx]});
+          cgRender();cgPopHeader();cgPopDevices();cgValidate();
+          setTimeout(()=>cgGlowRow(idx+1,2600),80);
+          cgToast('✔ Row duplicated — '+label);
+        }
+        else if(act==='del')cgConfirmDeleteRow(idx,label);
+      };
+    });
+    m.style.display='block';
+    m.style.left='0px';m.style.top='0px';
+    const pad=8,box=m.getBoundingClientRect();
+    let left=(ev?ev.clientX:pad)+4,top=(ev?ev.clientY:pad)+8;
+    if(left+box.width+pad>window.innerWidth)left=Math.max(pad,window.innerWidth-box.width-pad);
+    if(top+box.height+pad>window.innerHeight)top=Math.max(pad,(ev?ev.clientY:pad)-box.height-8);
+    m.style.left=left+'px';m.style.top=top+'px';
+    requestAnimationFrame(()=>m.classList.add('cg-rowmenu-show'));
+    const tr=$('cgGrid').rows[idx+1];
+    if(tr)tr.classList.add('cg-menu-active');
+  };
+  document.addEventListener('click',e=>{
+    const m=$('cgRowMenu');
+    if(!m||m.style.display!=='block')return;
+    if(!e.target.closest('#cgRowMenu'))cgCloseRowMenu();
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')cgCloseRowMenu();});
+  window.addEventListener('scroll',()=>cgCloseRowMenu(),true);
+
+  function cgEditRow(idx){
+    const row=cgRows[idx];
+    if(!row)return;
+    const keys=Object.keys(row);
+    if(!keys.length){cgToast('✖ No columns to edit','fail');return;}
+    cgGlowRow(idx,6000);
+    cgModalOpen({
+      title:'✎ Edit Row '+(idx+1),
+      sub:'Update the values below, then save.',
+      mode:'form',
+      fields:keys.map(k=>({key:k,label:k,value:row[k]!=null?row[k]:''})),
+      confirmLabel:'Save',
+      onConfirm:(vals)=>{
+        keys.forEach(k=>{if(vals[k]!=null)cgRows[idx][k]=vals[k].trim();});
+        cgRender();cgPopHeader();cgPopDevices();cgValidate();
+        setTimeout(()=>cgGlowRow(idx,2600),80);
+        cgToast('✔ Row '+(idx+1)+' updated');
+      }
+    });
   }
 
   window.cgHighlightAddData=function(){
@@ -1009,18 +1613,31 @@ select.cg-modal-input{cursor:pointer}
     })(performance.now());
   }
 
+  // ── "output is ready" glow — copy + all download buttons ──
+  const CG_READY_BTNS=['cgCopyBtn','cgDownloadBtn','cgDownloadXlsxBtn','cgDownloadZipBtn'];
+  function cgClearReady(){
+    CG_READY_BTNS.forEach(id=>{const b=$(id);if(b)b.classList.remove('cg-ready');});
+  }
+  (function(){
+    // stop glowing once the button has actually been used
+    CG_READY_BTNS.forEach(id=>{
+      const b=$(id);
+      if(b)b.addEventListener('click',()=>b.classList.remove('cg-ready'));
+    });
+  })();
   function cgReadyPulse(){
-    const btn=$('cgCopyBtn');
-    btn.classList.add('cg-ready');
-    btn.textContent='⎘ Copy Output';
-    // bounce animation
-    btn.animate([
-      {transform:'scale(1)',boxShadow:'0 0 0 0 rgba(47,226,143,0)'},
-      {transform:'scale(1.06)',boxShadow:'0 0 0 6px rgba(47,226,143,0.35)'},
-      {transform:'scale(1)',boxShadow:'0 0 0 10px rgba(47,226,143,0)'}
-    ],{duration:600,easing:'ease-out'});
-    // keep glowing until user clicks copy
-    btn.addEventListener('click',()=>btn.classList.remove('cg-ready'),{once:true});
+    CG_READY_BTNS.forEach((id,i)=>{
+      const btn=$(id);
+      if(!btn)return;
+      btn.classList.add('cg-ready');
+      if(id==='cgCopyBtn')btn.textContent='⎘ Copy Output';
+      if(typeof btn.animate!=='function')return;
+      btn.animate([
+        {transform:'scale(1)',boxShadow:'0 0 0 0 rgba(47,226,143,0)'},
+        {transform:'scale(1.06)',boxShadow:'0 0 0 6px rgba(47,226,143,0.35)'},
+        {transform:'scale(1)',boxShadow:'0 0 0 10px rgba(47,226,143,0)'}
+      ],{duration:600,delay:i*110,easing:'ease-out'});
+    });
   }
 
   function cgTrackGenerate(){
@@ -1040,6 +1657,8 @@ select.cg-modal-input{cursor:pointer}
     cgShowProgress(()=>{
       out().value=cgRows.map((r,i)=>cgFormat(r,i)).join('\n\n');
       cgLastGenerated=cgRows.map(r=>({...r,'Generated Config':cgApply(r)}));
+      cgLastGenCount=cgRows.length;
+      cgUpdateSummary();
       cgTrackGenerate();
     });
   }
@@ -1052,10 +1671,12 @@ select.cg-modal-input{cursor:pointer}
       out().value=sel.map(i=>cgFormat(cgRows[i],i)).join('\n\n');
       const selSet=new Set(sel);
       cgLastGenerated=cgRows.map((r,i)=>({...r,'Generated Config':selSet.has(i)?cgApply(r):''}));
+      cgLastGenCount=sel.length;
+      cgUpdateSummary();
       cgTrackGenerate();
     });
   };
-  window.cgClearOutput=function(){out().value='';cgLastGenerated=[];$('cgCopyBtn').classList.remove('cg-ready');}
+  window.cgClearOutput=function(){out().value='';cgLastGenerated=[];cgLastGenCount=0;cgUpdateSummary();cgClearReady();}
   window.cgDownload=function(){
     if(!out().value.trim()){cgToast('✖ No output to download','fail',null,2800);return;}
     const a=document.createElement('a');
@@ -1068,6 +1689,28 @@ select.cg-modal-input{cursor:pointer}
     const ws=XLSX.utils.json_to_sheet(cgLastGenerated);
     XLSX.utils.book_append_sheet(wb,ws,'Configs');
     XLSX.writeFile(wb,'Generated_Configs.xlsx');
+  };
+  window.cgDownloadZip=async function(){
+    if(!cgLastGenerated.length){cgToast('✖ No output to download — click Generate first','fail',null,2800);return;}
+    if(typeof JSZip==='undefined'){cgToast('✖ ZIP library failed to load — check your connection','fail');return;}
+    const zip=new JSZip();
+    const used=new Set();
+    let count=0;
+    cgLastGenerated.forEach((r,i)=>{
+      const cfg=r['Generated Config'];
+      if(!cfg)return;
+      let safe=String(cgRowExportLabel(r,i)).trim().replace(/[^a-z0-9_\-]+/gi,'_').slice(0,60)||('row_'+(i+1));
+      let name=safe;let n=2;
+      while(used.has(name)){name=safe+'_'+n;n++;}
+      used.add(name);
+      zip.file(name+'.txt',cfg);
+      count++;
+    });
+    if(!count){cgToast('✖ No generated rows to include — click Generate first','fail');return;}
+    const blob=await zip.generateAsync({type:'blob'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='Generated_Configs.zip';a.click();
   };
   window.cgCopy=async function(){
     if(!out().value.trim()){cgToast('✖ No output to copy','fail',null,2800);return;}
@@ -1095,16 +1738,16 @@ select.cg-modal-input{cursor:pointer}
     $('cgModalSub').textContent=cfg.sub||'';
     $('cgModalError').textContent='';
     ov.querySelector('.cg-modal').classList.toggle('cg-modal-danger',!!cfg.danger);
-    ov.querySelector('.cg-modal').classList.toggle('cg-modal-wide',cfg.mode==='form');
+    ov.querySelector('.cg-modal').classList.toggle('cg-modal-wide',cfg.mode==='form'||cfg.mode==='paste');
     const confirmBtn=$('cgModalConfirm');
     confirmBtn.textContent=cfg.confirmLabel||'Confirm';
     confirmBtn.classList.toggle('cg-btn-green',!cfg.danger);
     confirmBtn.classList.toggle('cg-modal-confirm-danger',!!cfg.danger);
     $('cgModalCancel').textContent=cfg.cancelLabel||'Cancel';
 
-    const inWrap=$('cgModalInputWrap'),selWrap=$('cgModalSelectWrap'),formWrap=$('cgModalFormWrap');
-    const input=$('cgModalInput'),select=$('cgModalSelect'),search=$('cgModalSearch');
-    inWrap.style.display='none';selWrap.style.display='none';formWrap.style.display='none';
+    const inWrap=$('cgModalInputWrap'),selWrap=$('cgModalSelectWrap'),formWrap=$('cgModalFormWrap'),pasteWrap=$('cgModalPasteWrap');
+    const input=$('cgModalInput'),select=$('cgModalSelect'),search=$('cgModalSearch'),textarea=$('cgModalTextarea');
+    inWrap.style.display='none';selWrap.style.display='none';formWrap.style.display='none';pasteWrap.style.display='none';
     if(cfg.mode==='select'){
       selWrap.style.display='block';
       cgModalOptions=cfg.options||[];
@@ -1130,6 +1773,9 @@ select.cg-modal-input{cursor:pointer}
     }else if(cfg.mode==='form'){
       formWrap.style.display='block';
       cgModalRenderForm(cfg.fields||[]);
+    }else if(cfg.mode==='paste'){
+      pasteWrap.style.display='block';
+      textarea.value=cfg.value||'';
     }else{
       inWrap.style.display='block';
       input.type=cfg.inputType||'text';
@@ -1142,6 +1788,7 @@ select.cg-modal-input{cursor:pointer}
       if(cfg.mode==='select'){(cfg.searchable?search:select).focus();}
       else if(cfg.mode==='confirm'){confirmBtn.focus();}
       else if(cfg.mode==='form'){const first=formWrap.querySelector('input');if(first)first.focus();}
+      else if(cfg.mode==='paste'){textarea.focus();}
       else{input.focus();input.select();}
       if(cfg.mode==='select'&&cfg.onSelectChange)cfg.onSelectChange(select.value);
     },50);
@@ -1158,11 +1805,14 @@ select.cg-modal-input{cursor:pointer}
   window.cgModalClose=function(){
     cgModalEl().classList.remove('cg-modal-show');
     cgModalCb=null;
+    const grid=$('cgGrid');
+    if(grid)grid.querySelectorAll('tr.cg-row-highlight').forEach(t=>t.classList.remove('cg-row-highlight'));
   };
   window.cgModalConfirm=function(){
     let val;
     if(cgModalMode==='select')val=$('cgModalSelect').value;
     else if(cgModalMode==='confirm')val=true;
+    else if(cgModalMode==='paste')val=$('cgModalTextarea').value;
     else if(cgModalMode==='form'){
       val={};
       $('cgModalFormFields').querySelectorAll('.cg-modal-form-input').forEach(inp=>{val[inp.dataset.key]=inp.value;});
@@ -1173,6 +1823,16 @@ select.cg-modal-input{cursor:pointer}
     cgModalClose();
   };
   $('cgModalOverlay').addEventListener('click',e=>{if(e.target.id==='cgModalOverlay')cgModalClose();});
+
+  // ── keyboard shortcuts ──
+  document.addEventListener('keydown',e=>{
+    const modalOpen=cgModalEl().classList.contains('cg-modal-show');
+    if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key==='Enter'&&!modalOpen){
+      e.preventDefault();cgGenerate();
+    }else if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='S')&&!modalOpen){
+      e.preventDefault();cgDownload();
+    }
+  });
   $('cgModalSearch').addEventListener('keydown',e=>{if(e.key==='Enter')cgModalConfirm();if(e.key==='Escape')cgModalClose();});
   $('cgModalInput').addEventListener('keydown',e=>{if(e.key==='Enter')cgModalConfirm();if(e.key==='Escape')cgModalClose();});
   $('cgModalFormFields').addEventListener('keydown',e=>{
@@ -1193,7 +1853,10 @@ select.cg-modal-input{cursor:pointer}
     if(opts&&opts.highlight)trs.forEach(t=>t.classList.remove('cg-row-highlight'));
     const tr=trs[idx+1]; // +1 to skip the header row
     if(!tr)return;
-    if(opts&&opts.highlight)tr.classList.add('cg-row-highlight');
+    if(opts&&opts.highlight){
+      tr.classList.add('cg-row-highlight');
+      if(opts.fade)setTimeout(()=>tr.classList.remove('cg-row-highlight'),opts.fade);
+    }
     tr.scrollIntoView({behavior:'smooth',block:'center'});
   }
 
@@ -1220,16 +1883,18 @@ select.cg-modal-input{cursor:pointer}
     if(!headers.length){cgToast('✖ No columns to delete','fail');return;}
     cgModalOpen({
       title:'− Delete Column',
-      sub:'This removes the column and its values from every row. This cannot be undone.',
+      sub:'This removes the column and its values from every row.',
       mode:'select',
       options:headers,
       danger:true,
       confirmLabel:'Delete',
       onConfirm:(name)=>{
         if(!name)return'Select a column.';
+        cgLastDeletedCol={name,values:cgRows.map(r=>r[name]),wasManual:cgManualCols.includes(name)};
         cgRows.forEach(r=>delete r[name]);
         cgManualCols=cgManualCols.filter(c=>c!==name);
         cgRender();cgPopHeader();cgPopDevices();cgValidate();
+        cgToast('✔ Column deleted — '+name,null,`<button type="button" class="cg-btn cg-toast-fixbtn" onclick="cgUndoDeleteCol()">Undo</button>`);
       }
     });
   };
@@ -1251,6 +1916,31 @@ select.cg-modal-input{cursor:pointer}
         cgRows.push(o);
         cgRender();cgPopHeader();cgPopDevices();cgValidate();
         setTimeout(()=>cgScrollToRow(cgRows.length-1),80);
+      }
+    });
+  };
+
+  window.cgPasteData=function(){
+    cgModalOpen({
+      title:'📋 Paste Data',
+      sub:'Select and copy cells from Excel (include the header row), then paste them below.',
+      mode:'paste',
+      confirmLabel:'Add Rows',
+      onConfirm:(text)=>{
+        const raw=text.replace(/\r/g,'').split('\n').filter(l=>l.trim().length);
+        if(raw.length<2)return'Paste a header row plus at least one data row.';
+        const delim=raw[0].includes('\t')?'\t':',';
+        const headers=raw[0].split(delim).map(h=>h.trim());
+        if(!headers.length||!headers[0])return'Could not read a header row.';
+        const newRows=raw.slice(1).map(line=>{
+          const cells=line.split(delim);
+          const o={};headers.forEach((h,i)=>o[h]=(cells[i]!=null?cells[i]:'').trim());
+          return o;
+        });
+        cgRows=newRows;
+        cgManualCols=[];
+        cgRender();cgPopHeader();cgPopDevices();cgValidate();
+        cgToast('✔ '+newRows.length+' row'+(newRows.length===1?'':'s')+' added from paste',null,'Please press the Validate button');
       }
     });
   };
@@ -1308,18 +1998,67 @@ select.cg-modal-input{cursor:pointer}
   function cgConfirmDeleteRow(idx,label){
     cgModalOpen({
       title:'Delete this row?',
-      sub:`Are you sure you want to delete "${label}"? This cannot be undone.`,
+      sub:`Are you sure you want to delete "${label}"?`,
       mode:'confirm',
       danger:true,
       confirmLabel:'Yes',
       cancelLabel:'No',
       onConfirm:()=>{
+        cgLastDeletedRow={idx,row:{...cgRows[idx]}};
         cgRows.splice(idx,1);
         cgRender();cgPopHeader();cgPopDevices();cgValidate();
-        cgToast('✔ Row deleted — '+label);
+        cgToast('✔ Row deleted — '+label,null,`<button type="button" class="cg-btn cg-toast-fixbtn" onclick="cgUndoDeleteRow()">Undo</button>`);
       }
     });
   }
+
+  let cgLastDeletedRow=null;
+  let cgLastDeletedCol=null;
+  window.cgUndoDeleteRow=function(){
+    if(!cgLastDeletedRow){cgToast('✖ Nothing to undo','fail');return;}
+    cgRows.splice(cgLastDeletedRow.idx,0,cgLastDeletedRow.row);
+    cgLastDeletedRow=null;
+    cgRender();cgPopHeader();cgPopDevices();cgValidate();
+    cgToast('✔ Row restored');
+  };
+  window.cgUndoDeleteCol=function(){
+    if(!cgLastDeletedCol){cgToast('✖ Nothing to undo','fail');return;}
+    const {name,values,wasManual}=cgLastDeletedCol;
+    cgRows.forEach((r,i)=>{r[name]=values[i]!=null?values[i]:'';});
+    if(wasManual&&!cgManualCols.includes(name))cgManualCols.push(name);
+    cgLastDeletedCol=null;
+    cgRender();cgPopHeader();cgPopDevices();cgValidate();
+    cgToast('✔ Column restored');
+  };
+  window.cgDuplicateRow=function(){
+    if(!cgRows.length){cgToast('✖ No rows to duplicate','fail');return;}
+    const opts=cgRows.map((r,i)=>cgRowLabel(r,i));
+    const initialIdx=opts.length-1;
+    cgModalOpen({
+      title:'⎘ Duplicate Row',
+      sub:'Select a row to duplicate — a copy is inserted right after it.',
+      mode:'select',
+      options:opts,
+      selected:opts[initialIdx],
+      searchable:true,
+      preview:true,
+      confirmLabel:'Duplicate',
+      onSelectChange:(label)=>{
+        const idx=opts.indexOf(label);
+        if(idx>=0)cgScrollToRow(idx,{highlight:true});
+        const prev=$('cgModalPreview'),row=cgRows[idx];
+        prev.innerHTML=row?Object.keys(row).map(k=>`<div><b>${k}:</b> ${row[k]||''}</div>`).join(''):'';
+      },
+      onConfirm:(label)=>{
+        const idx=opts.indexOf(label);
+        if(idx<0)return'Select a row.';
+        cgRows.splice(idx+1,0,{...cgRows[idx]});
+        cgRender();cgPopHeader();cgPopDevices();cgValidate();
+        setTimeout(()=>cgScrollToRow(idx+1,{highlight:true,fade:2000}),80);
+        cgToast('✔ Row duplicated — '+label);
+      }
+    });
+  };
 
   // ── sample excel download (client-side fallback) ─────────
   const sampleBtn = document.getElementById('cgSampleBtn');
@@ -1363,6 +2102,109 @@ select.cg-modal-input{cursor:pointer}
     XLSX.utils.book_append_sheet(wb, ws, 'Interfaces');
     XLSX.writeFile(wb, 'config_sample.xlsx');
   };
+
+  // ── template variable autocomplete ({{ trigger) ──
+  function cgGetCaretCoordinates(textarea,position){
+    const div=document.createElement('div');
+    const style=getComputedStyle(textarea);
+    const props=['boxSizing','width','paddingTop','paddingRight','paddingBottom','paddingLeft',
+      'borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth','fontStyle','fontVariant',
+      'fontWeight','fontSize','lineHeight','fontFamily','textAlign','textIndent','letterSpacing','wordSpacing','tabSize'];
+    div.style.position='absolute';div.style.visibility='hidden';div.style.whiteSpace='pre-wrap';div.style.wordWrap='break-word';
+    props.forEach(p=>{try{div.style[p]=style[p];}catch(_){}});
+    document.body.appendChild(div);
+    div.textContent=textarea.value.substring(0,position);
+    const span=document.createElement('span');
+    span.textContent=textarea.value.substring(position)[0]||'.';
+    div.appendChild(span);
+    const coords={
+      top:span.offsetTop-textarea.scrollTop,
+      left:span.offsetLeft-textarea.scrollLeft,
+      height:parseInt(style.lineHeight)||16
+    };
+    document.body.removeChild(div);
+    return coords;
+  }
+
+  function cgTplAutocompleteHide(){
+    const box=$('cgTplAutocomplete');
+    if(box)box.style.display='none';
+  }
+
+  function cgTplAutocompleteInsert(name,openIdx,pos){
+    const el=tpl();
+    const text=el.value;
+    const insert='{{'+name+'}}';
+    el.value=text.slice(0,openIdx)+insert+text.slice(pos);
+    const newPos=openIdx+insert.length;
+    el.focus();
+    el.setSelectionRange(newPos,newPos);
+    cgTplAutocompleteHide();
+    cgValidate();
+  }
+
+  function cgTplAcUpdateActive(){
+    const box=$('cgTplAutocomplete');
+    if(!box)return;
+    [...box.querySelectorAll('.cg-ac-item')].forEach((it,i)=>it.classList.toggle('cg-ac-active',i===cgTplAcActive));
+  }
+
+  function cgTplAutocompleteShow(list,openIdx,pos){
+    const box=$('cgTplAutocomplete');
+    const card=$('cgTplCard');
+    if(!box||!card)return;
+    box.innerHTML=list.slice(0,8).map(h=>`<div class="cg-ac-item" data-name="${cgEscapeHtml(h)}">${cgEscapeHtml(h)}</div>`).join('');
+    box.querySelectorAll('.cg-ac-item').forEach(item=>{
+      item.onclick=()=>cgTplAutocompleteInsert(item.dataset.name,openIdx,pos);
+    });
+    const el=tpl();
+    const coords=cgGetCaretCoordinates(el,pos);
+    box.style.left=(el.offsetLeft+coords.left)+'px';
+    box.style.top=(el.offsetTop+coords.top+coords.height+4)+'px';
+    box.style.display='block';
+    cgTplAcActive=0;cgTplAcUpdateActive();
+  }
+
+  function cgTplAutocompleteCheck(){
+    const el=tpl();
+    const pos=el.selectionStart;
+    const text=el.value;
+    const before=text.slice(0,pos);
+    const lastOpen=before.lastIndexOf('{{');
+    if(lastOpen===-1){cgTplAutocompleteHide();return;}
+    const between=before.slice(lastOpen+2);
+    if(between.includes('}}')||between.includes('{{')||/\n/.test(between)){cgTplAutocompleteHide();return;}
+    const candidates=(cgRows.length?Object.keys(cgRows[0]):[]).filter(h=>h.toLowerCase().includes(between.trim().toLowerCase()));
+    if(!candidates.length){cgTplAutocompleteHide();return;}
+    cgTplAutocompleteShow(candidates,lastOpen,pos);
+  }
+
+  tpl().addEventListener('input',cgTplAutocompleteCheck);
+  tpl().addEventListener('scroll',cgTplAutocompleteHide);
+  tpl().addEventListener('blur',()=>setTimeout(cgTplAutocompleteHide,150));
+  tpl().addEventListener('keydown',e=>{
+    const box=$('cgTplAutocomplete');
+    if(!box||box.style.display!=='block')return;
+    const items=[...box.querySelectorAll('.cg-ac-item')];
+    if(e.key==='ArrowDown'){e.preventDefault();cgTplAcActive=Math.min(cgTplAcActive+1,items.length-1);cgTplAcUpdateActive();}
+    else if(e.key==='ArrowUp'){e.preventDefault();cgTplAcActive=Math.max(cgTplAcActive-1,0);cgTplAcUpdateActive();}
+    else if(e.key==='Enter'){e.preventDefault();const it=items[cgTplAcActive];if(it)it.click();}
+    else if(e.key==='Escape'){cgTplAutocompleteHide();}
+  });
+  document.addEventListener('click',e=>{
+    if(e.target.id!=='cgTpl'&&!e.target.closest('#cgTplAutocomplete'))cgTplAutocompleteHide();
+  });
+
+  // ── duplicate-check scope toggle (remembered between visits) ──
+  (function(){
+    const box=$('cgDupAllCols');
+    if(!box)return;
+    try{box.checked=localStorage.getItem('cgDupAllCols')==='1';}catch(_){}
+    box.addEventListener('change',()=>{
+      try{localStorage.setItem('cgDupAllCols',box.checked?'1':'0');}catch(_){}
+      cgValidate();
+    });
+  })();
 
   cgValidate();
 })();
