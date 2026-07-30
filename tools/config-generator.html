@@ -792,7 +792,15 @@ select.cg-modal-input{cursor:pointer}
     t.classList.toggle('cg-toast-fail',type==='fail');
     t.classList.add('cg-toast-show');
     clearTimeout(t._cgTimer);
-    t._cgTimer=setTimeout(()=>t.classList.remove('cg-toast-show'),4500);
+    // wait for the toast to actually be painted before starting the countdown,
+    // so heavy synchronous work (e.g. rendering a large uploaded file) doesn't
+    // eat into the visible time and make it look like it vanished instantly
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        clearTimeout(t._cgTimer);
+        t._cgTimer=setTimeout(()=>t.classList.remove('cg-toast-show'),4500);
+      });
+    });
   }
 
   function cgValidatePulse(){
@@ -808,7 +816,7 @@ select.cg-modal-input{cursor:pointer}
     if(!headers.length){cgToast('✖ Upload a file first','fail');return;}
     tpl().value=headers.map(h=>h+': {{'+h+'}}').join('\n');
     cgValidate();
-    cgToast('✔ Template generated from file variables');
+    cgToast('✔ Template generated from file variables',null,'Customise the template as you like');
   };
   window.cgResetFile=function(){
     $('cgFile').value='';cgRows=[];out().value='';cgValidated=false;
