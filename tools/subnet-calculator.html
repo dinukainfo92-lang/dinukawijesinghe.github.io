@@ -235,7 +235,12 @@ td.role.usable{color:var(--green-dim)}
 .sc-faq{border-top:1px solid var(--border-soft);padding-top:14px;margin-top:14px}
 .sc-faq h3{margin-top:0}
 .sc-credit{margin-top:26px;color:var(--faint);font:.78rem/1.7 var(--sans);max-width:78ch}
-.sc-credit a{color:var(--dim);border-bottom:none}
+.sc-credit a{
+  color:var(--green);font-weight:500;
+  border-bottom:1px solid rgba(47,226,143,.35);
+  transition:color .2s,border-color .2s;
+}
+.sc-credit a:hover{color:#7dffbe;border-bottom-color:var(--green)}
 .sc-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
 .sc-links a{font:.75rem var(--mono);color:var(--dim);border:1px solid var(--border);
   border-radius:20px;padding:6px 13px;transition:border-color .2s,color .2s}
