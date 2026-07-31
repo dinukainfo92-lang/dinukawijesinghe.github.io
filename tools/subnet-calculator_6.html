@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Subnet Calculator &amp; VLSM Planner — NetEng Tools</title>
+<meta name="description" content="IPv4 subnet calculator and VLSM planner for network engineers. See network, broadcast, wildcard, usable range and the binary boundary for any prefix, and allocate variable-length subnets from a base block. Runs entirely in your browser.">
+<meta name="theme-color" content="#090c11">
+<link rel="canonical" href="https://dinukawijesinghe.com/tools/subnet-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Subnet Calculator &amp; VLSM Planner — NetEng Tools">
+<meta property="og:description" content="Inspect network/broadcast/wildcard/binary for any prefix and plan VLSM allocations. Browser-only, nothing uploaded.">
+<meta property="og:url" content="https://dinukawijesinghe.com/tools/subnet-calculator.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#090c11;--raised:#10151d;--raised2:#151b25;--border:#1f2733;--border-soft:#171e28;
+  --text:#d9e0e8;--dim:#8891a1;--faint:#545e6d;
+  --green:#2fe28f;--green-dim:#1c8a5a;--blue:#5ec8ff;--amber:#ffb454;--red:#ff5f56;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;background:var(--bg);color:var(--text);
+  font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(180deg,rgba(47,226,143,.05),transparent 300px);
+}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(47,226,143,.3);color:#fff}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:2px}
+
+/* topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 28px;border-bottom:1px solid var(--border-soft);background:rgba(9,12,17,.9);
+  position:sticky;top:0;z-index:20;backdrop-filter:blur(6px)}
+.topbar-logo{font:600 .95rem var(--mono);color:var(--text);transition:opacity .2s}
+.topbar-logo:hover{opacity:.8}
+.topbar-logo span{color:var(--green)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-back{font:.78rem var(--mono);color:var(--dim);border:1px solid var(--border);border-radius:3px;padding:7px 14px;transition:border-color .2s,color .2s}
+.topbar-back:hover{border-color:var(--green);color:var(--green)}
+
+main{width:min(100% - 32px,1180px);margin:auto;padding:34px 0 70px}
+.crumb{font:.75rem var(--mono);color:var(--faint);margin-bottom:10px}
+.crumb i{font-style:normal;margin:0 6px}
+.crumb a{color:var(--faint);transition:color .2s}.crumb a:hover{color:var(--green)}
+.tag{font:.75rem var(--mono);letter-spacing:.05em;color:var(--green);margin-bottom:8px}
+h1{font:600 1.7rem var(--mono);color:#f2f5f8}h1::before{content:"$ ";color:var(--faint)}
+.sub{margin-top:10px;max-width:74ch;color:var(--dim);font-size:.93rem}
+
+/* tabs */
+.tabs{display:flex;gap:8px;margin:24px 0 18px;flex-wrap:wrap}
+.tab{font:.78rem var(--mono);color:var(--dim);background:var(--raised2);border:1px solid var(--border);
+  border-radius:3px;padding:9px 14px;cursor:pointer;transition:border-color .2s,color .2s}
+.tab:hover{color:var(--text)}
+.tab.active{border-color:var(--green-dim);color:var(--green);background:rgba(47,226,143,.07)}
+.tab-num{color:var(--faint);margin-right:5px}
+.tab.active .tab-num{color:var(--green-dim)}
+.panel{display:none}.panel.active{display:block}
+
+.card{background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:18px}
+.eyebrow{font:.72rem var(--mono);color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.eyebrow::before{content:"# ";color:var(--faint)}
+.eyebrow>span:first-of-type{flex:1}
+
+.grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.field:first-of-type{margin-top:0}
+label{font:.68rem var(--mono);color:var(--faint);letter-spacing:.05em;text-transform:uppercase}
+input,select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--text);
+  padding:10px;font:.85rem var(--mono);outline:0}
+input:focus,select:focus{border-color:var(--green)}
+input.bad{border-color:var(--red);color:var(--red)}
+input[type=range]{padding:0;height:26px;accent-color:var(--green);background:transparent;border:0}
+.prefix-row{display:grid;grid-template-columns:88px 1fr;gap:10px;align-items:center}
+.prefix-row .pfx{text-align:center}
+.hint{font:.68rem var(--mono);color:var(--faint);line-height:1.5}
+.err-msg{font:.72rem var(--mono);color:var(--red);min-height:1.1em}
+
+.btnrow{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+button{font:.78rem var(--mono);background:var(--raised2);border:1px solid var(--border);border-radius:3px;
+  padding:10px 13px;color:var(--dim);cursor:pointer;transition:border-color .2s,color .2s}
+button:hover{border-color:var(--text);color:var(--text)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.primary{border-color:var(--green-dim);color:var(--green)}
+button.primary:hover{border-color:var(--green);color:#fff;background:rgba(47,226,143,.08)}
+button.mini{padding:6px 10px;font-size:.72rem}
+
+/* summary */
+.sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--border-soft);
+  border:1px solid var(--border-soft);border-radius:6px;overflow:hidden}
+.sum div{background:var(--raised2);padding:11px 13px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.sum dt{font:.64rem var(--mono);color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.sum dd{font:.88rem var(--mono);color:var(--text);word-break:break-all}
+.sum dd.hl{color:var(--green)}
+.sum dd.blue{color:var(--blue)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chip{font:.68rem var(--mono);border:1px solid var(--border);border-radius:20px;padding:4px 10px;color:var(--dim)}
+.chip.private{border-color:rgba(94,200,255,.35);color:var(--blue)}
+.chip.public{border-color:rgba(47,226,143,.35);color:var(--green)}
+.chip.special{border-color:rgba(255,180,84,.4);color:var(--amber)}
+
+/* binary */
+.bin{margin-top:14px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;overflow-x:auto}
+.bin-row{font:.78rem/1.9 var(--mono);white-space:pre;display:flex;gap:10px;align-items:baseline}
+.bin-lbl{color:var(--faint);min-width:74px;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em}
+.bin-net{color:var(--green)}
+.bin-host{color:var(--faint)}
+.bin-mark{color:var(--amber)}
+
+/* tables */
+.tablewrap{margin-top:14px;border:1px solid var(--border);border-radius:6px;overflow:auto;max-height:560px}
+table{width:100%;border-collapse:collapse;font:.8rem var(--mono)}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border-soft);white-space:nowrap}
+th{position:sticky;top:0;background:var(--raised2);color:var(--faint);font-weight:500;font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.06em;z-index:1}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+tbody tr:last-child td{border-bottom:none}
+td.idx{color:var(--faint)}
+td.net{color:var(--blue)}
+tr.here{background:rgba(47,226,143,.09)}
+tr.here td{border-color:rgba(47,226,143,.2)}
+tr.here td.idx{color:var(--green)}
+td.role{color:var(--faint)}
+td.usable-n{color:var(--dim)}
+td.role.usable{color:var(--green-dim)}
+.here-badge{display:inline-block;margin-left:7px;font-size:.62rem;letter-spacing:.05em;color:var(--green);
+  border:1px solid rgba(47,226,143,.4);border-radius:20px;padding:1px 7px}
+
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.toolbar .spacer{flex:1}
+.pageinfo{font:.72rem var(--mono);color:var(--faint)}
+
+/* vlsm */
+.req-row{display:grid;grid-template-columns:1fr 130px 36px;gap:8px;margin-top:8px}
+.req-row input{margin:0}
+.rm{background:transparent;border:1px solid var(--border);color:var(--faint);padding:0;font-size:1rem}
+.rm:hover{border-color:var(--red);color:var(--red)}
+.alloc-ok{color:var(--green)}.alloc-warn{color:var(--amber)}.alloc-bad{color:var(--red)}
+.notice{margin-top:14px;font:.75rem/1.6 var(--mono);color:var(--amber)}
+.notice.ok{color:var(--green)}
+
+.tool-footer{
+  border-top:1px solid var(--border-soft);padding:22px 28px;
+  font:.75rem var(--mono);color:var(--faint);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.tool-footer a{color:var(--dim);transition:color .2s}
+.tool-footer a:hover{color:var(--green)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);opacity:0;pointer-events:none;
+  background:var(--raised2);border:1px solid var(--green-dim);color:var(--green);border-radius:4px;
+  padding:10px 16px;font:.78rem var(--mono);transition:opacity .2s,transform .2s;z-index:60}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:860px){
+  .tool-footer{flex-direction:column;align-items:flex-start;padding:20px 14px}
+  .grid{grid-template-columns:1fr}
+  .topbar{padding:12px 14px}
+  main{width:calc(100% - 24px);padding-top:26px}
+  .sum{grid-template-columns:1fr}
+  .req-row{grid-template-columns:1fr 100px 36px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="https://dinukawijesinghe.com" class="topbar-logo"><span>~/</span>dinuka · tools</a>
+  <div class="topbar-right">
+    <a href="https://dinukawijesinghe.com" class="topbar-back">← back to portfolio</a>
+  </div>
+</div>
+
+<main>
+  <nav class="crumb" aria-label="Breadcrumb">
+    <a href="https://dinukawijesinghe.com">Dinuka Wijesinghe</a><i>/</i><a href="https://dinukawijesinghe.com/#tools">Tools</a><i>/</i><span aria-current="page">Subnet Calculator</span>
+  </nav>
+  <div class="tag">tools / 03</div>
+  <h1>Subnet Calculator &amp; VLSM Planner</h1>
+  <p class="sub">Inspect any IPv4 prefix the way you would on a router — network, broadcast, wildcard, usable range and the binary boundary — or hand it a list of host requirements and let it lay out a VLSM plan. Everything runs in your browser; nothing is uploaded.</p>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" role="tab" data-panel="calc"><span class="tab-num">01</span>Subnet calculator</button>
+    <button class="tab" role="tab" data-panel="vlsm"><span class="tab-num">02</span>VLSM planner</button>
+  </div>
+
+  <!-- ══════════ PANEL 1 — CALCULATOR ══════════ -->
+  <section class="panel active" id="panel-calc">
+    <div class="grid">
+      <div class="card">
+        <div class="eyebrow"><span>Input</span></div>
+
+        <div class="field">
+          <label for="ip">IP address or CIDR</label>
+          <input id="ip" value="192.168.1.10/24" placeholder="192.168.1.10/24 or 10.0.0.0 255.0.0.0" autocomplete="off" spellcheck="false">
+          <p class="hint">Accepts <b>10.0.0.1</b>, <b>10.0.0.1/22</b> or <b>10.0.0.1 255.255.252.0</b>.</p>
+        </div>
+
+        <div class="field">
+          <label for="cur">Current prefix</label>
+          <div class="prefix-row">
+            <input class="pfx" id="cur" type="number" min="0" max="32" value="24">
+            <input id="curRange" type="range" min="0" max="32" value="24" aria-label="Current prefix slider">
+          </div>
+          <p class="hint" id="curMask">255.255.255.0 · wildcard 0.0.0.255</p>
+        </div>
+
+        <p class="err-msg" id="err"></p>
+
+        <div class="btnrow">
+          <button class="primary" id="calcBtn">▶ CALCULATE</button>
+          <button id="copySum">⎘ Copy summary</button>
+          <button id="shareBtn">🔗 Copy link</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow"><span>Network summary</span><span class="hint" id="stamp"></span></div>
+        <dl class="sum" id="sum"></dl>
+        <div class="chips" id="chips"></div>
+        <div class="bin" id="bin"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="eyebrow"><span>Subnet table</span><span class="hint" id="tblMeta"></span></div>
+      <p class="hint" id="tblSub"></p>
+
+      <div class="toolbar">
+        <button class="mini" id="findMine">◎ jump to my subnet</button>
+        <button class="mini" id="csvBtn">↓ CSV</button>
+      </div>
+
+      <div class="tablewrap"><table id="tbl"></table></div>
+      <p class="notice" id="tblNotice"></p>
+    </div>
+  </section>
+
+  <!-- ══════════ PANEL 2 — VLSM ══════════ -->
+  <section class="panel" id="panel-vlsm">
+    <div class="grid">
+      <div class="card">
+        <div class="eyebrow"><span>Requirements</span></div>
+
+        <div class="field">
+          <label for="vBase">Base network (CIDR)</label>
+          <input id="vBase" value="10.10.0.0/22" placeholder="10.10.0.0/22" autocomplete="off" spellcheck="false">
+        </div>
+
+        <div class="field">
+          <label>Segments — name and usable hosts needed</label>
+          <div id="reqs"></div>
+        </div>
+
+        <div class="btnrow">
+          <button id="addReq">+ Add segment</button>
+          <button class="primary" id="vlsmBtn">▶ ALLOCATE</button>
+          <button id="vlsmCsv">↓ CSV</button>
+        </div>
+        <p class="err-msg" id="vErr"></p>
+        <p class="hint" style="margin-top:10px">Largest requirement is placed first, so blocks pack tightly with no gaps between them. A /31 is treated as 2 usable (RFC 3021) and a /32 as 1.</p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow"><span>Allocation plan</span><span class="hint" id="vMeta"></span></div>
+        <div class="tablewrap" style="max-height:none"><table id="vTbl"></table></div>
+        <p class="notice" id="vNotice"></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="tool-footer">
+  <span>© <span id="scYear"></span> Dinuka Hasanka Wijesinghe. All Rights Reserved.</span>
+  <span>Last updated: Jul 2026 &nbsp;·&nbsp; <a href="https://dinukawijesinghe.com/tools/config-generator.html">Config Generator →</a></span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+'use strict';
+
+const $ = (id) => document.getElementById(id);
+$('scYear').textContent = new Date().getFullYear();
+
+/* ─────────── maths ─────────── */
+const ip2n = (s) => {
+  const p = String(s).trim().split('.');
+  if (p.length !== 4) return null;
+  let n = 0;
+  for (const part of p) {
+    if (!/^\d{1,3}$/.test(part)) return null;
+    const v = Number(part);
+    if (v > 255) return null;
+    n = (n * 256) + v;
+  }
+  return n >>> 0;
+};
+const n2ip = (n) => [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join('.');
+const maskOf = (p) => (p === 0 ? 0 : (0xFFFFFFFF << (32 - p)) >>> 0);
+const wildOf = (p) => (~maskOf(p)) >>> 0;
+const netOf = (ip, p) => (ip & maskOf(p)) >>> 0;
+const bcOf = (ip, p) => (netOf(ip, p) | wildOf(p)) >>> 0;
+const sizeOf = (p) => Math.pow(2, 32 - p);
+const usableOf = (p) => (p >= 32 ? 1 : p === 31 ? 2 : sizeOf(p) - 2);
+const firstHost = (net, p) => (p >= 31 ? net : (net + 1) >>> 0);
+const lastHost = (bc, p) => (p >= 31 ? bc : (bc - 1) >>> 0);
+const fmt = (n) => n.toLocaleString('en-US');
+
+const mask2prefix = (s) => {
+  const n = ip2n(s);
+  if (n === null) return null;
+  const inv = (~n) >>> 0;
+  if (((inv + 1) & inv) !== 0) return null; // not contiguous
+  let p = 0, x = n;
+  while (x & 0x80000000) { p++; x = (x << 1) >>> 0; }
+  return p;
+};
+
+/* "10.0.0.1", "10.0.0.1/22", "10.0.0.1 255.255.252.0" */
+function parseTarget(raw) {
+  const s = String(raw).trim().replace(/\s+/g, ' ');
+  if (!s) return { err: 'Enter an IP address.' };
+  let ipPart = s, pfx = null;
+
+  if (s.includes('/')) {
+    const [a, b] = s.split('/');
+    ipPart = a.trim();
+    if (!/^\d{1,2}$/.test(b.trim())) return { err: 'Prefix after "/" must be 0–32.' };
+    pfx = Number(b.trim());
+    if (pfx > 32) return { err: 'Prefix after "/" must be 0–32.' };
+  } else if (s.includes(' ')) {
+    const [a, b] = s.split(' ');
+    ipPart = a.trim();
+    pfx = mask2prefix(b.trim());
+    if (pfx === null) return { err: `"${b.trim()}" is not a valid contiguous subnet mask.` };
+  }
+
+  const ip = ip2n(ipPart);
+  if (ip === null) return { err: `"${ipPart}" is not a valid IPv4 address.` };
+  return { ip, pfx };
+}
+
+/* address-space classification (RFC 6890 highlights) */
+const SPECIAL = [
+  ['0.0.0.0/8', 'this network', 'special'],
+  ['10.0.0.0/8', 'private — RFC 1918', 'private'],
+  ['100.64.0.0/10', 'CGNAT — RFC 6598', 'special'],
+  ['127.0.0.0/8', 'loopback', 'special'],
+  ['169.254.0.0/16', 'link-local / APIPA', 'special'],
+  ['172.16.0.0/12', 'private — RFC 1918', 'private'],
+  ['192.0.0.0/24', 'IETF protocol assignments', 'special'],
+  ['192.0.2.0/24', 'TEST-NET-1 — documentation', 'special'],
+  ['192.88.99.0/24', '6to4 relay anycast', 'special'],
+  ['192.168.0.0/16', 'private — RFC 1918', 'private'],
+  ['198.18.0.0/15', 'benchmarking — RFC 2544', 'special'],
+  ['198.51.100.0/24', 'TEST-NET-2 — documentation', 'special'],
+  ['203.0.113.0/24', 'TEST-NET-3 — documentation', 'special'],
+  ['224.0.0.0/4', 'multicast — class D', 'special'],
+  ['240.0.0.0/4', 'reserved — class E', 'special']
+];
+
+function classify(ip) {
+  const out = [];
+  for (const [cidr, label, kind] of SPECIAL) {
+    const [a, p] = cidr.split('/');
+    if (netOf(ip, Number(p)) === ip2n(a)) out.push({ label, kind });
+  }
+  if (!out.length) out.push({ label: 'public / globally routable', kind: 'public' });
+  const first = (ip >>> 24) & 255;
+  const legacy = first < 128 ? 'A' : first < 192 ? 'B' : first < 224 ? 'C' : first < 240 ? 'D' : 'E';
+  out.push({ label: `legacy class ${legacy}`, kind: '' });
+  return out;
+}
+
+function binParts(n, prefix) {
+  const bits = (n >>> 0).toString(2).padStart(32, '0');
+  let net = '', host = '';
+  for (let i = 0; i < 32; i++) {
+    const sep = (i % 8 === 7 && i !== 31) ? '.' : '';
+    if (i < prefix) net += bits[i] + sep; else host += bits[i] + sep;
+  }
+  return { net, host };
+}
+function binRow(n, prefix) {
+  const { net, host } = binParts(n, prefix);
+  return `<span class="bin-net">${net}</span><span class="bin-host">${host}</span>`;
+}
+
+/* ─────────── state ─────────── */
+let S = { ip: 0, cur: 24, net: 0, page: 0, total: 1 };
+
+const toast = (msg) => {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 1900);
+};
+
+async function copy(text, label) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('✔ ' + label + ' copied');
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('✔ ' + label + ' copied'); }
+    catch (e2) { toast('✖ Copy failed — select manually'); }
+    ta.remove();
+  }
+}
+
+function download(name, text) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+/* ─────────── calculator ─────────── */
+function syncMaskHint() {
+  const p = Number($('cur').value);
+  if (p >= 0 && p <= 32) $('curMask').innerHTML = `${n2ip(maskOf(p))} · wildcard ${n2ip(wildOf(p))}`;
+}
+
+function calculate(pushHash) {
+  const res = parseTarget($('ip').value);
+  const errEl = $('err'), ipEl = $('ip');
+  errEl.textContent = ''; ipEl.classList.remove('bad');
+
+  if (res.err) { errEl.textContent = '✕ ' + res.err; ipEl.classList.add('bad'); return; }
+  if (res.pfx !== null) { $('cur').value = res.pfx; $('curRange').value = res.pfx; }
+
+  const cur = Number($('cur').value);
+  if (!(cur >= 0 && cur <= 32)) { errEl.textContent = '✕ Current prefix must be 0–32.'; return; }
+
+  const ip = res.ip;
+  const net = netOf(ip, cur), bc = bcOf(ip, cur);
+
+  S = { ip, cur, net };
+
+  /* summary */
+  const rows = [
+    ['Network', `${n2ip(net)}/${cur}`, 'hl'],
+    ['Broadcast', n2ip(bc), ''],
+    ['Subnet mask', n2ip(maskOf(cur)), ''],
+    ['Wildcard mask', n2ip(wildOf(cur)), 'blue'],
+    ['Usable range', cur >= 31 ? `${n2ip(net)} – ${n2ip(bc)}` : `${n2ip(firstHost(net, cur))} – ${n2ip(lastHost(bc, cur))}`, ''],
+    ['Usable hosts', fmt(usableOf(cur)), 'hl'],
+    ['Total addresses', fmt(sizeOf(cur)), ''],
+    ['Host bits', `${32 - cur} bit${32 - cur === 1 ? '' : 's'}`, ''],
+    ['Your address', n2ip(ip) + (ip === net ? ' (network)' : ip === bc ? ' (broadcast)' : ''), ip === net || ip === bc ? 'blue' : '']
+  ];
+  $('sum').innerHTML = rows.map(([k, v, cls]) =>
+    `<div><dt>${k}</dt><dd class="${cls}">${v}</dd></div>`).join('');
+
+  $('chips').innerHTML = classify(ip).map((c) =>
+    `<span class="chip ${c.kind}">${c.label}</span>`).join('');
+
+  $('bin').innerHTML =
+    `<div class="bin-row"><span class="bin-lbl">network</span><span>${binRow(net, cur)}</span></div>` +
+    `<div class="bin-row"><span class="bin-lbl">mask</span><span>${binRow(maskOf(cur), cur)}</span></div>` +
+    `<div class="bin-row"><span class="bin-lbl">address</span><span>${binRow(ip, cur)}</span></div>` +
+    `<div class="bin-row"><span class="bin-lbl">boundary</span><span class="bin-mark">${'\u00A0'.repeat(binParts(net, cur).net.length)}↑ /${cur} boundary</span></div>`;
+
+  $('stamp').textContent = new Date().toISOString().slice(0, 19).replace('T', ' ') + ' UTC';
+  renderTable();
+  if (pushHash !== false) writeHash();
+}
+
+/* subnet table — every possible /cur network inside the enclosing block,
+   the way a classic subnet calculator lists them (parent = /24, /16, /8 or /0) */
+const CSV_CAP = 50000;
+
+const parentOf = (p) => (p >= 24 ? 24 : p >= 16 ? 16 : p >= 8 ? 8 : 0);
+const parentLabel = (base, pp) => {
+  const o = n2ip(base).split('.');
+  const keep = pp / 8;
+  return o.map((x, i) => (i < keep ? x : '*')).join('.');
+};
+
+function subnetRows() {
+  const cur = S.cur;
+  const pp = parentOf(cur);
+  const base = netOf(S.net, pp) >>> 0;
+  const total = Math.pow(2, cur - pp);
+  const step = sizeOf(cur);
+  return { cur, pp, base, total, step };
+}
+
+function renderTable() {
+  const { cur, pp, base, total, step } = subnetRows();
+
+  $('tblMeta').innerHTML = `${fmt(total)} × /${cur}`;
+  $('tblSub').innerHTML = `All ${fmt(total)} possible /${cur} network${total === 1 ? '' : 's'} for ` +
+    `<b>${parentLabel(base, pp)}</b> — ${fmt(usableOf(cur))} usable host${usableOf(cur) === 1 ? '' : 's'} each. ` +
+    `The subnet holding your address is highlighted.`;
+
+  let h = '<thead><tr><th>#</th><th>Network address</th><th>First host</th><th>Last host</th>' +
+          '<th>Broadcast</th><th>Usable IPs</th></tr></thead><tbody>';
+
+  for (let i = 0; i < total; i++) {
+    const sn = (base + i * step) >>> 0;
+    const sb = (sn + step - 1) >>> 0;
+    const mine = (S.ip >>> 0) >= sn && (S.ip >>> 0) <= sb;
+    h += `<tr class="${mine ? 'here' : ''}">` +
+         `<td class="idx">${fmt(i + 1)}</td>` +
+         `<td class="net">${n2ip(sn)}/${cur}${mine ? '<span class="here-badge">your IP</span>' : ''}</td>` +
+         `<td>${n2ip(firstHost(sn, cur))}</td>` +
+         `<td>${n2ip(lastHost(sb, cur))}</td>` +
+         `<td>${cur >= 31 ? '—' : n2ip(sb)}</td>` +
+         `<td class="usable-n">${fmt(usableOf(cur))}</td></tr>`;
+  }
+  $('tbl').innerHTML = h + '</tbody>';
+  S.total = total;
+}
+
+function csvAll() {
+  const { cur, base, total, step } = subnetRows();
+  const n = Math.min(total, CSV_CAP);
+  const lines = ['#,network,first_host,last_host,broadcast,usable_ips'];
+  for (let i = 0; i < n; i++) {
+    const sn = (base + i * step) >>> 0;
+    const sb = (sn + step - 1) >>> 0;
+    lines.push([i + 1, n2ip(sn) + '/' + cur, n2ip(firstHost(sn, cur)), n2ip(lastHost(sb, cur)),
+                cur >= 31 ? '' : n2ip(sb), usableOf(cur)].join(','));
+  }
+  return { csv: lines.join('\n'), n };
+}
+
+/* deep link */
+function writeHash() {
+  const h = `#ip=${n2ip(S.ip)}&cur=${S.cur}`;
+  if (location.hash !== h) history.replaceState(null, '', h);
+}
+function readHash() {
+  const m = new URLSearchParams(location.hash.replace(/^#/, ''));
+  const ip = m.get('ip'), cur = m.get('cur');
+  if (!ip) return false;
+  $('ip').value = ip + (cur ? '/' + cur : '');
+  if (cur) { $('cur').value = cur; $('curRange').value = cur; }
+  return true;
+}
+
+/* ─────────── VLSM ─────────── */
+function reqRow(name, hosts) {
+  const row = document.createElement('div');
+  row.className = 'req-row';
+  row.innerHTML =
+    `<input class="rname" placeholder="segment name" value="${(name || '').replace(/"/g, '&quot;')}" autocomplete="off">` +
+    `<input class="rhosts" type="number" min="1" max="4294967294" placeholder="hosts" value="${hosts || ''}">` +
+    `<button class="rm" title="Remove segment" aria-label="Remove segment">×</button>`;
+  row.querySelector('.rm').addEventListener('click', () => {
+    row.remove();
+    if (!$('reqs').children.length) reqRow('', '');
+  });
+  row.querySelectorAll('input').forEach((el) => {
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter') runVlsm(); });
+  });
+  $('reqs').appendChild(row);
+  return row;
+}
+
+const prefixForHosts = (h) => {
+  if (h <= 1) return 32;
+  if (h <= 2) return 31;
+  for (let p = 30; p >= 0; p--) if (sizeOf(p) - 2 >= h) return p;
+  return 0;
+};
+
+let vlsmResult = [];
+
+function runVlsm() {
+  const errEl = $('vErr');
+  errEl.textContent = '';
+  $('vNotice').textContent = '';
+  $('vNotice').className = 'notice';
+
+  const base = parseTarget($('vBase').value);
+  if (base.err) { errEl.textContent = '✕ ' + base.err; return; }
+  if (base.pfx === null) { errEl.textContent = '✕ Give the base network a prefix, e.g. 10.10.0.0/22.'; return; }
+
+  const basePfx = base.pfx;
+  const baseNet = netOf(base.ip, basePfx);
+  const baseEnd = bcOf(base.ip, basePfx);
+
+  const items = [];
+  [...$('reqs').children].forEach((row, i) => {
+    const name = row.querySelector('.rname').value.trim() || `segment-${i + 1}`;
+    const hosts = Number(row.querySelector('.rhosts').value);
+    if (!hosts || hosts < 1) return;
+    items.push({ name, hosts, order: i });
+  });
+
+  if (!items.length) { errEl.textContent = '✕ Add at least one segment with a host count.'; return; }
+
+  const sorted = [...items].sort((a, b) => b.hosts - a.hosts || a.order - b.order);
+  let cursor = baseNet >>> 0;
+  const out = [];
+  let failed = null;
+
+  for (const it of sorted) {
+    const p = prefixForHosts(it.hosts);
+    const size = sizeOf(p);
+    const aligned = (Math.ceil(cursor / size) * size) >>> 0;   // blocks must sit on their own boundary
+    const end = aligned + size - 1;
+    if (aligned < baseNet || end > baseEnd || aligned + size > 0x100000000) { failed = it; break; }
+    out.push({ ...it, prefix: p, net: aligned >>> 0, bc: end >>> 0, size, usable: usableOf(p), waste: usableOf(p) - it.hosts });
+    cursor = (end + 1) >>> 0;
+  }
+
+  vlsmResult = out;
+
+  let h = '<thead><tr><th>Segment</th><th>Needed</th><th>Allocated</th><th>Range</th><th>Broadcast</th><th>Usable</th><th>Spare</th></tr></thead><tbody>';
+  out.forEach((r) => {
+    h += `<tr><td>${r.name.replace(/[<>&]/g, '')}</td><td>${fmt(r.hosts)}</td>` +
+         `<td class="net">${n2ip(r.net)}/${r.prefix}</td>` +
+         `<td>${n2ip(firstHost(r.net, r.prefix))} – ${n2ip(lastHost(r.bc, r.prefix))}</td>` +
+         `<td>${n2ip(r.bc)}</td><td>${fmt(r.usable)}</td>` +
+         `<td class="${r.waste === 0 ? 'alloc-ok' : r.waste > r.hosts ? 'alloc-warn' : ''}">${fmt(r.waste)}</td></tr>`;
+  });
+  $('vTbl').innerHTML = h + '</tbody>';
+
+  const used = out.reduce((a, r) => a + r.size, 0);
+  const total = sizeOf(basePfx);
+  $('vMeta').innerHTML = `${n2ip(baseNet)}/${basePfx} · ${fmt(used)} / ${fmt(total)} addresses used`;
+
+  if (failed) {
+    $('vNotice').className = 'notice';
+    $('vNotice').textContent =
+      `⚠ "${failed.name}" (${fmt(failed.hosts)} hosts → /${prefixForHosts(failed.hosts)}) does not fit in the remaining space of ${n2ip(baseNet)}/${basePfx}. ` +
+      `Allocated ${out.length} of ${items.length} segments — widen the base prefix or reduce the requirement.`;
+  } else {
+    const free = total - used;
+    $('vNotice').className = 'notice ok';
+    $('vNotice').textContent =
+      `✔ ${out.length} segment${out.length === 1 ? '' : 's'} allocated — ${fmt(free)} address${free === 1 ? '' : 'es'} spare` +
+      (free ? ` (next free block starts at ${n2ip(cursor)})` : '') + '.';
+  }
+}
+
+/* ─────────── wiring ─────────── */
+$('calcBtn').addEventListener('click', () => calculate());
+
+/* keep the CIDR in the address field in step with the prefix control,
+   otherwise a "/24" typed there would silently override the slider */
+function applyPrefix(p) {
+  const raw = $('ip').value.trim();
+  const ipPart = raw.split(/[\s/]/)[0];
+  if (ipPart) $('ip').value = `${ipPart}/${p}`;
+  calculate();
+}
+$('cur').addEventListener('input', () => { $('curRange').value = $('cur').value; syncMaskHint(); });
+$('cur').addEventListener('change', () => applyPrefix($('cur').value));
+$('curRange').addEventListener('input', () => { $('cur').value = $('curRange').value; syncMaskHint(); });
+$('curRange').addEventListener('change', () => applyPrefix($('curRange').value));
+$('ip').addEventListener('keydown', (e) => { if (e.key === 'Enter') calculate(); });
+$('ip').addEventListener('blur', () => calculate());
+
+$('findMine').addEventListener('click', () => {
+  const row = $('tbl').querySelector('tr.here');
+  if (row) {
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toast(`◎ Your address is in subnet #${fmt([...row.parentNode.children].indexOf(row) + 1)}`);
+  }
+});
+
+$('csvBtn').addEventListener('click', () => {
+  const { csv, n } = csvAll();
+  download(`subnets_${n2ip(S.net)}_${S.cur}.csv`, csv);
+  toast(n < S.total ? `↓ ${fmt(n)} of ${fmt(S.total)} rows exported (cap)` : `↓ ${fmt(n)} rows exported`);
+});
+
+$('copySum').addEventListener('click', () => {
+  const txt = [...$('sum').children]
+    .map((d) => d.querySelector('dt').textContent.padEnd(17) + ': ' + d.querySelector('dd').textContent)
+    .join('\n');
+  copy(txt, 'Summary');
+});
+
+$('shareBtn').addEventListener('click', () => {
+  writeHash();
+  copy(location.href, 'Link');
+});
+
+document.querySelectorAll('.tab').forEach((tab) => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+    tab.classList.add('active');
+    $('panel-' + tab.dataset.panel).classList.add('active');
+  });
+});
+
+$('addReq').addEventListener('click', () => reqRow('', ''));
+$('vlsmBtn').addEventListener('click', runVlsm);
+$('vBase').addEventListener('keydown', (e) => { if (e.key === 'Enter') runVlsm(); });
+$('vlsmCsv').addEventListener('click', () => {
+  if (!vlsmResult.length) { toast('✖ Nothing to export — allocate first'); return; }
+  const lines = ['segment,needed_hosts,allocated_prefix,network,first_host,last_host,broadcast,usable,spare'];
+  vlsmResult.forEach((r) => lines.push([
+    '"' + r.name.replace(/"/g, '""') + '"', r.hosts, '/' + r.prefix, n2ip(r.net),
+    n2ip(firstHost(r.net, r.prefix)), n2ip(lastHost(r.bc, r.prefix)), n2ip(r.bc), r.usable, r.waste
+  ].join(',')));
+  download('vlsm_plan.csv', lines.join('\n'));
+  toast(`↓ ${vlsmResult.length} segments exported`);
+});
+
+/* boot */
+[['core-uplinks', 60], ['office-lan', 100], ['wifi-guest', 25], ['ptp-links', 2]]
+  .forEach(([n, h]) => reqRow(n, h));
+
+readHash();
+syncMaskHint();
+calculate(false);
+runVlsm();
+})();
+</script>
+</body>
+</html>
