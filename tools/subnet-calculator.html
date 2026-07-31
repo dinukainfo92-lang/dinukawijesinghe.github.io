@@ -3,12 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Subnet Calculator &amp; VLSM Planner — NetEng Tools</title>
-<meta name="description" content="IPv4 subnet calculator and VLSM planner for network engineers. See network, broadcast, wildcard, usable range and the binary boundary for any prefix, and allocate variable-length subnets from a base block. Runs entirely in your browser.">
+<title>Subnet Calculator — IPv4 CIDR, Wildcard Mask &amp; VLSM</title>
+<meta name="description" content="Free IPv4 subnet calculator: network address, broadcast, subnet mask, wildcard mask, usable hosts and every possible subnet — plus a VLSM planner and CIDR cheat sheet.">
+<meta name="keywords" content="subnet calculator, IPv4 subnet calculator, CIDR calculator, VLSM calculator, VLSM planner, wildcard mask calculator, subnet mask cheat sheet, CIDR to subnet mask, usable hosts per subnet, network and broadcast address calculator, network engineer tools">
+<meta name="author" content="Dinuka Hasanka Wijesinghe">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta name="theme-color" content="#090c11">
 <link rel="canonical" href="https://dinukawijesinghe.com/tools/subnet-calculator.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Subnet Calculator &amp; VLSM Planner — NetEng Tools">
+<meta property="og:title" content="Subnet Calculator — IPv4 CIDR, Wildcard Mask &amp; VLSM Planner">
 <meta property="og:description" content="Inspect network/broadcast/wildcard/binary for any prefix and plan VLSM allocations. Browser-only, nothing uploaded.">
 <meta property="og:url" content="https://dinukawijesinghe.com/tools/subnet-calculator.html">
 <meta property="og:image" content="https://dinukawijesinghe.com/favicon-192.png">
@@ -16,6 +19,65 @@
 <meta name="twitter:title" content="Subnet Calculator &amp; VLSM Planner — NetEng Tools">
 <meta name="twitter:description" content="IPv4 subnetting, wildcard masks, binary boundaries and VLSM allocation — free, runs in your browser.">
 <meta name="twitter:image" content="https://dinukawijesinghe.com/favicon-192.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Subnet Calculator & VLSM Planner",
+  "url": "https://dinukawijesinghe.com/tools/subnet-calculator.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (browser-based)",
+  "browserRequirements": "Requires JavaScript",
+  "description": "Free IPv4 subnet calculator and VLSM planner: network address, broadcast, subnet mask, wildcard mask, usable host range, binary breakdown and every possible subnet of a prefix.",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "featureList": [
+    "IPv4 subnet calculator with IP, CIDR or dotted subnet mask input",
+    "Network address, broadcast address and usable host range",
+    "Subnet mask and wildcard mask for ACLs",
+    "Binary breakdown with the prefix boundary marked",
+    "All possible subnets of a prefix with first host, last host and broadcast",
+    "VLSM planner that allocates variable-length subnets from a base block",
+    "CIDR to subnet mask cheat sheet from /8 to /32",
+    "CSV export and shareable result links"
+  ],
+  "author": {"@type": "Person", "name": "Dinuka Hasanka Wijesinghe", "url": "https://dinukawijesinghe.com"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Dinuka Wijesinghe", "item": "https://dinukawijesinghe.com"},
+    {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://dinukawijesinghe.com/#tools"},
+    {"@type": "ListItem", "position": 3, "name": "Subnet Calculator", "item": "https://dinukawijesinghe.com/tools/subnet-calculator.html"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How many usable hosts are in a /26 subnet?",
+     "acceptedAnswer": {"@type": "Answer", "text": "A /26 contains 64 addresses, of which 62 are usable for hosts. The first address is the network address and the last is the broadcast address, so usable hosts are the total minus two for any prefix up to /30."}},
+    {"@type": "Question", "name": "What is a wildcard mask and how is it different from a subnet mask?",
+     "acceptedAnswer": {"@type": "Answer", "text": "A wildcard mask is the bitwise inverse of the subnet mask. A /24 has the subnet mask 255.255.255.0 and the wildcard mask 0.0.0.255. Cisco access control lists, OSPF network statements and route-maps take wildcard masks rather than subnet masks."}},
+    {"@type": "Question", "name": "Why does a /31 have two usable addresses instead of none?",
+     "acceptedAnswer": {"@type": "Answer", "text": "RFC 3021 allows a /31 to be used on point-to-point links. Because there are only two addresses and no broadcast domain to serve, both are assigned to the two routers, saving two addresses per link compared with a /30."}},
+    {"@type": "Question", "name": "What is VLSM?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Variable Length Subnet Masking means using different prefix lengths inside one address block so each segment gets only the addresses it needs. A site might use a /25 for a large office LAN, a /27 for a small branch and /31s for point-to-point links, all carved out of the same /22."}},
+    {"@type": "Question", "name": "How do I calculate the network and broadcast address?",
+     "acceptedAnswer": {"@type": "Answer", "text": "The network address is the IP address bitwise ANDed with the subnet mask, which sets every host bit to zero. The broadcast address sets every host bit to one, so it equals the network address ORed with the wildcard mask."}},
+    {"@type": "Question", "name": "Which IPv4 ranges are private?",
+     "acceptedAnswer": {"@type": "Answer", "text": "RFC 1918 reserves 10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16 for private use. Related special ranges include 100.64.0.0/10 for carrier-grade NAT, 169.254.0.0/16 for link-local addresses and 127.0.0.0/8 for loopback."}},
+    {"@type": "Question", "name": "How many subnets does a /24 give me?",
+     "acceptedAnswer": {"@type": "Answer", "text": "It depends on the new prefix length. Splitting a /24 gives 2 /25s, 4 /26s, 8 /27s, 16 /28s, 32 /29s or 64 /30s. Each extra bit borrowed from the host portion doubles the number of subnets and halves the hosts per subnet."}},
+    {"@type": "Question", "name": "Is this subnet calculator free and is my data uploaded anywhere?",
+     "acceptedAnswer": {"@type": "Answer", "text": "It is free and no data leaves the browser. All calculations run locally in JavaScript, so nothing about the addresses you enter is sent to a server or logged."}}
+  ]
+}
+</script>
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../favicon-192.png">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
@@ -154,6 +216,30 @@ td.role.usable{color:var(--green-dim)}
 .notice{margin-top:14px;font:.75rem/1.6 var(--mono);color:var(--amber)}
 .notice.ok{color:var(--green)}
 
+/* ── reference / SEO content ── */
+.sc-content{border-top:1px solid var(--border-soft);margin-top:34px;padding-top:30px}
+.sc-content h2{font:600 1.25rem var(--mono);color:#f2f5f8;margin-bottom:8px}
+.sc-content h2::before{content:"# ";color:var(--faint)}
+.sc-content h3{font:600 .95rem var(--mono);color:var(--green);margin:22px 0 6px}
+.sc-content p{color:var(--dim);font-size:.92rem;max-width:78ch;margin-bottom:12px}
+.sc-content ol,.sc-content ul{color:var(--dim);font-size:.92rem;max-width:78ch;margin:0 0 12px 20px}
+.sc-content li{margin-bottom:7px}
+.sc-content b{color:var(--text);font-weight:500}
+.sc-content code{font:.85em var(--mono);color:var(--blue);background:var(--raised2);
+  border:1px solid var(--border);border-radius:3px;padding:1px 6px}
+.sc-content a{color:var(--green);border-bottom:1px solid rgba(47,226,143,.3)}
+.sc-content a:hover{border-bottom-color:var(--green)}
+.sc-block{margin-top:32px}
+.sc-cidr{color:var(--blue)}
+.sc-note{color:var(--faint);font-size:.72rem;margin-left:6px}
+.sc-faq{border-top:1px solid var(--border-soft);padding-top:14px;margin-top:14px}
+.sc-faq h3{margin-top:0}
+.sc-credit{margin-top:26px;color:var(--faint);font:.78rem/1.7 var(--sans);max-width:78ch}
+.sc-credit a{color:var(--dim);border-bottom:none}
+.sc-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.sc-links a{font:.75rem var(--mono);color:var(--dim);border:1px solid var(--border);
+  border-radius:20px;padding:6px 13px;transition:border-color .2s,color .2s}
+.sc-links a:hover{border-color:var(--green);color:var(--green)}
 .tool-footer{
   border-top:1px solid var(--border-soft);padding:22px 28px;
   font:.75rem var(--mono);color:var(--faint);
@@ -284,6 +370,149 @@ td.role.usable{color:var(--green-dim)}
     </div>
   </section>
 
+  <section class="sc-content" id="about-subnetting">
+    <h2>IPv4 subnet calculator — what it gives you</h2>
+    <p>
+      Enter any IPv4 address with a prefix (<code>192.168.1.10/26</code>), a dotted subnet mask
+      (<code>192.168.1.10 255.255.255.192</code>) or a bare address, and this calculator returns the
+      <b>network address</b>, <b>broadcast address</b>, <b>subnet mask</b>, <b>wildcard mask</b>,
+      <b>usable host range</b> and <b>host count</b>, plus a binary view with the prefix boundary marked.
+      Below that it lists <b>every possible subnet</b> of that size in the enclosing block, with the one
+      holding your address highlighted.
+    </p>
+    <p>
+      It was built by a working IP/MPLS engineer for the things that come up mid-change: checking whether
+      an address really sits in the block a ticket claims, grabbing a wildcard mask for an ACL or OSPF
+      statement, or carving a site's addressing out of a single allocation without overlaps.
+    </p>
+
+    <h3>How to use it</h3>
+    <ol>
+      <li>Type an address into <b>IP address or CIDR</b> — <code>10.20.30.40/22</code> works, and so does
+        <code>10.20.30.40 255.255.252.0</code>.</li>
+      <li>Drag the <b>current prefix</b> slider to watch the mask, host count and subnet list change live.</li>
+      <li>Use <b>Copy summary</b> for a ticket or MOP, <b>Copy link</b> to share the exact result, or
+        <b>CSV</b> to pull the subnet list into a spreadsheet.</li>
+      <li>Switch to the <b>VLSM planner</b> tab to allocate variable-length subnets from one base block.</li>
+    </ol>
+
+    <div class="sc-block">
+      <h2>CIDR to subnet mask cheat sheet</h2>
+      <p>
+        Every prefix from <code>/8</code> to <code>/32</code> with its subnet mask, wildcard mask, total
+        addresses and usable hosts. Usable hosts are total minus two — the network and broadcast
+        addresses — except for <code>/31</code> and <code>/32</code>.
+      </p>
+      <div class="tablewrap" style="max-height:none">
+        <table>
+          <thead><tr><th>CIDR</th><th>Subnet mask</th><th>Wildcard mask</th><th>Total addresses</th><th>Usable hosts</th></tr></thead>
+          <tbody>
+<tr><td class="sc-cidr">/8</td><td>255.0.0.0</td><td>0.255.255.255</td><td>16,777,216</td><td>16,777,214 <span class="sc-note">classic class A</span></td></tr>
+<tr><td class="sc-cidr">/9</td><td>255.128.0.0</td><td>0.127.255.255</td><td>8,388,608</td><td>8,388,606</td></tr>
+<tr><td class="sc-cidr">/10</td><td>255.192.0.0</td><td>0.63.255.255</td><td>4,194,304</td><td>4,194,302</td></tr>
+<tr><td class="sc-cidr">/11</td><td>255.224.0.0</td><td>0.31.255.255</td><td>2,097,152</td><td>2,097,150</td></tr>
+<tr><td class="sc-cidr">/12</td><td>255.240.0.0</td><td>0.15.255.255</td><td>1,048,576</td><td>1,048,574</td></tr>
+<tr><td class="sc-cidr">/13</td><td>255.248.0.0</td><td>0.7.255.255</td><td>524,288</td><td>524,286</td></tr>
+<tr><td class="sc-cidr">/14</td><td>255.252.0.0</td><td>0.3.255.255</td><td>262,144</td><td>262,142</td></tr>
+<tr><td class="sc-cidr">/15</td><td>255.254.0.0</td><td>0.1.255.255</td><td>131,072</td><td>131,070</td></tr>
+<tr><td class="sc-cidr">/16</td><td>255.255.0.0</td><td>0.0.255.255</td><td>65,536</td><td>65,534 <span class="sc-note">classic class B</span></td></tr>
+<tr><td class="sc-cidr">/17</td><td>255.255.128.0</td><td>0.0.127.255</td><td>32,768</td><td>32,766</td></tr>
+<tr><td class="sc-cidr">/18</td><td>255.255.192.0</td><td>0.0.63.255</td><td>16,384</td><td>16,382</td></tr>
+<tr><td class="sc-cidr">/19</td><td>255.255.224.0</td><td>0.0.31.255</td><td>8,192</td><td>8,190</td></tr>
+<tr><td class="sc-cidr">/20</td><td>255.255.240.0</td><td>0.0.15.255</td><td>4,096</td><td>4,094</td></tr>
+<tr><td class="sc-cidr">/21</td><td>255.255.248.0</td><td>0.0.7.255</td><td>2,048</td><td>2,046</td></tr>
+<tr><td class="sc-cidr">/22</td><td>255.255.252.0</td><td>0.0.3.255</td><td>1,024</td><td>1,022</td></tr>
+<tr><td class="sc-cidr">/23</td><td>255.255.254.0</td><td>0.0.1.255</td><td>512</td><td>510</td></tr>
+<tr><td class="sc-cidr">/24</td><td>255.255.255.0</td><td>0.0.0.255</td><td>256</td><td>254 <span class="sc-note">classic class C</span></td></tr>
+<tr><td class="sc-cidr">/25</td><td>255.255.255.128</td><td>0.0.0.127</td><td>128</td><td>126</td></tr>
+<tr><td class="sc-cidr">/26</td><td>255.255.255.192</td><td>0.0.0.63</td><td>64</td><td>62</td></tr>
+<tr><td class="sc-cidr">/27</td><td>255.255.255.224</td><td>0.0.0.31</td><td>32</td><td>30</td></tr>
+<tr><td class="sc-cidr">/28</td><td>255.255.255.240</td><td>0.0.0.15</td><td>16</td><td>14</td></tr>
+<tr><td class="sc-cidr">/29</td><td>255.255.255.248</td><td>0.0.0.7</td><td>8</td><td>6</td></tr>
+<tr><td class="sc-cidr">/30</td><td>255.255.255.252</td><td>0.0.0.3</td><td>4</td><td>2</td></tr>
+<tr><td class="sc-cidr">/31</td><td>255.255.255.254</td><td>0.0.0.1</td><td>2</td><td>2 <span class="sc-note">point-to-point (RFC 3021)</span></td></tr>
+<tr><td class="sc-cidr">/32</td><td>255.255.255.255</td><td>0.0.0.0</td><td>1</td><td>1 <span class="sc-note">single host</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sc-block">
+      <h2>Common subnetting questions</h2>
+
+      <div class="sc-faq">
+        <h3>How many usable hosts are in a /26 subnet?</h3>
+        <p>A <code>/26</code> holds 64 addresses and <b>62 usable hosts</b>. The first address is the
+          network address and the last is the broadcast address, so for any prefix up to <code>/30</code>
+          the usable count is the total minus two.</p>
+      </div>
+
+      <div class="sc-faq">
+        <h3>What is a wildcard mask, and how is it different from a subnet mask?</h3>
+        <p>A wildcard mask is the bitwise inverse of the subnet mask: a <code>/24</code> has the subnet
+          mask <code>255.255.255.0</code> and the wildcard mask <code>0.0.0.255</code>. Cisco ACLs, OSPF
+          network statements and route-maps expect the wildcard form, which is why it sits in the summary
+          here instead of being something you work out on paper.</p>
+      </div>
+
+      <div class="sc-faq">
+        <h3>Why does a /31 have two usable addresses instead of none?</h3>
+        <p>RFC 3021 allows <code>/31</code> on point-to-point links. With only two addresses and no
+          broadcast domain to serve, both are assigned to the routers at each end — saving two addresses
+          per link compared with a <code>/30</code>. Across a backbone with hundreds of links, that adds up.</p>
+      </div>
+
+      <div class="sc-faq">
+        <h3>What is VLSM?</h3>
+        <p>Variable Length Subnet Masking means using different prefix lengths inside one block so each
+          segment gets only what it needs — a <code>/25</code> for a large office LAN, a <code>/27</code>
+          for a small branch, <code>/31</code>s for point-to-point links, all carved from the same
+          <code>/22</code>. The planner tab sorts requirements largest-first and aligns every block on its
+          own boundary so nothing overlaps.</p>
+      </div>
+
+      <div class="sc-faq">
+        <h3>How do I calculate the network and broadcast address by hand?</h3>
+        <p>The network address is the IP bitwise ANDed with the subnet mask, which zeroes every host bit.
+          The broadcast address ORs the network address with the wildcard mask, setting every host bit to
+          one. The binary panel on this page shows exactly where that boundary falls.</p>
+      </div>
+
+      <div class="sc-faq">
+        <h3>Which IPv4 ranges are private?</h3>
+        <p><code>10.0.0.0/8</code>, <code>172.16.0.0/12</code> and <code>192.168.0.0/16</code> are the
+          RFC 1918 private ranges. Nearby special-purpose blocks worth recognising:
+          <code>100.64.0.0/10</code> (carrier-grade NAT), <code>169.254.0.0/16</code> (link-local / APIPA),
+          <code>127.0.0.0/8</code> (loopback) and <code>192.0.2.0/24</code> (documentation). The calculator
+          labels whichever one your address falls into.</p>
+      </div>
+
+      <div class="sc-faq">
+        <h3>How many subnets does a /24 give me?</h3>
+        <p>Two <code>/25</code>s, four <code>/26</code>s, eight <code>/27</code>s, sixteen
+          <code>/28</code>s, thirty-two <code>/29</code>s or sixty-four <code>/30</code>s. Every extra bit
+          borrowed from the host portion doubles the subnet count and halves the hosts per subnet.</p>
+      </div>
+
+      <div class="sc-faq">
+        <h3>Is it free, and is anything uploaded?</h3>
+        <p>Free, and nothing leaves your browser. Every calculation runs locally in JavaScript — no server
+          call, no logging, no account. The page keeps working offline once it has loaded.</p>
+      </div>
+    </div>
+
+    <div class="sc-links">
+      <a href="https://dinukawijesinghe.com/tools/config-generator.html">Config Generator →</a>
+      <a href="https://dinukawijesinghe.com/tools/prepost-check.html">Pre/Post Check →</a>
+      <a href="https://dinukawijesinghe.com/#tools">All tools →</a>
+    </div>
+
+    <p class="sc-credit">
+      Built by <a href="https://dinukawijesinghe.com">Dinuka Hasanka Wijesinghe</a> —
+      IP/MPLS Core Network Engineer with 7+ years at ISPs in Sri Lanka and Australia,
+      specialising in MPLS backbone, EVPN, Segment Routing and Cisco IOS XR.
+    </p>
+  </section>
 </main>
 
 <footer class="tool-footer">
