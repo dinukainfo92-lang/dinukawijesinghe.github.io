@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- ═══ Primary SEO ═══ -->
-<title>Free Network Config Generator — Cisco IOS XR, Juniper, MPLS Bulk Config Tool</title>
-<meta name="description" content="Free browser-based network config generator. Upload CSV or Excel, write a Cisco IOS XR or Juniper CLI template with {{VARIABLES}}, bulk-generate router configs instantly. No signup, no server. Built by Dinuka Hasanka Wijesinghe, IP/MPLS Network Engineer.">
-<meta name="keywords" content="free network config generator, router config generator, Cisco IOS XR config tool, bulk config generator, MPLS config template, Juniper config generator, network automation browser tool, CLI template generator, CSV to router config, Excel to router config, NCS-5500 config, service provider config tool, ISP config generator, network engineer tools, Dinuka Wijesinghe">
+<title>Free Network Config Generator — Cisco, Juniper, Arista, NX-OS</title>
+<meta name="description" content="Free browser-based network config generator for Cisco IOS-XE, Cisco IOS-XR, Juniper JunOS, Cisco NX-OS and Arista EOS. Upload CSV or Excel, write a CLI template with {{VARIABLES}}, bulk-generate configs instantly. No signup, no server. Built by Dinuka Hasanka Wijesinghe, IP/MPLS Network Engineer.">
+<meta name="keywords" content="free network config generator, router config generator, Cisco IOS-XE config tool, Cisco IOS-XR config tool, Cisco NX-OS config generator, Arista EOS config generator, bulk config generator, MPLS config template, Juniper JunOS config generator, network automation browser tool, CLI template generator, CSV to router config, Excel to router config, NCS-5500 config, service provider config tool, ISP config generator, network engineer tools, Dinuka Wijesinghe">
 <meta name="author" content="Dinuka Hasanka Wijesinghe">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://dinukawijesinghe.com/tools/config-generator.html">
 
 <!-- ═══ Open Graph (LinkedIn / Facebook previews) ═══ -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Free Network Config Generator — Cisco IOS XR, Juniper, MPLS">
-<meta property="og:description" content="Upload a CSV or Excel file, write a CLI template with {{VARIABLES}}, and bulk-generate router configs. Free, browser-based, no data sent anywhere.">
+<meta property="og:title" content="Free Network Config Generator — Cisco IOS-XE/XR, Juniper, NX-OS, Arista">
+<meta property="og:description" content="Upload a CSV or Excel file, write a CLI template with {{VARIABLES}}, and bulk-generate configs for Cisco IOS-XE, IOS-XR, Juniper JunOS, NX-OS and Arista EOS. Free, browser-based, no data sent anywhere.">
 <meta property="og:url" content="https://dinukawijesinghe.com/tools/config-generator.html">
 <meta property="og:site_name" content="Dinuka Wijesinghe — Network Engineering Tools">
 <meta property="og:image" content="https://dinukawijesinghe.com/favicon-192.png">
 
 <!-- ═══ Twitter / X Card ═══ -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Free Network Config Generator — Cisco IOS XR, MPLS, Juniper">
-<meta name="twitter:description" content="Bulk-generate router configs from CSV/Excel + a CLI template. Free, runs in your browser, no server.">
+<meta name="twitter:title" content="Free Network Config Generator — Cisco, Juniper, NX-OS, Arista">
+<meta name="twitter:description" content="Bulk-generate Cisco IOS-XE/XR, Juniper JunOS, NX-OS and Arista EOS configs from CSV/Excel + a CLI template. Free, runs in your browser, no server.">
 <meta name="twitter:image" content="https://dinukawijesinghe.com/favicon-192.png">
 
 <!-- ═══ Structured Data: SoftwareApplication ═══ -->
@@ -33,7 +33,7 @@
   "@type": "SoftwareApplication",
   "name": "Network Config Generator",
   "url": "https://dinukawijesinghe.com/tools/config-generator.html",
-  "description": "Free browser-based network config generator. Upload a CSV or Excel file, write a Cisco IOS XR or Juniper CLI template with {{VARIABLES}}, and bulk-generate router configurations instantly. No data leaves your browser.",
+  "description": "Free browser-based network config generator. Upload a CSV or Excel file, write a CLI template with {{VARIABLES}} for Cisco IOS-XE, Cisco IOS-XR, Juniper JunOS, Cisco NX-OS or Arista EOS, and bulk-generate configurations instantly. No data leaves your browser.",
   "applicationCategory": "NetworkingApplication",
   "operatingSystem": "Web Browser",
   "offers": {
@@ -45,8 +45,11 @@
     "CSV and Excel file upload",
     "Custom CLI template with variable substitution",
     "Bulk config generation",
-    "Cisco IOS XR support",
+    "Cisco IOS-XE support",
+    "Cisco IOS-XR support",
     "Juniper JunOS support",
+    "Cisco NX-OS support",
+    "Arista EOS support",
     "Config validation dashboard",
     "Download as TXT",
     "Copy to clipboard",
@@ -59,7 +62,7 @@
     "url": "https://dinukawijesinghe.com",
     "jobTitle": "Network Engineer — IP/MPLS Core"
   },
-  "keywords": "network config generator, Cisco IOS XR, Juniper, MPLS, bulk router configuration, CLI template, service provider"
+  "keywords": "network config generator, Cisco IOS-XE, Cisco IOS-XR, Juniper JunOS, Cisco NX-OS, Arista EOS, MPLS, bulk router configuration, CLI template, service provider"
 }
 </script>
 
@@ -82,7 +85,7 @@
       "name": "Does this tool support Cisco IOS XR?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. The template engine is vendor-neutral — paste any CLI syntax including Cisco IOS XR, Juniper JunOS, Nokia SR OS, or Arista EOS. The tool substitutes your CSV/Excel data into the template and generates ready-to-paste configs."
+        "text": "Yes. The template engine is vendor-neutral — paste any CLI syntax including Cisco IOS-XE, Cisco IOS-XR, Juniper JunOS, Cisco NX-OS, Arista EOS, or Nokia SR OS. The tool substitutes your CSV/Excel data into the template and generates ready-to-paste configs."
       }
     },
     {
@@ -800,7 +803,7 @@ select.cg-modal-input{cursor:pointer}
   <h1 class="page-title">Network Config Generator</h1>
   <p class="page-sub">
     Upload a <strong style="color:var(--text)">CSV or Excel</strong> file, write a
-    <strong style="color:var(--text)">Cisco IOS XR</strong>, Juniper or any vendor CLI template
+    <strong style="color:var(--text)">Cisco IOS-XE, IOS-XR</strong>, Juniper, NX-OS, Arista or any vendor CLI template
     with <code style="font-family:var(--font-mono);color:var(--blue);font-size:.9em">{{VARIABLE}}</code> placeholders,
     and bulk-generate router configs instantly. Free — runs entirely in your browser, nothing sent anywhere.
     <a href="#how-it-works" class="cg-show-instructions"
@@ -811,9 +814,11 @@ select.cg-modal-input{cursor:pointer}
   <hr class="cg-divider">
   <div class="cg-feature-chips">
     <a href="#cgDataEditorCard" class="cg-chip-link" onclick="event.preventDefault();cgHighlightAddData()">⚡ Generate without file</a>
-    <span>✓ Cisco IOS XR</span>
+    <span>✓ Cisco IOS-XE</span>
+    <span>✓ Cisco IOS-XR</span>
     <span>✓ Juniper JunOS</span>
-    <span>✓ Nokia SR OS</span>
+    <span>✓ Cisco NX-OS</span>
+    <span>✓ Arista EOS</span>
     <span>✓ CSV / Excel upload</span>
     <span>✓ Bulk generation</span>
     <span>✓ Validation dashboard</span>
@@ -966,8 +971,9 @@ select.cg-modal-input{cursor:pointer}
           <li>Cisco IOS XR (NCS-5500, NCS-540, ASR9k)</li>
           <li>Cisco IOS / IOS-XE</li>
           <li>Juniper JunOS (MX, QFX, EX)</li>
-          <li>Nokia SR OS</li>
+          <li>Cisco NX-OS (Nexus)</li>
           <li>Arista EOS</li>
+          <li>Nokia SR OS</li>
           <li>Any vendor with a text-based CLI</li>
         </ul>
       </div>
