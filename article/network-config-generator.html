@@ -120,6 +120,15 @@ a{color:inherit;text-decoration:none}
 .article-meta{font-family:var(--font-mono);font-size:.78rem;color:var(--text-faint);margin-bottom:6px}
 .article-cta{margin-top:3em;padding:20px;border:1px solid #1f2733;border-radius:10px;background:#111722}
 .article-cta a{font-family:var(--font-mono)}
+
+.tool-footer{
+  border-top:1px solid var(--border-soft);padding:22px 28px;
+  font-family:var(--font-mono);font-size:.75rem;color:var(--text-faint);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  max-width:1200px;margin:0 auto;
+}
+.tool-footer a{color:var(--text-dim);transition:color .2s}
+.tool-footer a:hover{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -196,6 +205,13 @@ a{color:inherit;text-decoration:none}
   </div>
 
 </div>
+
+<footer class="tool-footer">
+  <span>© <span id="cgYear"></span> Dinuka Hasanka Wijesinghe. All Rights Reserved.</span>
+  <span><a href="https://dinukawijesinghe.com/tools/config-generator.html" target="_blank" rel="noopener">Network Config Generator →</a></span>
+</footer>
+
+<script>document.getElementById('cgYear').textContent=new Date().getFullYear();</script>
 
 </body>
 </html>
