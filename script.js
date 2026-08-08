@@ -66,6 +66,53 @@
     barObserver.observe(skillTable);
   }
 
+  /* ---------- synthetic key-click sound (no audio file needed) ---------- */
+  let audioCtx = null;
+
+  const ensureAudioCtx = () => {
+    if (!audioCtx) {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) {
+        audioCtx = null;
+      }
+    }
+    return audioCtx;
+  };
+
+  // Browsers block audio until a user gesture — unlock on the first
+  // click/tap/keypress anywhere on the page so later terminal runs have sound.
+  const unlockAudio = () => {
+    const ctx = ensureAudioCtx();
+    if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
+  };
+  ['pointerdown', 'keydown', 'touchstart'].forEach((evt) => {
+    window.addEventListener(evt, unlockAudio, { once: true, passive: true });
+  });
+  // Try immediately too, in case this page load already has an unlocked context.
+  unlockAudio();
+
+  const playKeySound = () => {
+    const ctx = ensureAudioCtx();
+    if (!ctx || ctx.state !== 'running') return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(650 + Math.random() * 350, now);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.045, now + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.035);
+  };
+
   /* ---------- hero terminal: simulated boot / ping sequence ---------- */
   const terminalBody = document.getElementById('terminalBody');
 
@@ -145,6 +192,7 @@
         const tick = () => {
           if (i <= text.length) {
             cmdSpan.textContent = text.slice(0, i);
+            if (i < text.length && text[i] !== ' ') playKeySound();
             i += 1;
             setTimeout(tick, 32 + Math.random() * 28);
           } else {
@@ -415,4 +463,3 @@
   }
 
 })();
-
