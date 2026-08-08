@@ -311,6 +311,10 @@ a{color:inherit;text-decoration:none}
   font-family:var(--font-mono);font-size:.82rem;width:100%;
 }
 .cg-field input[type=file]{color:var(--text-dim);border-style:dashed}
+.cg-file-row{display:flex;gap:9px;align-items:stretch}
+.cg-file-row input[type=file]{width:auto;flex:1;min-width:0}
+.cg-file-row .cg-btn{flex:1;white-space:nowrap;justify-content:center}
+.cg-file-or{font-family:var(--font-mono);font-size:.72rem;color:var(--text-faint);flex-shrink:0;align-self:center}
 #cgDropZone{border-radius:var(--radius);transition:background .15s,border-color .15s}
 #cgDropZone.cg-dragover{background:rgba(47,226,143,.08)}
 #cgDropZone.cg-dragover input[type=file]{border-color:var(--accent);color:var(--accent)}
@@ -809,9 +813,13 @@ select.cg-modal-input{cursor:pointer}
     <div class="cg-card cg-card-full-h">
       <p class="cg-eyebrow">Data Source &amp; Controls</p>
         <div class="cg-controls">
-          <div class="cg-field cg-full" id="cgDropZone">
+          <div class="cg-field cg-full" id="cgDropZone" style="margin-bottom:16px">
             <label>Upload CSV / Excel <span style="text-transform:none;letter-spacing:0;color:var(--text-faint)">— or drag &amp; drop a file here</span></label>
-            <input type="file" id="cgFile" accept=".xlsx,.xls,.csv">
+            <div class="cg-file-row">
+              <input type="file" id="cgFile" accept=".xlsx,.xls,.csv">
+              <span class="cg-file-or">OR</span>
+              <button type="button" class="cg-btn cg-btn-green cg-tip" onclick="cgPasteData()" data-cg-tip="Copy cells straight from Excel — include the header row — then paste them here to replace the table data.">📋 Paste Data</button>
+            </div>
           </div>
           <button type="button" class="cg-btn cg-btn-green" id="cgResetFileBtn" onclick="cgResetFile()">↺ Reset File</button>
           <button type="button" class="cg-btn cg-btn-validate" id="cgValidateBtn" onclick="cgOnValidate()">✓ Validate</button>
@@ -865,7 +873,6 @@ select.cg-modal-input{cursor:pointer}
     </div>
     <div class="cg-editor-toolbar">
       <button type="button" class="cg-btn cg-btn-green" id="cgAddDataBtn" onclick="cgAddData()">+ Add Data</button>
-      <button type="button" class="cg-btn cg-btn-green cg-tip" onclick="cgPasteData()" data-cg-tip="Copy cells straight from Excel — include the header row — then paste them here to replace the table data.">📋 Paste Data</button>
       <button type="button" class="cg-btn" onclick="cgAddCol()">+ Col</button>
       <button type="button" class="cg-btn" onclick="cgDelCol()">− Col</button>
       <button type="button" class="cg-btn" onclick="cgAddRow()">+ Row</button>
@@ -1943,6 +1950,8 @@ select.cg-modal-input{cursor:pointer}
         cgManualCols=[];
         cgRender();cgPopHeader();cgPopDevices();cgValidate();
         cgToast('✔ '+newRows.length+' row'+(newRows.length===1?'':'s')+' added from paste',null,'Please press the Validate button');
+        const editorCard=$('cgDataEditorCard');
+        if(editorCard)editorCard.scrollIntoView({behavior:'smooth',block:'start'});
       }
     });
   };
