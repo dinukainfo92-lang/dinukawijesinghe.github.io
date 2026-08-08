@@ -131,21 +131,26 @@
 
 <style>
 :root {
-  --bg:          #090c11;
-  --bg-raised:   #10151d;
-  --bg-raised-2: #151b25;
-  --border:      #1f2733;
-  --border-soft: #171e28;
-  --text:        #d9e0e8;
-  --text-dim:    #8891a1;
-  --text-faint:  #545e6d;
-  --green:       #2fe28f;
-  --green-dim:   #1c8a5a;
-  --amber:       #ffb454;
-  --blue:        #5ec8ff;
-  --red:         #ff5f56;
-  --accent:      #2fe28f;
-  --accent-glow: rgba(47,226,143,.35);
+  --bg:          #0d1117;
+  --bg-raised:   #141a22;
+  --bg-raised-2: #1a212b;
+  --border:      #232b38;
+  --border-soft: #1b222c;
+  --text:        #c5ccd6;
+  --text-dim:    #8791a0;
+  --text-faint:  #56606f;
+  --green:       #3ecf8e;
+  --green-dim:   #227b58;
+  --amber:       #eab676;
+  --blue:        #7cc4f2;
+  --red:         #f2726c;
+  --violet:      #b0a0e8;
+  --violet-dim:  #7566ad;
+  --cyan:        #5ee0c4;
+  --cyan-dim:    #2f8f79;
+  --teal:        #4fc2b6;
+  --accent:      #3ecf8e;
+  --accent-glow: rgba(62,207,142,.3);
   --font-mono:   'IBM Plex Mono', ui-monospace, monospace;
   --font-sans:   'IBM Plex Sans', -apple-system, sans-serif;
   --radius:      3px;
@@ -156,7 +161,7 @@ body{
   background:var(--bg);color:var(--text);
   font-family:var(--font-sans);font-size:15px;
   min-height:100vh;
-  background-image:linear-gradient(180deg,rgba(47,226,143,.05),transparent 280px);
+  background-image:linear-gradient(180deg,rgba(62,207,142,.05),transparent 280px);
   transition:background-color .2s,color .2s;
 }
 a{color:inherit;text-decoration:none}
@@ -186,7 +191,7 @@ a{color:inherit;text-decoration:none}
 .cg-breadcrumb a{color:var(--text-dim);transition:color .2s}
 .cg-breadcrumb a:hover{color:var(--accent)}
 .cg-breadcrumb span{margin:0 6px;color:var(--text-faint)}
-.page-title{font-family:var(--font-mono);font-size:1.7rem;font-weight:600;color:#f2f5f8}
+.page-title{font-family:var(--font-mono);font-size:1.7rem;font-weight:600;color:#e6ebf0}
 .page-title::before{content:'$ ';color:var(--text-faint)}
 .page-sub{color:var(--text-dim);font-size:.93rem;margin-top:10px;max-width:60ch;line-height:1.65}
 .cg-divider{
@@ -202,15 +207,15 @@ a{color:inherit;text-decoration:none}
   font-size:.82rem;
   color:var(--accent);
   text-decoration:none;
-  border:1px solid rgba(47,226,143,.3);
+  border:1px solid rgba(62,207,142,.3);
   border-radius:20px;
   padding:5px 14px;
   transition:background .2s,border-color .2s;
 }
 .cg-feature-chips span{
   font-family:var(--font-mono);font-size:.72rem;
-  color:var(--green);background:rgba(47,226,143,.08);
-  border:1px solid rgba(47,226,143,.25);border-radius:20px;
+  color:var(--green);background:rgba(62,207,142,.08);
+  border:1px solid rgba(62,207,142,.25);border-radius:20px;
   padding:4px 12px;white-space:nowrap;
 }
 .cg-chip-link{
@@ -230,17 +235,17 @@ a{color:inherit;text-decoration:none}
 }
 .cg-summary-pill{
   display:inline-flex;align-items:center;gap:5px;
-  color:var(--text-dim);background:rgba(94,200,255,.08);
-  border:1px solid rgba(94,200,255,.25);border-radius:20px;
+  color:var(--text-dim);background:rgba(124,196,242,.08);
+  border:1px solid rgba(124,196,242,.25);border-radius:20px;
   padding:5px 12px;white-space:nowrap;
 }
 .cg-summary-pill b{color:var(--blue)}
-.cg-summary-pill-gen{background:rgba(47,226,143,.1);border-color:rgba(47,226,143,.3)}
+.cg-summary-pill-gen{background:rgba(62,207,142,.1);border-color:rgba(62,207,142,.3)}
 .cg-summary-pill-gen b{color:var(--accent)}
 @keyframes cgAddDataPulse{
   0%{box-shadow:0 0 0 0 var(--accent-glow)}
-  70%{box-shadow:0 0 0 10px rgba(47,226,143,0)}
-  100%{box-shadow:0 0 0 0 rgba(47,226,143,0)}
+  70%{box-shadow:0 0 0 10px rgba(62,207,142,0)}
+  100%{box-shadow:0 0 0 0 rgba(62,207,142,0)}
 }
 
 /* ── main layout ── */
@@ -274,8 +279,21 @@ a{color:inherit;text-decoration:none}
 .cg-card{
   background:var(--bg-raised);border:1px solid var(--border);
   border-radius:8px;padding:18px;margin-bottom:14px;
+  border-top:2px solid var(--border);transition:border-color .2s;
 }
 .cg-card:last-child{margin-bottom:0}
+
+/* ── cool-color card accents ── */
+.cg-accent-violet .cg-eyebrow{color:var(--violet)}
+.cg-accent-violet .cg-eyebrow::before{color:var(--violet-dim)}
+.cg-accent-cyan .cg-eyebrow{color:var(--cyan)}
+.cg-accent-cyan .cg-eyebrow::before{color:var(--cyan-dim)}
+.cg-accent-blue .cg-eyebrow{color:var(--blue)}
+.cg-accent-blue .cg-eyebrow::before{color:#3d7ea0}
+.cg-accent-teal .cg-eyebrow{color:var(--teal)}
+.cg-accent-teal .cg-eyebrow::before{color:#2e8378}
+.cg-accent-violet2 .cg-eyebrow{color:#9a8cd6}
+.cg-accent-violet2 .cg-eyebrow::before{color:var(--violet-dim)}
 
 .cg-eyebrow{
   font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;
@@ -285,14 +303,34 @@ a{color:inherit;text-decoration:none}
 
 /* ── textarea ── */
 .cg-textarea{
-  width:100%;background:var(--bg);color:#a3f7c5;
+  width:100%;background:var(--bg);color:#a8dabb;
   border:1px solid var(--border);border-radius:var(--radius);
   padding:12px;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;
   resize:vertical;min-height:180px;transition:border-color .15s;
 }
 .cg-textarea:focus{outline:none;border-color:var(--accent)}
-.cg-output-ta{color:#b9d9ff;flex:1;min-height:200px;white-space:pre-wrap;word-break:break-all;overflow-x:hidden}
+.cg-output-ta{color:#a9c7e0;flex:1;min-height:200px;white-space:pre-wrap;word-break:break-all;overflow-x:hidden}
 .cg-output-full{margin-top:16px}
+
+/* ── template variable highlighting overlay ── */
+.cg-tpl-wrap{position:relative}
+.cg-tpl-highlight{
+  position:absolute;inset:0;margin:0;padding:12px;
+  font-family:var(--font-mono);font-size:.8rem;line-height:1.6;
+  white-space:pre-wrap;word-break:break-word;overflow:hidden;
+  pointer-events:none;border:1px solid transparent;border-radius:var(--radius);
+  color:#a8dabb;background:var(--bg);overflow:auto;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.cg-tpl-highlight::-webkit-scrollbar{display:none}
+.cg-tpl-highlight code{font:inherit;background:none;color:inherit}
+.cg-var-hl{
+  color:var(--violet);font-weight:600;
+}
+textarea.cg-tpl-live{
+  position:relative;z-index:1;background:transparent;color:transparent;
+  caret-color:#a8dabb;
+}
 
 /* ── controls ── */
 .cg-tpl-actions{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
@@ -316,7 +354,7 @@ a{color:inherit;text-decoration:none}
 .cg-file-row .cg-btn{flex:1;white-space:nowrap;justify-content:center}
 .cg-file-or{font-family:var(--font-mono);font-size:.72rem;color:var(--text-faint);flex-shrink:0;align-self:center}
 #cgDropZone{border-radius:var(--radius);transition:background .15s,border-color .15s}
-#cgDropZone.cg-dragover{background:rgba(47,226,143,.08)}
+#cgDropZone.cg-dragover{background:rgba(62,207,142,.08)}
 #cgDropZone.cg-dragover input[type=file]{border-color:var(--accent);color:var(--accent)}
 
 #cgTplCard{position:relative}
@@ -327,7 +365,7 @@ a{color:inherit;text-decoration:none}
   font-family:var(--font-mono);font-size:.78rem;
 }
 .cg-ac-item{padding:6px 10px;cursor:pointer;color:var(--text-dim);white-space:nowrap}
-.cg-ac-item:hover,.cg-ac-item.cg-ac-active{background:rgba(47,226,143,.14);color:var(--accent)}
+.cg-ac-item:hover,.cg-ac-item.cg-ac-active{background:rgba(94,224,196,.14);color:var(--cyan)}
 
 /* ── buttons ── */
 .cg-btn{
@@ -344,23 +382,23 @@ a{color:inherit;text-decoration:none}
 .cg-btn.cg-ready{
   border-color:var(--green);
   color:var(--green);
-  box-shadow:0 0 0 3px rgba(47,226,143,0.25);
+  box-shadow:0 0 0 3px rgba(62,207,142,0.25);
 }
 .cg-btn.cg-btn-validate{
   border-color:var(--amber);
   color:var(--amber);
 }
-.cg-btn.cg-btn-validate:hover{border-color:var(--amber);color:#fff;background:rgba(255,180,84,.08)}
+.cg-btn.cg-btn-validate:hover{border-color:var(--amber);color:#f0f2f5;background:rgba(234,182,118,.08)}
 .cg-btn.cg-btn-validate.cg-validate-ok{
   border-color:var(--green);
   color:var(--green);
-  background:rgba(47,226,143,.12);
+  background:rgba(62,207,142,.12);
 }
 .cg-btn.cg-sample-btn{
   display:block;text-align:center;text-decoration:none;
   border-color:var(--blue);color:var(--blue);
 }
-.cg-btn.cg-sample-btn:hover{background:rgba(94,200,255,.08);border-color:var(--blue);color:#fff}
+.cg-btn.cg-sample-btn:hover{background:rgba(124,196,242,.08);border-color:var(--blue);color:#f0f2f5}
 
 /* ── toast ── */
 .cg-toast{
@@ -406,7 +444,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── data editor: row highlight (delete confirmation) ── */
 #cgGrid tr.cg-row-highlight td{
-  background:rgba(255,95,86,.18)!important;
+  background:rgba(242,114,108,.18)!important;
   outline:1px solid var(--red);
 }
 
@@ -423,7 +461,7 @@ a{color:inherit;text-decoration:none}
   width:min(360px,90vw);
   background:var(--bg-raised);border:1px solid var(--border);
   border-radius:6px;padding:22px 22px 18px;
-  box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 0 1px rgba(47,226,143,.06);
+  box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 0 1px rgba(62,207,142,.06);
   transform:translateY(8px) scale(.97);
   transition:transform .2s ease;
 }
@@ -469,7 +507,7 @@ select.cg-modal-input{cursor:pointer}
   border-color:var(--red);color:var(--red);
 }
 .cg-modal.cg-modal-danger .cg-modal-confirm-danger:hover{
-  background:rgba(255,95,86,.1);color:#fff;
+  background:rgba(242,114,108,.1);color:#f0f2f5;
 }
 .cg-modal.cg-modal-wide{width:min(440px,92vw)}
 .cg-modal-form-fields{max-height:50vh;overflow:auto;padding-right:2px}
@@ -502,7 +540,7 @@ select.cg-modal-input{cursor:pointer}
   padding:5px 6px;border-radius:4px;font-size:.8rem;
   font-family:var(--font-mono);color:var(--text-dim);transition:background .1s;
 }
-#cgDeviceList div:hover{background:rgba(47,226,143,.06);color:var(--text)}
+#cgDeviceList div:hover{background:rgba(62,207,142,.06);color:var(--text)}
 #cgDeviceList label{display:flex;align-items:center;gap:8px;cursor:pointer}
 #cgDeviceList input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .cg-device-toolbar{display:flex;gap:8px}
@@ -587,32 +625,32 @@ select.cg-modal-input{cursor:pointer}
   position:sticky;top:0;font-weight:600;letter-spacing:.3px;z-index:1;
 }
 #cgGrid tbody tr:nth-child(even){background:rgba(255,255,255,.012)}
-#cgGrid tbody tr:hover{background:rgba(47,226,143,.04)}
-#cgGrid td[contenteditable]{background:#1a2a1a;color:#d0ffd0}
+#cgGrid tbody tr:hover{background:rgba(62,207,142,.04)}
+#cgGrid td[contenteditable]{background:#182219;color:#bcdfc4}
 #cgGrid td[contenteditable]:focus{outline:2px solid var(--accent);outline-offset:-2px}
-#cgGrid td.cg-edited{background:#2a2200;color:#fde68a}
+#cgGrid td.cg-edited{background:#241d0d;color:#e8cf94}
 
 /* ── data editor: duplicate flags ── */
-#cgGrid tr.cg-dup-row>td{background:rgba(255,180,84,.07)}
+#cgGrid tr.cg-dup-row>td{background:rgba(234,182,118,.07)}
 #cgGrid tr.cg-dup-row>td:first-child{
   color:var(--amber);font-weight:600;cursor:pointer;
-  background:rgba(255,180,84,.14);
+  background:rgba(234,182,118,.14);
   border-left:2px solid var(--amber);
   transition:background .15s;
 }
-#cgGrid tr.cg-dup-row>td:first-child:hover{background:rgba(255,180,84,.26)}
+#cgGrid tr.cg-dup-row>td:first-child:hover{background:rgba(234,182,118,.26)}
 #cgGrid tr>td.cg-dup-cell{
-  background:rgba(255,180,84,.18);
-  box-shadow:inset 0 0 0 1px rgba(255,180,84,.5);
-  color:#ffd9a3;
+  background:rgba(234,182,118,.18);
+  box-shadow:inset 0 0 0 1px rgba(234,182,118,.5);
+  color:#e8c393;
 }
 .cg-dup-badge{
   display:inline-block;margin-left:6px;padding:0 5px;
-  border:1px solid rgba(255,180,84,.45);border-radius:9px;
-  background:rgba(255,180,84,.14);color:var(--amber);
+  border:1px solid rgba(234,182,118,.45);border-radius:9px;
+  background:rgba(234,182,118,.14);color:var(--amber);
   font-size:.6rem;letter-spacing:.04em;vertical-align:1px;
 }
-#cgGrid tr.cg-menu-active>td{background:rgba(255,180,84,.2)}
+#cgGrid tr.cg-menu-active>td{background:rgba(234,182,118,.2)}
 
 /* ── data editor: row action menu ── */
 .cg-rowmenu{
@@ -639,18 +677,18 @@ select.cg-modal-input{cursor:pointer}
   padding:7px 9px;border-radius:4px;color:var(--text-dim);
   cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;
 }
-.cg-rowmenu-item:hover{background:rgba(47,226,143,.12);color:var(--accent)}
-.cg-rowmenu-item.cg-rowmenu-danger:hover{background:rgba(255,95,86,.12);color:var(--red)}
+.cg-rowmenu-item:hover{background:rgba(62,207,142,.12);color:var(--accent)}
+.cg-rowmenu-item.cg-rowmenu-danger:hover{background:rgba(242,114,108,.12);color:var(--red)}
 
 /* ── data editor: search hit glow ── */
 #cgGrid tr.cg-row-glow>td{
-  background:rgba(47,226,143,.16);
-  box-shadow:inset 0 0 0 1px rgba(47,226,143,.55);
+  background:rgba(62,207,142,.16);
+  box-shadow:inset 0 0 0 1px rgba(62,207,142,.55);
   animation:cgRowGlow 1s ease-out 2;
 }
 @keyframes cgRowGlow{
-  0%{background:rgba(47,226,143,.45)}
-  100%{background:rgba(47,226,143,.16)}
+  0%{background:rgba(62,207,142,.45)}
+  100%{background:rgba(62,207,142,.16)}
 }
 .cg-search-wrap{display:flex;align-items:center;gap:8px;justify-content:flex-end}
 .cg-search-info{
@@ -673,7 +711,7 @@ select.cg-modal-input{cursor:pointer}
   transform:translateX(-50%) translateY(4px);
   width:max-content;max-width:280px;
   white-space:normal;text-align:left;
-  background:#182029;color:#f2f6fa;
+  background:#182029;color:#e6ebf0;
   border:1px solid #2c3846;border-radius:6px;
   padding:10px 13px;
   font-family:var(--font-sans);font-size:.82rem;font-weight:400;
@@ -788,7 +826,7 @@ select.cg-modal-input{cursor:pointer}
   <!-- ROW 1: Template | Validation -->
   <div class="cg-top-row">
 
-    <div class="cg-card" id="cgTplCard">
+    <div class="cg-card cg-accent-violet" id="cgTplCard">
       <p class="cg-eyebrow">Template</p>
       <div class="cg-tpl-actions">
         <button type="button" class="cg-btn" onclick="cgLoadDefault()">Default Template</button>
@@ -796,31 +834,39 @@ select.cg-modal-input{cursor:pointer}
         <button type="button" class="cg-btn cg-btn-green" onclick="cgSaveTemplate()">💾 Save Template</button>
         <button type="button" class="cg-btn cg-btn-green" id="cgGenTplBtn" onclick="cgGenerateTemplate()">⚙ Generate Template</button>
       </div>
-      <textarea id="cgTpl" class="cg-textarea" spellcheck="false"></textarea>
+      <div class="cg-tpl-wrap">
+        <pre id="cgTplHighlight" class="cg-tpl-highlight" aria-hidden="true"><code id="cgTplHighlightCode"></code></pre>
+        <textarea id="cgTpl" class="cg-textarea cg-tpl-live" spellcheck="false"></textarea>
+      </div>
       <div id="cgTplAutocomplete" class="cg-tpl-ac"></div>
     </div>
 
-    <div class="cg-card">
+    <div class="cg-card cg-accent-cyan">
       <p class="cg-eyebrow">Validation</p>
       <div id="cgDash"></div>
     </div>
 
   </div>
 
-  <!-- ROW 2: Data Source & Controls | Generated Output -->
+  <!-- Data Source — own compact row -->
+  <div class="cg-card cg-accent-blue" id="cgDataSourceCard">
+    <p class="cg-eyebrow">Data Source</p>
+    <div class="cg-field" id="cgDropZone">
+      <label>Upload CSV / Excel <span style="text-transform:none;letter-spacing:0;color:var(--text-faint)">— or drag &amp; drop a file here</span></label>
+      <div class="cg-file-row">
+        <input type="file" id="cgFile" accept=".xlsx,.xls,.csv">
+        <span class="cg-file-or">OR</span>
+        <button type="button" class="cg-btn cg-btn-green cg-tip" onclick="cgPasteData()" data-cg-tip="Copy cells straight from Excel — include the header row — then paste them here to replace the table data.">📋 Paste Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Controls | Generated Output -->
   <div class="cg-top-row cg-row-stretch">
 
-    <div class="cg-card cg-card-full-h">
-      <p class="cg-eyebrow">Data Source &amp; Controls</p>
+    <div class="cg-card cg-card-full-h cg-accent-blue">
+      <p class="cg-eyebrow">Controls</p>
         <div class="cg-controls">
-          <div class="cg-field cg-full" id="cgDropZone" style="margin-bottom:16px">
-            <label>Upload CSV / Excel <span style="text-transform:none;letter-spacing:0;color:var(--text-faint)">— or drag &amp; drop a file here</span></label>
-            <div class="cg-file-row">
-              <input type="file" id="cgFile" accept=".xlsx,.xls,.csv">
-              <span class="cg-file-or">OR</span>
-              <button type="button" class="cg-btn cg-btn-green cg-tip" onclick="cgPasteData()" data-cg-tip="Copy cells straight from Excel — include the header row — then paste them here to replace the table data.">📋 Paste Data</button>
-            </div>
-          </div>
           <button type="button" class="cg-btn cg-btn-green" id="cgResetFileBtn" onclick="cgResetFile()">↺ Reset File</button>
           <button type="button" class="cg-btn cg-btn-validate" id="cgValidateBtn" onclick="cgOnValidate()">✓ Validate</button>
           <button type="button" class="cg-btn" id="cgGenBtn" onclick="cgGenerate()">⚙ Generate All</button>
@@ -848,7 +894,7 @@ select.cg-modal-input{cursor:pointer}
         </div>
     </div>
 
-    <div class="cg-card cg-card-full-h">
+    <div class="cg-card cg-card-full-h cg-accent-teal">
       <div id="cgProgress">
         <div class="cg-prog-label"><span>Generating configs…</span><b id="cgProgressPct">0%</b></div>
         <div class="cg-prog-track"><div id="cgProgressFill" class="cg-prog-fill"></div></div>
@@ -863,7 +909,7 @@ select.cg-modal-input{cursor:pointer}
   </div>
 
   <!-- DATA EDITOR — full width -->
-  <div class="cg-card" id="cgDataEditorCard">
+  <div class="cg-card cg-accent-violet2" id="cgDataEditorCard">
     <div class="cg-output-head">
       <p class="cg-eyebrow">Data Editor</p>
       <div class="cg-search-wrap">
@@ -993,6 +1039,32 @@ select.cg-modal-input{cursor:pointer}
   const tpl=()=>$('cgTpl');
   const out=()=>$('cgOut');
   function cgEscapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  // ── template variable highlight overlay ──
+  function cgRenderTplHighlight(){
+    const code=$('cgTplHighlightCode');
+    if(!code)return;
+    const val=tpl().value;
+    code.innerHTML=cgEscapeHtml(val).replace(/\{\{(.*?)\}\}/g,'<span class="cg-var-hl">{{$1}}</span>')+'\n';
+  }
+  function cgSyncTplScroll(){
+    const hl=$('cgTplHighlight');
+    if(hl){hl.scrollTop=tpl().scrollTop;hl.scrollLeft=tpl().scrollLeft;}
+  }
+  (function(){
+    // wrap .value so every programmatic set (default/clear/save/generate/load) re-renders the highlight too
+    const ta=$('cgTpl');
+    if(!ta)return;
+    const desc=Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value');
+    Object.defineProperty(ta,'value',{
+      get(){return desc.get.call(this);},
+      set(v){desc.set.call(this,v);cgRenderTplHighlight();cgSyncTplScroll();},
+      configurable:true
+    });
+    ta.addEventListener('input',()=>{cgRenderTplHighlight();cgSyncTplScroll();});
+    ta.addEventListener('scroll',cgSyncTplScroll);
+  })();
+
   tpl().value=(localStorage.getItem('cgSavedTemplate')||'').trim()||defaultTpl;
 
   function cgHandleFile(file){
@@ -1642,9 +1714,9 @@ select.cg-modal-input{cursor:pointer}
       if(id==='cgCopyBtn')btn.textContent='⎘ Copy Output';
       if(typeof btn.animate!=='function')return;
       btn.animate([
-        {transform:'scale(1)',boxShadow:'0 0 0 0 rgba(47,226,143,0)'},
-        {transform:'scale(1.06)',boxShadow:'0 0 0 6px rgba(47,226,143,0.35)'},
-        {transform:'scale(1)',boxShadow:'0 0 0 10px rgba(47,226,143,0)'}
+        {transform:'scale(1)',boxShadow:'0 0 0 0 rgba(62,207,142,0)'},
+        {transform:'scale(1.06)',boxShadow:'0 0 0 6px rgba(62,207,142,0.35)'},
+        {transform:'scale(1)',boxShadow:'0 0 0 10px rgba(62,207,142,0)'}
       ],{duration:600,delay:i*110,easing:'ease-out'});
     });
   }
