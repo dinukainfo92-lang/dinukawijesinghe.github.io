@@ -235,8 +235,42 @@
         }
       };
 
-      // Kick off once the hero terminal scrolls into view (or immediately on load).
-      runStep();
+      // Browsers block audio playback until a real user gesture happens
+      // (click/tap/key) — there is no way around this. So instead of typing
+      // immediately on page load (which would always be silent), wait for
+      // the visitor's first interaction ANYWHERE on the page — a nav click,
+      // a scroll-then-tap, any keypress — and start the animation right then,
+      // so the sound is unlocked at that same instant. If nobody interacts
+      // within 1.5s, start anyway (silently) so the terminal isn't stuck empty.
+      let started = false;
+      const startSequence = () => {
+        if (started) return;
+        started = true;
+        runStep();
+      };
+      ['pointerdown', 'keydown', 'touchstart'].forEach((evt) => {
+        window.addEventListener(
+          evt,
+          () => {
+            unlockAudio();
+            startSequence();
+          },
+          { once: true, passive: true }
+        );
+      });
+      setTimeout(startSequence, 1500);
+
+      // Bonus: clicking the terminal itself always replays it with sound.
+      const terminalEl = terminalBody.closest('.terminal') || terminalBody;
+      terminalEl.style.cursor = 'pointer';
+      terminalEl.title = 'Click to replay';
+      terminalEl.addEventListener('click', () => {
+        unlockAudio();
+        terminalBody.innerHTML = '';
+        stepIndex = 0;
+        started = true;
+        runStep();
+      });
     }
   }
 
