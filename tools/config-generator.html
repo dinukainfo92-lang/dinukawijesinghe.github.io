@@ -275,6 +275,7 @@ a{color:inherit;text-decoration:none}
   .tool-footer{flex-direction:column;align-items:flex-start}
 }
 .cg-top-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.cg-top-row>.cg-card{margin-bottom:0}
 @media(max-width:860px){.cg-top-row{grid-template-columns:1fr}}
 .cg-col-left{display:flex;flex-direction:column;gap:16px}
 .cg-col-right{display:flex;flex-direction:column}
@@ -354,10 +355,14 @@ textarea.cg-tpl-live{
   font-family:var(--font-mono);font-size:.82rem;width:100%;
 }
 .cg-field input[type=file]{color:var(--text-dim);border-style:dashed}
-.cg-file-row{display:flex;gap:9px;align-items:stretch}
-.cg-file-row input[type=file]{width:auto;flex:1;min-width:0}
-.cg-file-row .cg-btn{flex:1;white-space:nowrap;justify-content:center}
-.cg-file-or{font-family:var(--font-mono);font-size:.72rem;color:var(--text-faint);flex-shrink:0;align-self:center}
+.cg-file-row{display:flex;gap:9px;align-items:flex-start}
+.cg-file-or{font-family:var(--font-mono);font-size:.72rem;color:var(--text-faint);flex-shrink:0;align-self:center;margin-top:19px}
+.cg-paste-col{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.cg-paste-col label{
+  font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--text-faint);line-height:1.35;
+}
+.cg-paste-col input[type=file],.cg-paste-col .cg-btn{width:100%;justify-content:center}
 #cgDropZone{border-radius:var(--radius);transition:background .15s,border-color .15s}
 #cgDropZone.cg-dragover{background:rgba(62,207,142,.08)}
 #cgDropZone.cg-dragover input[type=file]{border-color:var(--accent);color:var(--accent)}
@@ -831,7 +836,7 @@ select.cg-modal-input{cursor:pointer}
 <main class="cg-page">
 
   <!-- ROW 1: Template | Validation -->
-  <div class="cg-top-row">
+  <div class="cg-top-row cg-row-stretch">
 
     <div class="cg-card cg-accent-violet" id="cgTplCard">
       <p class="cg-eyebrow">Template</p>
@@ -859,11 +864,16 @@ select.cg-modal-input{cursor:pointer}
   <div class="cg-card cg-accent-blue" id="cgDataSourceCard">
     <p class="cg-eyebrow">Data Source</p>
     <div class="cg-field" id="cgDropZone">
-      <label>Upload CSV / Excel <span style="text-transform:none;letter-spacing:0;color:var(--text-faint)">— or drag &amp; drop a file here</span></label>
       <div class="cg-file-row">
-        <input type="file" id="cgFile" accept=".xlsx,.xls,.csv">
+        <div class="cg-paste-col">
+          <label>Upload CSV / Excel <span style="text-transform:none;letter-spacing:0;color:var(--text-faint)">— or drag &amp; drop a file here</span></label>
+          <input type="file" id="cgFile" accept=".xlsx,.xls,.csv">
+        </div>
         <span class="cg-file-or">OR</span>
-        <button type="button" class="cg-btn cg-btn-green cg-tip" onclick="cgPasteData()" data-cg-tip="Copy cells straight from Excel — include the header row — then paste them here to replace the table data.">📋 Paste Data</button>
+        <div class="cg-paste-col">
+          <label>Paste Data <span style="text-transform:none;letter-spacing:0;color:var(--text-faint)">— copy cells from Excel, include the header row</span></label>
+          <button type="button" class="cg-btn cg-btn-green" onclick="cgPasteData()">📋 Paste Data</button>
+        </div>
       </div>
     </div>
   </div>
