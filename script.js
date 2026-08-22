@@ -117,7 +117,7 @@
   const terminalBody = document.getElementById('terminalBody');
 
   if (terminalBody) {
-    const prompt = '@dinukawijesinghe.com:~$';
+    const prompt = '@dinukahasanka.com:~$';
 
     // Each entry is either a typed command, or pre-rendered output lines.
     const script = [
@@ -129,11 +129,11 @@
           '<span class="tl-muted">Network Engineer — IP/MPLS Core · 7+ yrs</span>',
         ],
       },
-      { type: 'cmd', text: 'ping dinukawijesinghe.com -c 4' },
+      { type: 'cmd', text: 'ping dinukahasanka.com -c 4' },
       {
         type: 'output',
         lines: [
-          'PING dinukawijesinghe.com: 56 data bytes',
+          'PING dinukahasanka.com: 56 data bytes',
           '64 bytes: icmp_seq=0 ttl=61 time=4.12 ms',
           '64 bytes: icmp_seq=1 ttl=61 time=3.87 ms',
           '64 bytes: icmp_seq=2 ttl=61 time=4.05 ms',
