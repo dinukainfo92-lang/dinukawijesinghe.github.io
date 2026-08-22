@@ -66,53 +66,6 @@
     barObserver.observe(skillTable);
   }
 
-  /* ---------- synthetic key-click sound (no audio file needed) ---------- */
-  let audioCtx = null;
-
-  const ensureAudioCtx = () => {
-    if (!audioCtx) {
-      try {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      } catch (e) {
-        audioCtx = null;
-      }
-    }
-    return audioCtx;
-  };
-
-  // Browsers block audio until a user gesture — unlock on the first
-  // click/tap/keypress anywhere on the page so later terminal runs have sound.
-  const unlockAudio = () => {
-    const ctx = ensureAudioCtx();
-    if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
-  };
-  ['pointerdown', 'keydown', 'touchstart'].forEach((evt) => {
-    window.addEventListener(evt, unlockAudio, { once: true, passive: true });
-  });
-  // Try immediately too, in case this page load already has an unlocked context.
-  unlockAudio();
-
-  const playKeySound = () => {
-    const ctx = ensureAudioCtx();
-    if (!ctx || ctx.state !== 'running') return;
-
-    const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(650 + Math.random() * 350, now);
-
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.045, now + 0.004);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.035);
-  };
-
   /* ---------- hero terminal: simulated boot / ping sequence ---------- */
   const terminalBody = document.getElementById('terminalBody');
 
@@ -149,6 +102,15 @@
           'based      : Sri Lanka',
           'uptime     : 7+ years',
           '<span class="tl-ok">status     : ● open to opportunities</span>',
+        ],
+      },
+      { type: 'cmd', text: 'show certifications' },
+      {
+        type: 'output',
+        lines: [
+          '<span class="tl-key">CCNP Service Provider</span>          <span class="tl-ok">✓ active</span>',
+          '<span class="tl-key">Cisco Certified Specialist</span> ×3  <span class="tl-ok">✓ active</span>',
+          '<span class="tl-key">RHCSA</span>                          <span class="tl-ok">✓ active</span>',
         ],
       },
     ];
@@ -192,7 +154,6 @@
         const tick = () => {
           if (i <= text.length) {
             cmdSpan.textContent = text.slice(0, i);
-            if (i < text.length && text[i] !== ' ') playKeySound();
             i += 1;
             setTimeout(tick, 32 + Math.random() * 28);
           } else {
@@ -235,37 +196,21 @@
         }
       };
 
-      // Browsers block audio playback until a real user gesture happens
-      // (click/tap/key) — there is no way around this. So instead of typing
-      // immediately on page load (which would always be silent), wait for
-      // the visitor's first interaction ANYWHERE on the page — a nav click,
-      // a scroll-then-tap, any keypress — and start the animation right then,
-      // so the sound is unlocked at that same instant. If nobody interacts
-      // within 1.5s, start anyway (silently) so the terminal isn't stuck empty.
+      // Start the boot sequence shortly after the hero renders so it feels
+      // like part of the page loading, not a delayed animation.
       let started = false;
       const startSequence = () => {
         if (started) return;
         started = true;
         runStep();
       };
-      ['pointerdown', 'keydown', 'touchstart'].forEach((evt) => {
-        window.addEventListener(
-          evt,
-          () => {
-            unlockAudio();
-            startSequence();
-          },
-          { once: true, passive: true }
-        );
-      });
-      setTimeout(startSequence, 1500);
+      setTimeout(startSequence, 500);
 
-      // Bonus: clicking the terminal itself always replays it with sound.
+      // Bonus: clicking the terminal itself always replays it.
       const terminalEl = terminalBody.closest('.terminal') || terminalBody;
       terminalEl.style.cursor = 'pointer';
       terminalEl.title = 'Click to replay';
       terminalEl.addEventListener('click', () => {
-        unlockAudio();
         terminalBody.innerHTML = '';
         stepIndex = 0;
         started = true;
