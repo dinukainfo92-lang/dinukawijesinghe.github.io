@@ -8,19 +8,19 @@
 <meta name="description" content="How I built a free browser-based tool that turns a CSV or Excel file into ready-to-paste Cisco IOS-XE, IOS-XR, Juniper JunOS, NX-OS and Arista EOS configs, using a simple {{VARIABLE}} template.">
 <meta name="author" content="Dinuka Hasanka Wijesinghe">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://dinukawijesinghe.com/article/network-config-generator.html">
+<link rel="canonical" href="https://dinukahasanka.com/article/network-config-generator.html">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Network Config Generator — Bulk Router Config from CSV/Excel">
 <meta property="og:description" content="A free browser-based tool that turns a CSV or Excel file into ready-to-paste router configs for any vendor CLI, using a simple {{VARIABLE}} template.">
-<meta property="og:url" content="https://dinukawijesinghe.com/article/network-config-generator.html">
+<meta property="og:url" content="https://dinukahasanka.com/article/network-config-generator.html">
 <meta property="og:site_name" content="Dinuka Wijesinghe — Network Engineering Tools">
-<meta property="og:image" content="https://dinukawijesinghe.com/assets/config-generator-hero.png">
+<meta property="og:image" content="https://dinukahasanka.com/assets/config-generator-hero.png">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Network Config Generator — Bulk Router Config from CSV/Excel">
 <meta name="twitter:description" content="Free browser-based tool: CSV/Excel + a CLI template with {{VARIABLES}} = bulk-generated router configs for any vendor.">
-<meta name="twitter:image" content="https://dinukawijesinghe.com/assets/config-generator-hero.png">
+<meta name="twitter:image" content="https://dinukahasanka.com/assets/config-generator-hero.png">
 
 <script type="application/ld+json">
 {
@@ -28,17 +28,17 @@
   "@type": "Article",
   "headline": "Network Config Generator — Bulk Router Config from CSV/Excel",
   "description": "How a free browser-based tool turns a CSV or Excel file into ready-to-paste router configs for Cisco IOS-XE, IOS-XR, Juniper JunOS, NX-OS and Arista EOS.",
-  "image": "https://dinukawijesinghe.com/assets/config-generator-hero.png",
+  "image": "https://dinukahasanka.com/assets/config-generator-hero.png",
   "author": {
     "@type": "Person",
     "name": "Dinuka Hasanka Wijesinghe",
-    "url": "https://dinukawijesinghe.com"
+    "url": "https://dinukahasanka.com"
   },
   "publisher": {
     "@type": "Person",
     "name": "Dinuka Hasanka Wijesinghe"
   },
-  "mainEntityOfPage": "https://dinukawijesinghe.com/article/network-config-generator.html"
+  "mainEntityOfPage": "https://dinukahasanka.com/article/network-config-generator.html"
 }
 </script>
 
@@ -134,17 +134,17 @@ a{color:inherit;text-decoration:none}
 <body>
 
 <div class="topbar">
-  <a href="https://dinukawijesinghe.com" class="topbar-logo"><span>~/</span>dinuka · articles</a>
+  <a href="https://dinukahasanka.com" class="topbar-logo"><span>~/</span>dinuka · articles</a>
   <div class="topbar-right">
-    <a href="https://dinukawijesinghe.com" target="_blank" rel="noopener" class="topbar-back">← back to portfolio</a>
+    <a href="https://dinukahasanka.com" target="_blank" rel="noopener" class="topbar-back">← back to portfolio</a>
   </div>
 </div>
 
 <div class="page-header article-wrap">
   <nav class="cg-breadcrumb" aria-label="Breadcrumb">
-    <a href="https://dinukawijesinghe.com">Dinuka Wijesinghe</a><span>/</span><a href="https://dinukawijesinghe.com/#articles">Articles</a><span>/</span><span aria-current="page">Network Config Generator</span>
+    <a href="https://dinukahasanka.com">Dinuka Wijesinghe</a><span>/</span><a href="https://dinukahasanka.com/#articles">Articles</a><span>/</span><span aria-current="page">Network Config Generator</span>
   </nav>
-  <p class="page-tag"><a href="https://dinukawijesinghe.com/#articles">articles</a> / 01</p>
+  <p class="page-tag"><a href="https://dinukahasanka.com/#articles">articles</a> / 01</p>
   <h1 class="page-title">Network Config Generator</h1>
   <p class="article-meta">By Dinuka Hasanka Wijesinghe · IP/MPLS Core Network Engineer</p>
 </div>
@@ -167,7 +167,7 @@ a{color:inherit;text-decoration:none}
     <li>Nokia SR OS</li>
     <li>Anything else with a text-based CLI</li>
   </ul>
-  <p>Try it here: <a href="https://dinukawijesinghe.com/tools/config-generator.html" target="_blank" rel="noopener">dinukawijesinghe.com/tools/config-generator.html</a></p>
+  <p>Try it here: <a href="https://dinukahasanka.com/tools/config-generator.html" target="_blank" rel="noopener">dinukahasanka.com/tools/config-generator.html</a></p>
 
   <h2>Requirements</h2>
   <p>None. It's a static web page — open it in any modern browser, on any OS. No Python, no pip installs, no scripts to run locally. All processing happens client-side, so device data never touches a server.</p>
@@ -197,18 +197,18 @@ a{color:inherit;text-decoration:none}
   <blockquote>As always — review generated configuration before pushing it to a production device. The tool doesn't know your network; it only knows your template and your data.</blockquote>
 
   <h2>Summary</h2>
-  <p>I built this because I was tired of hand-editing the same interface block forty times during a migration. If it saves you the same headache, that's the point of putting it up for free. It's part of a small suite of browser-based tools I maintain at <a href="https://dinukawijesinghe.com/#tools" target="_blank" rel="noopener">dinukawijesinghe.com/#tools</a>, alongside a Pre/Post Check diff tool and a Subnet/VLSM calculator.</p>
-  <p>Found a bug, or a vendor CLI quirk it doesn't handle well? Reach out via the <a href="https://dinukawijesinghe.com/contact.html" target="_blank" rel="noopener">contact form</a> on the site — happy to take a look.</p>
+  <p>I built this because I was tired of hand-editing the same interface block forty times during a migration. If it saves you the same headache, that's the point of putting it up for free. It's part of a small suite of browser-based tools I maintain at <a href="https://dinukahasanka.com/#tools" target="_blank" rel="noopener">dinukahasanka.com/#tools</a>, alongside a Pre/Post Check diff tool and a Subnet/VLSM calculator.</p>
+  <p>Found a bug, or a vendor CLI quirk it doesn't handle well? Reach out via the <a href="https://dinukahasanka.com/contact.html" target="_blank" rel="noopener">contact form</a> on the site — happy to take a look.</p>
 
   <div class="article-cta">
-    <a href="https://dinukawijesinghe.com/tools/config-generator.html" target="_blank" rel="noopener">→ Open Network Config Generator</a>
+    <a href="https://dinukahasanka.com/tools/config-generator.html" target="_blank" rel="noopener">→ Open Network Config Generator</a>
   </div>
 
 </div>
 
 <footer class="tool-footer">
   <span>© <span id="cgYear"></span> Dinuka Hasanka Wijesinghe. All Rights Reserved.</span>
-  <span><a href="https://dinukawijesinghe.com/tools/config-generator.html" target="_blank" rel="noopener">Network Config Generator →</a></span>
+  <span><a href="https://dinukahasanka.com/tools/config-generator.html" target="_blank" rel="noopener">Network Config Generator →</a></span>
 </footer>
 
 <script>document.getElementById('cgYear').textContent=new Date().getFullYear();</script>
