@@ -342,9 +342,21 @@ button:focus-visible {
 .terminal {
   background: var(--bg-raised);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.02);
+  box-shadow: 0 28px 70px -24px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255,255,255,0.02);
+  position: relative;
+}
+
+.terminal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--blue));
+  opacity: 0.7;
 }
 
 .terminal-bar {
@@ -388,6 +400,40 @@ button:focus-visible {
 .terminal-body .tl-key { color: var(--blue); }
 .terminal-body .tl-muted { color: var(--text-faint); }
 .terminal-body .tl-line { white-space: pre-wrap; }
+
+.terminal-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 18px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-raised-2);
+}
+
+.tbadge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.01em;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  white-space: nowrap;
+}
+
+.tbadge-ok {
+  color: var(--green);
+  border-color: var(--green-dim);
+  background: rgba(47, 226, 143, 0.06);
+}
+
+.tbadge-live {
+  color: var(--text);
+}
+
+.tbadge .led { margin-right: 6px; }
 
 .terminal-cursor {
   display: inline-block;
