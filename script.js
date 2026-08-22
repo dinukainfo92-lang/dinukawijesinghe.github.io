@@ -66,156 +66,29 @@
     barObserver.observe(skillTable);
   }
 
-  /* ---------- hero terminal: simulated boot / ping sequence ---------- */
-  const terminalBody = document.getElementById('terminalBody');
+  /* ---------- hero: live network topology diagram ---------- */
+  const topoStage = document.getElementById('topoStage');
+  const topoPps = document.getElementById('topoPps');
 
-  if (terminalBody) {
-    const prompt = '@dinukahasanka.com:~$';
+  if (topoStage) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Each entry is either a typed command, or pre-rendered output lines.
-    const script = [
-      { type: 'cmd', text: 'whoami' },
-      {
-        type: 'output',
-        lines: [
-          '<span class="tl-key">Dinuka Hasanka Wijesinghe</span>',
-          '<span class="tl-muted">Network Engineer — IP/MPLS Core · 7+ yrs</span>',
-        ],
-      },
-      { type: 'cmd', text: 'ping dinukahasanka.com -c 4' },
-      {
-        type: 'output',
-        lines: [
-          'PING dinukahasanka.com: 56 data bytes',
-          '64 bytes: icmp_seq=0 ttl=61 time=4.12 ms',
-          '64 bytes: icmp_seq=1 ttl=61 time=3.87 ms',
-          '64 bytes: icmp_seq=2 ttl=61 time=4.05 ms',
-          '64 bytes: icmp_seq=3 ttl=61 time=3.94 ms',
-          '<span class="tl-ok">4 packets transmitted, 4 received, 0% loss</span>',
-        ],
-      },
-      { type: 'cmd', text: 'show version | include status' },
-      {
-        type: 'output',
-        lines: [
-          'role       : IP/MPLS Backbone Engineer',
-          'based      : Sri Lanka',
-          'uptime     : 7+ years',
-          '<span class="tl-ok">status     : ● open to opportunities</span>',
-        ],
-      },
-      { type: 'cmd', text: 'show certifications' },
-      {
-        type: 'output',
-        lines: [
-          '<span class="tl-key">CCNP Service Provider</span>          <span class="tl-ok">✓ active</span>',
-          '<span class="tl-key">Cisco Certified Specialist</span> ×3  <span class="tl-ok">✓ active</span>',
-          '<span class="tl-key">RHCSA</span>                          <span class="tl-ok">✓ active</span>',
-        ],
-      },
-    ];
-
-    let reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const renderStatic = () => {
-      const html = script
-        .map((step) => {
-          if (step.type === 'cmd') {
-            return `<div class="tl-line"><span class="tl-prompt">${prompt}</span> <span class="tl-cmd">${step.text}</span></div>`;
-          }
-          return step.lines.map((l) => `<div class="tl-line">${l}</div>`).join('');
-        })
-        .join('');
-      terminalBody.innerHTML = html;
-    };
-
-    if (reduceMotion) {
-      renderStatic();
-    } else {
-      terminalBody.innerHTML = '';
-      let stepIndex = 0;
-
-      const typeCommand = (text, lineEl, done) => {
-        let i = 0;
-        const cursor = document.createElement('span');
-        cursor.className = 'terminal-cursor';
-
-        const promptSpan = document.createElement('span');
-        promptSpan.className = 'tl-prompt';
-        promptSpan.textContent = prompt + ' ';
-
-        const cmdSpan = document.createElement('span');
-        cmdSpan.className = 'tl-cmd';
-
-        lineEl.appendChild(promptSpan);
-        lineEl.appendChild(cmdSpan);
-        lineEl.appendChild(cursor);
-
+    // Small "packets/sec" counter that drifts around a realistic-looking
+    // baseline, purely cosmetic — gives the diagram a sense of live traffic
+    // without pretending to be real telemetry.
+    if (topoPps) {
+      if (reduceMotion) {
+        topoPps.textContent = '1.1k';
+      } else {
+        let value = 1100;
         const tick = () => {
-          if (i <= text.length) {
-            cmdSpan.textContent = text.slice(0, i);
-            i += 1;
-            setTimeout(tick, 32 + Math.random() * 28);
-          } else {
-            cursor.remove();
-            done();
-          }
+          value += Math.round((Math.random() - 0.5) * 180);
+          value = Math.max(820, Math.min(1450, value));
+          topoPps.textContent = (value / 1000).toFixed(1) + 'k';
+          setTimeout(tick, 900 + Math.random() * 500);
         };
-        tick();
-      };
-
-      const printOutput = (lines, done) => {
-        let i = 0;
-        const next = () => {
-          if (i < lines.length) {
-            const div = document.createElement('div');
-            div.className = 'tl-line';
-            div.innerHTML = lines[i];
-            terminalBody.appendChild(div);
-            i += 1;
-            setTimeout(next, 90);
-          } else {
-            done();
-          }
-        };
-        next();
-      };
-
-      const runStep = () => {
-        if (stepIndex >= script.length) return;
-        const step = script[stepIndex];
-        stepIndex += 1;
-
-        if (step.type === 'cmd') {
-          const line = document.createElement('div');
-          line.className = 'tl-line';
-          terminalBody.appendChild(line);
-          typeCommand(step.text, line, () => setTimeout(runStep, 260));
-        } else {
-          printOutput(step.lines, () => setTimeout(runStep, 420));
-        }
-      };
-
-      // Start the boot sequence shortly after the hero renders so it feels
-      // like part of the page loading, not a delayed animation.
-      let started = false;
-      const startSequence = () => {
-        if (started) return;
-        started = true;
-        runStep();
-      };
-      setTimeout(startSequence, 500);
-
-      // Bonus: clicking the terminal itself always replays it.
-      const terminalEl = terminalBody.closest('.terminal') || terminalBody;
-      terminalEl.style.cursor = 'pointer';
-      terminalEl.title = 'Click to replay';
-      terminalEl.addEventListener('click', () => {
-        terminalBody.innerHTML = '';
-        stepIndex = 0;
-        started = true;
-        runStep();
-      });
+        setTimeout(tick, 500);
+      }
     }
   }
 
