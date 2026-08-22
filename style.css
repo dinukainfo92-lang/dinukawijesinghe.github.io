@@ -28,7 +28,7 @@
   --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   /* -- layout -- */
-  --wrap: 1120px;
+  --wrap: 1280px;
   --header-h: 68px;
   --radius: 3px;
 }
@@ -51,7 +51,21 @@ body {
   overflow-x: hidden;
   background-image:
     linear-gradient(180deg, rgba(47,226,143,0.05), transparent 320px),
-    radial-gradient(1200px 500px at 85% -10%, rgba(94,200,255,0.08), transparent 60%);
+    radial-gradient(1200px 500px at 85% -10%, rgba(94,200,255,0.08), transparent 60%),
+    radial-gradient(900px 900px at -12% 30%, rgba(47,226,143,0.06), transparent 55%),
+    radial-gradient(900px 900px at 112% 65%, rgba(94,200,255,0.06), transparent 55%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.014) 0px, rgba(255,255,255,0.014) 1px, transparent 1px, transparent 72px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.014) 0px, rgba(255,255,255,0.014) 1px, transparent 1px, transparent 72px);
+  background-attachment: fixed, fixed, fixed, fixed, fixed, fixed;
+}
+
+@media (max-width: 900px) {
+  body {
+    background-image:
+      linear-gradient(180deg, rgba(47,226,143,0.05), transparent 320px),
+      radial-gradient(1200px 500px at 85% -10%, rgba(94,200,255,0.08), transparent 60%);
+    background-attachment: scroll, scroll;
+  }
 }
 
 a { color: inherit; text-decoration: none; }
@@ -92,6 +106,51 @@ button:focus-visible {
   );
   mix-blend-mode: overlay;
   opacity: 0.5;
+}
+
+/* ---------- side rails (decorative, wide screens only) ---------- */
+.side-rail {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  bottom: 0;
+  width: 40px;
+  z-index: 1;
+  pointer-events: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.side-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--border) 15%, var(--border) 85%, transparent);
+}
+
+.side-rail-left { left: 22px; }
+.side-rail-left::before { right: -14px; }
+.side-rail-right { right: 22px; }
+.side-rail-right::before { left: -14px; }
+
+.side-rail span {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  color: var(--text-faint);
+  opacity: 0.4;
+  white-space: nowrap;
+}
+
+.side-rail-right span { transform: rotate(180deg); }
+
+@media (min-width: 1480px) {
+  .side-rail { display: flex; }
 }
 
 /* ---------- header ---------- */
@@ -969,7 +1028,7 @@ button:focus-visible {
 
 .tool-preview-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 18px;
 }
 @media (max-width: 760px) { .tool-preview-grid { grid-template-columns: 1fr; } }
