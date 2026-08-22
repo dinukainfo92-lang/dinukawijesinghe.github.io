@@ -147,9 +147,27 @@ tr:hover td:first-child{background:var(--bg-raised)}
 </main>
 
 <footer class="tool-footer">
-  <span>Built by <a href="https://dinukahasanka.com">Dinuka Hasanka Wijesinghe</a> — Network Engineer, IP/MPLS Core</span>
+  <span>Built by <a href="https://dinukahasanka.com">Dinuka Hasanka Wijesinghe</a> — Network Engineer, IP/MPLS Core &nbsp;·&nbsp; Last updated:&nbsp;<span id="pcLastUpdated">Aug 2026</span></span>
   <a href="https://dinukahasanka.com/tools/config-generator.html">Config Generator Tool →</a>
 </footer>
+
+<script>
+// "Last updated": pulled from the repo's latest commit. Keeps the static
+// fallback already in the HTML if the request fails (offline, rate-limited).
+(function(){
+  const el=document.getElementById('pcLastUpdated');
+  if(!el)return;
+  fetch('https://api.github.com/repos/dinukainfo92-lang/dinukawijesinghe.github.io/commits?per_page=1')
+    .then((res)=>(res.ok?res.json():Promise.reject(res.status)))
+    .then((commits)=>{
+      const iso=commits&&commits[0]&&commits[0].commit&&commits[0].commit.author&&commits[0].commit.author.date;
+      if(!iso)return;
+      const date=new Date(iso);
+      el.textContent=date.toLocaleDateString('en-US',{month:'short',year:'numeric'});
+    })
+    .catch(()=>{ /* keep static fallback */ });
+})();
+</script>
 
 <script>
 const PROTOCOLS={
