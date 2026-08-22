@@ -138,15 +138,15 @@
       <span class="logo-prompt">~/</span>dinuka<span class="cursor-blink">_</span>
     </a>
     <nav class="nav" id="siteNav">
-      <a href="#about"><span class="nav-idx">01</span>about</a>
-      <a href="#skills"><span class="nav-idx">02</span>skills</a>
-      <a href="#experience"><span class="nav-idx">03</span>experience</a>
-      <a href="#gallery"><span class="nav-idx">04</span>gallery</a>
-      <a href="#articles"><span class="nav-idx">05</span>articles</a>
-      <a href="#tools"><span class="nav-idx">06</span>tools</a>
-      <a href="#education"><span class="nav-idx">07</span>education</a>
-      <a href="#certifications"><span class="nav-idx">08</span>certs</a>
-      <a href="#contact"><span class="nav-idx">09</span>contact</a>
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#experience">experience</a>
+      <a href="#gallery">gallery</a>
+      <a href="#articles">articles</a>
+      <a href="#tools">tools</a>
+      <a href="#education">education</a>
+      <a href="#certifications">certs</a>
+      <a href="#contact">contact</a>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -171,12 +171,48 @@
         </div>
       </div>
 
-      <div class="terminal" role="img" aria-label="Terminal showing a simulated ping and system info for Dinuka Hasanka Wijesinghe">
+      <div class="terminal" aria-label="Live network topology diagram — animated IP/MPLS core backbone connecting Colombo, Kandy, Galle and a Sydney PoP for Dinuka Hasanka Wijesinghe">
         <div class="terminal-bar">
           <span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span>
-          <span class="terminal-title">dinukahasanka.com</span>
+          <span class="terminal-title">dinukahasanka.com — topology</span>
         </div>
-        <div class="terminal-body" id="terminalBody"></div>
+        <div class="topo-stage" id="topoStage">
+          <svg class="topo-svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+            <line class="topo-link" x1="500" y1="270" x2="150" y2="90"></line>
+            <line class="topo-link" x1="500" y1="270" x2="850" y2="90"></line>
+            <line class="topo-link" x1="500" y1="270" x2="150" y2="480"></line>
+            <line class="topo-link" x1="500" y1="270" x2="850" y2="480"></line>
+            <circle class="topo-packet" r="6"><animateMotion dur="2.4s" begin="0s" repeatCount="indefinite" path="M150,90 L500,270"></animateMotion></circle>
+            <circle class="topo-packet" r="6"><animateMotion dur="2.1s" begin="0.3s" repeatCount="indefinite" path="M500,270 L850,90"></animateMotion></circle>
+            <circle class="topo-packet" r="6"><animateMotion dur="2.7s" begin="0.6s" repeatCount="indefinite" path="M500,270 L150,480"></animateMotion></circle>
+            <circle class="topo-packet" r="6"><animateMotion dur="2.2s" begin="0.9s" repeatCount="indefinite" path="M850,480 L500,270"></animateMotion></circle>
+          </svg>
+          <div class="topo-node topo-node-core" style="left:50%; top:45%;" title="Core Router — Colombo, IP/MPLS Backbone">
+            <span class="topo-node-dot"></span>
+            <span class="topo-node-label">CORE</span>
+          </div>
+          <div class="topo-node" style="left:15%; top:15%;" title="PoP-1 — Colombo Metro Site">
+            <span class="topo-node-dot"></span>
+            <span class="topo-node-label">PoP-1</span>
+          </div>
+          <div class="topo-node" style="left:85%; top:15%;" title="PoP-2 — Kandy Site">
+            <span class="topo-node-dot"></span>
+            <span class="topo-node-label">PoP-2</span>
+          </div>
+          <div class="topo-node" style="left:15%; top:80%;" title="PoP-3 — Galle Site">
+            <span class="topo-node-dot"></span>
+            <span class="topo-node-label">PoP-3</span>
+          </div>
+          <div class="topo-node" style="left:85%; top:80%;" title="PoP-4 — Sydney, NBN Australia">
+            <span class="topo-node-dot"></span>
+            <span class="topo-node-label">PoP-4</span>
+          </div>
+        </div>
+        <div class="topo-meta">
+          <span class="topo-stat"><span class="topo-stat-v">5</span><span class="topo-stat-k">sites</span></span>
+          <span class="topo-stat"><span class="topo-stat-v topo-stat-ok">4/4</span><span class="topo-stat-k">links up</span></span>
+          <span class="topo-stat"><span class="topo-stat-v" id="topoPps">—</span><span class="topo-stat-k">packets/s</span></span>
+        </div>
         <div class="terminal-badges">
           <span class="tbadge tbadge-ok">✓ CCNP Service Provider</span>
           <span class="tbadge">7+ yrs IP/MPLS Core</span>
