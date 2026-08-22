@@ -5,6 +5,22 @@
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+  /* ---------- footer "last updated": pulled from the repo's latest commit ----------
+     Keeps the static fallback text already in the HTML if the request fails
+     (offline, rate-limited, etc.) so the footer never breaks. */
+  const lastUpdatedEl = document.getElementById('lastUpdated');
+  if (lastUpdatedEl) {
+    fetch('https://api.github.com/repos/dinukainfo92-lang/dinukawijesinghe.github.io/commits?per_page=1')
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then((commits) => {
+        const iso = commits && commits[0] && commits[0].commit && commits[0].commit.author && commits[0].commit.author.date;
+        if (!iso) return;
+        const date = new Date(iso);
+        lastUpdatedEl.textContent = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      })
+      .catch(() => { /* keep the static fallback already in the markup */ });
+  }
+
   /* ---------- mobile nav toggle ---------- */
   const navToggle = document.getElementById('navToggle');
   const nav = document.getElementById('siteNav');
