@@ -1040,13 +1040,6 @@ select.cg-modal-input{cursor:pointer}
    without touching any other logic. */
 #cgTplLockBtn,#cgTplEntryLockBtn,#cgFileConnectBtn{display:none!important}
 
-/* Public website deployment: the internal-editor "Last updated / by <name>"
-   attribution and the Template Change History log are not relevant to a
-   public visitor (and History exposes internal editor names), so both are
-   hidden here — same safe display:none pattern as the 3 lock/connect
-   buttons above. Clear Browser Data stays visible; the underlying JS for
-   all three stays fully intact. */
-#cgLastUpdated,a[onclick*="cgShowHistory"]{display:none!important}
 </style>
 </head>
 <body>
@@ -1318,39 +1311,42 @@ select.cg-modal-input{cursor:pointer}
       </div>
 
     </div>
-    <p class="cg-seo-note">Need a clean slate? <strong>🧹 Clear Browser Data</strong> in the footer resets everything this tool has saved in this browser — the Template Library, autosave, history and settings — back to first-run defaults, without touching the actual file on disk.</p>
+    <p class="cg-seo-note">Need a clean slate? <strong>🧹 Clear Browser Data</strong> in the footer resets everything this tool has saved in this browser — the Template Library, autosave and settings — back to first-run defaults, without touching the actual file on disk.</p>
   </div>
 </section>
 
 <footer class="tool-footer">
   <span>© <span id="cgYear"></span> Dinuka Hasanka Wijesinghe. All Rights Reserved. &nbsp;·&nbsp; <a href="https://dinukahasanka.com/tools/prepost-check.html">Pre/Post Check →</a></span>
   <span style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <span id="cgLastUpdated" class="cg-tip" data-cg-tip="Click to set your name — it will show here the next time you update a template" style="cursor:pointer" onclick="cgSetEditorName()">Last updated: Aug 2026</span>
-    <a href="#" onclick="event.preventDefault();cgShowHistory()">🕘 History</a>
-    <a href="#" class="cg-tip" data-cg-tip="Resets everything this tool has saved in THIS browser — Template Library, autosave, history, settings — back to first-run defaults. Doesn't touch the file on disk." onclick="event.preventDefault();cgClearBrowserData()">🧹 Clear Browser Data</a>
+    <span>Last updated:&nbsp;<span id="cgLastUpdated">Aug 2026</span></span>
+    <a href="#" class="cg-tip" data-cg-tip="Resets everything this tool has saved in THIS browser — Template Library, autosave, settings — back to first-run defaults. Doesn't touch the file on disk." onclick="event.preventDefault();cgClearBrowserData()">🧹 Clear Browser Data</a>
   </span>
 </footer>
-<script>document.getElementById('cgYear').textContent=new Date().getFullYear();</script>
+<script>
+document.getElementById('cgYear').textContent=new Date().getFullYear();
+
+// "Last updated": pulled from the repo's latest commit. Keeps the static
+// fallback already in the HTML if the request fails (offline, rate-limited).
+(function(){
+  const el=document.getElementById('cgLastUpdated');
+  if(!el)return;
+  fetch('https://api.github.com/repos/dinukainfo92-lang/dinukawijesinghe.github.io/commits?per_page=1')
+    .then((res)=>(res.ok?res.json():Promise.reject(res.status)))
+    .then((commits)=>{
+      const iso=commits&&commits[0]&&commits[0].commit&&commits[0].commit.author&&commits[0].commit.author.date;
+      if(!iso)return;
+      const date=new Date(iso);
+      el.textContent=date.toLocaleDateString('en-US',{month:'short',year:'numeric'});
+    })
+    .catch(()=>{ /* keep static fallback */ });
+})();
+</script>
 <!-- ═══ File Upload Loading Overlay ═══ -->
 <div class="cg-loading-overlay" id="cgLoadingOverlay">
   <div class="cg-loading-box">
     <div class="cg-spinner"></div>
     <p class="cg-loading-main">Please wait…</p>
     <p class="cg-loading-sub">Large files may take a few seconds to upload.</p>
-  </div>
-</div>
-
-<!-- ═══ Template Library Change History ═══ -->
-<div class="cg-modal-overlay" id="cgHistoryOverlay">
-  <div class="cg-modal" role="dialog" aria-modal="true" aria-labelledby="cgHistoryTitle" style="width:min(480px,92vw)">
-    <p class="cg-modal-title" id="cgHistoryTitle">🕘 Template Change History</p>
-    <p class="cg-modal-sub">Local to this browser only — see the note below the list.</p>
-    <div id="cgHistoryList" style="max-height:320px;overflow-y:auto;margin:12px 0;display:flex;flex-direction:column;gap:8px"></div>
-    <p class="cg-modal-sub" style="margin:0 0 14px">This file has no server, so this history only shows changes made in this browser — it will not show changes made by others opening their own copy (e.g. from a shared OneDrive folder).</p>
-    <div class="cg-modal-actions">
-      <button type="button" class="cg-btn" onclick="cgHistoryClear()">Clear History</button>
-      <button type="button" class="cg-btn cg-btn-green" onclick="cgHistoryClose()">Close</button>
-    </div>
   </div>
 </div>
 
@@ -1440,19 +1436,6 @@ select.cg-modal-input{cursor:pointer}
     {name:'Template 15',content:`interface {{INTERFACE}}\n description {{DESCRIPTION}} [{{EXER ID}}]\n mtu {{MTU}}\n encapsulation dot1q {{VLAN}}\n vrf {{VRF}}\n ipv4 address {{IP}} {{MASK}}\n bandwidth {{BANDWIDTH}}\n no shutdown`}
   ];
   // ⟦CG_TPL_LIBRARY_DEFAULTS_END⟧
-  // "Last updated" + change history, baked into the file itself the same way
-  // the templates above are — see cgFileWriteLibrary(). This is what lets
-  // 🕘 History and the footer's "Updated by" survive a 🧹 Clear Browser Data
-  // (or anyone else opening this same file for the first time) as long as a
-  // 🔗 Connect File link is/was active: on load, if this browser's own
-  // localStorage has nothing yet, these become the starting point instead of
-  // showing blank (see cgLastUpdateLoadFromStorage / cgTplHistoryLoadFromStorage).
-  // ⟦CG_LAST_UPDATE_DEFAULT_START⟧
-  const CG_LAST_UPDATE_DEFAULT=null;
-  // ⟦CG_LAST_UPDATE_DEFAULT_END⟧
-  // ⟦CG_TPL_HISTORY_DEFAULT_START⟧
-  const CG_TPL_HISTORY_DEFAULT=[];
-  // ⟦CG_TPL_HISTORY_DEFAULT_END⟧
   let cgTplLibrary=[];
   let cgRows=[];
   let cgDupMarkedCols=null; // Set of column names explicitly flagged with a trailing * in the header row for duplicate-checking; null = no markers found, fall back to auto-detect heuristics
@@ -2218,182 +2201,16 @@ select.cg-modal-input{cursor:pointer}
     cgToast('★ Set as default — '+name,null,'Anyone can edit this one without the PIN');
   };
 
-  // ── Footer: "Last updated" tracks the most recent Template Library edit ──
-  // (Update / Save As / Rename / Delete / Set Default) so the team can see
-  // when the library last changed, and — if the editor chose to set a name
-  // via the footer — who changed it. This lives in localStorage per browser
-  // same as everything else here, EXCEPT: whenever a 🔗 Connect File link is
-  // active, cgFileWriteLibrary() also bakes the latest values into the file
-  // itself (see CG_LAST_UPDATE_DEFAULT / CG_TPL_HISTORY_DEFAULT above) — so
-  // this browser's own 🧹 Clear Browser Data, or another browser opening the
-  // same file for the first time, still shows the real last-updated/history
-  // instead of blank. Still an honesty-based attribution (no login), not a
-  // tamper-proof audit log.
-  const CG_LAST_UPDATE_KEY='cgLastTplUpdate';
-  const CG_EDITOR_NAME_KEY='cgEditorName';
-  const CG_TPL_HISTORY_KEY='cgTplHistory';
-  const CG_TPL_HISTORY_MAX=50; // keep the log from growing without bound
-  // Seeds localStorage from the file-embedded defaults ONLY when this
-  // browser doesn't already have its own value — mirrors how
-  // cgTplLibraryLoadFromStorage() bootstraps the Template Library itself.
-  // Called once at page init, before cgFooterRender()/cgShowHistory() ever run.
-  function cgLastUpdateLoadFromStorage(){
-    let ok=false;
-    try{
-      const raw=localStorage.getItem(CG_LAST_UPDATE_KEY);
-      if(raw){const parsed=JSON.parse(raw);if(parsed&&typeof parsed==='object'&&typeof parsed.ts==='number')ok=true;}
-    }catch(_){}
-    if(!ok&&CG_LAST_UPDATE_DEFAULT&&typeof CG_LAST_UPDATE_DEFAULT==='object'){
-      try{localStorage.setItem(CG_LAST_UPDATE_KEY,JSON.stringify(CG_LAST_UPDATE_DEFAULT));}catch(_){}
-    }
-    // Also re-seed the editor's OWN saved name (footer "Updated by" / who
-    // future edits get attributed to) from that same record — WITHOUT this,
-    // clearing browser data wipes cgEditorName too, so every edit afterward
-    // goes back to attributing to "nobody" until the editor manually re-types
-    // their name via the footer, every single time. Only fills it in when
-    // this browser doesn't already have a name set (never overwrites one
-    // that's already there) — on a shared connected file, this is simply
-    // "start from whoever edited it last," same honesty-based, click-to-fix
-    // model as the rest of this attribution system, not a login.
-    try{
-      const hasName=!!localStorage.getItem(CG_EDITOR_NAME_KEY);
-      if(!hasName&&CG_LAST_UPDATE_DEFAULT&&typeof CG_LAST_UPDATE_DEFAULT==='object'&&CG_LAST_UPDATE_DEFAULT.name){
-        localStorage.setItem(CG_EDITOR_NAME_KEY,CG_LAST_UPDATE_DEFAULT.name);
-        // Flag that this name is a GUESS (whoever edited last), not
-        // necessarily THIS person — see cgMaybeShowWelcomeBackPicker() below.
-        // Right when this browser's name was empty (fresh install or just
-        // cleared), it's worth double-checking rather than silently
-        // attributing this person's next edit to someone else's name.
-        cgEditorNameAutoGuessed=true;
-      }
-    }catch(_){}
-  }
-  let cgEditorNameAutoGuessed=false;
-  // When several people share one connected file, the single "last known
-  // name" seeded above is only a guess — it's whoever touched the file most
-  // recently, not necessarily whoever is opening it now. If more than one
-  // distinct name shows up in the History log, ask once (a single click,
-  // not a re-type) instead of silently attributing this person's next edit
-  // to someone else. Cancel just keeps the guess as-is — same as before this
-  // existed — and the footer's manual "click to set your name" always still
-  // works regardless.
-  function cgMaybeShowWelcomeBackPicker(){
-    if(!cgEditorNameAutoGuessed)return;
-    // Defensive: cgTryAutoRestore() (called right before this at page init)
-    // can also open the shared modal overlay ("Restore previous session?").
-    // Both calls target the SAME single modal element, so if that one is
-    // already showing, back off rather than silently clobbering it — the
-    // auto-guessed name just stays as the (unconfirmed) default this time,
-    // same as before this picker existed; still fixable any time via the
-    // footer. In practice these two rarely coincide: a real cache clear (or
-    // 🧹 Clear Browser Data) wipes the autosave data too, so there's usually
-    // nothing for cgTryAutoRestore() to offer right when this fires.
-    if(cgModalEl().classList.contains('cg-modal-show'))return;
-    let hist=[];
-    try{hist=JSON.parse(localStorage.getItem(CG_TPL_HISTORY_KEY)||'[]');}catch(_){hist=[];}
-    if(!Array.isArray(hist))hist=[];
-    const names=[...new Set(hist.map(h=>h&&h.name).filter(Boolean))];
-    if(names.length<2)return; // only one known editor ever — the guess IS the answer, nothing to disambiguate
-    let guessed=null;
-    try{guessed=localStorage.getItem(CG_EDITOR_NAME_KEY)||null;}catch(_){}
-    cgModalOpen({
-      title:'👋 Welcome back — which of you is this?',
-      sub:(guessed?'We guessed "'+guessed+'" (whoever saved last), but '+names.length+' different people have edited this shared file. '
-        :'')+'Pick your name below, or Cancel to leave the guess as-is — you can always change it later from the footer.',
-      mode:'select',
-      options:names,
-      selected:guessed&&names.includes(guessed)?guessed:undefined,
-      confirmLabel:'This is me',
-      onConfirm:(name)=>{
-        if(!name)return;
-        try{localStorage.setItem(CG_EDITOR_NAME_KEY,name);}catch(_){}
-        cgFooterRender();
-        cgToast('✔ Set — future edits will be attributed to '+name);
-      }
-    });
-  }
-  function cgTplHistoryLoadFromStorage(){
-    let ok=false;
-    try{
-      const raw=localStorage.getItem(CG_TPL_HISTORY_KEY);
-      if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed))ok=true;}
-    }catch(_){}
-    if(!ok&&Array.isArray(CG_TPL_HISTORY_DEFAULT)&&CG_TPL_HISTORY_DEFAULT.length){
-      try{localStorage.setItem(CG_TPL_HISTORY_KEY,JSON.stringify(CG_TPL_HISTORY_DEFAULT));}catch(_){}
-    }
-  }
-  function cgFooterRender(){
-    const el=$('cgLastUpdated');
-    if(!el)return;
-    let info=null;
-    try{info=JSON.parse(localStorage.getItem(CG_LAST_UPDATE_KEY)||'null');}catch(_){}
-    if(!info||!info.ts){el.textContent='Last updated: Aug 2026';return;}
-    const d=new Date(info.ts);
-    const p=n=>String(n).padStart(2,'0');
-    const stamp=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
-    el.textContent='Last updated: '+stamp+(info.name?' by '+info.name:'');
-  }
-  // Records one Template Library change — used for both the footer's
-  // "Last updated" line and the fuller 🕘 History list. `action` is a short
-  // label ("Updated", "Saved As", "Renamed", "Deleted", "Set Default") and
-  // `tplName` is which template it happened to, so the history reads like
-  // a real changelog instead of just a bare timestamp.
-  function cgRecordTplUpdate(action,tplName){
-    let name=null;
-    try{name=localStorage.getItem(CG_EDITOR_NAME_KEY)||null;}catch(_){}
-    const entry={ts:Date.now(),name,action:action||'Updated',tpl:tplName||null};
-    try{localStorage.setItem(CG_LAST_UPDATE_KEY,JSON.stringify(entry));}catch(_){}
-    try{
-      let hist=[];
-      try{hist=JSON.parse(localStorage.getItem(CG_TPL_HISTORY_KEY)||'[]');}catch(_){hist=[];}
-      if(!Array.isArray(hist))hist=[];
-      hist.push(entry);
-      if(hist.length>CG_TPL_HISTORY_MAX)hist=hist.slice(hist.length-CG_TPL_HISTORY_MAX);
-      localStorage.setItem(CG_TPL_HISTORY_KEY,JSON.stringify(hist));
-    }catch(_){}
-    cgFooterRender();
+  // Template Library changes (Update / Save As / Rename / Delete / Set
+  // Default) still need to sync into a connected file — see
+  // cgFileWriteLibrary(). The old internal "Last updated / by <name>" +
+  // Change History attribution system that used to live here has been
+  // removed; the public-facing "Last updated" in the footer now comes
+  // straight from this repo's latest GitHub commit instead (see the
+  // fetch() next to the footer markup).
+  function cgRecordTplUpdate(){
     cgFileWriteLibrary(); // no-op if no file is connected; fire-and-forget, reports its own errors via toast
   }
-  window.cgShowHistory=function(){
-    let hist=[];
-    try{hist=JSON.parse(localStorage.getItem(CG_TPL_HISTORY_KEY)||'[]');}catch(_){hist=[];}
-    if(!Array.isArray(hist))hist=[];
-    const list=$('cgHistoryList');
-    if(!hist.length){
-      list.innerHTML='<p style="color:var(--text-faint);font-size:.85rem;margin:0">No changes recorded yet in this browser.</p>';
-    }else{
-      const p=n=>String(n).padStart(2,'0');
-      list.innerHTML=hist.slice().reverse().map(h=>{
-        const d=new Date(h.ts);
-        const stamp=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
-        return `<div style="border:1px solid var(--border-soft);border-radius:8px;padding:8px 10px;font-size:.82rem">
-          <div style="color:var(--text);font-weight:600">${cgEscapeHtml(h.action||'Updated')} — ${cgEscapeHtml(h.tpl||'(untitled)')}</div>
-          <div style="color:var(--text-faint);margin-top:2px">${stamp}${h.name?' · by '+cgEscapeHtml(h.name):''}</div>
-        </div>`;
-      }).join('');
-    }
-    $('cgHistoryOverlay').classList.add('cg-modal-show');
-  };
-  window.cgHistoryClose=function(){
-    $('cgHistoryOverlay').classList.remove('cg-modal-show');
-  };
-  window.cgHistoryClear=function(){
-    if(cgTplLocked()){cgTplUnlockFlow(cgHistoryClear);return;}
-    cgModalOpen({
-      title:'Clear change history?',
-      sub:'This clears the local history list in this browser. It can\'t be undone.',
-      mode:'confirm',
-      danger:true,
-      confirmLabel:'Clear',
-      cancelLabel:'Cancel',
-      onConfirm:()=>{
-        try{localStorage.removeItem(CG_TPL_HISTORY_KEY);}catch(_){}
-        cgShowHistory();
-        cgToast('✔ History cleared');
-      }
-    });
-  };
-  $('cgHistoryOverlay').addEventListener('click',e=>{if(e.target.id==='cgHistoryOverlay')cgHistoryClose();});
 
   // ── Clear Browser Data ───────────────────────────────────────────
   // Resets EVERYTHING this tool has ever saved in this browser back to a
@@ -2408,39 +2225,19 @@ select.cg-modal-input{cursor:pointer}
   window.cgClearBrowserData=function(){
     cgModalOpen({
       title:'🧹 Clear all browser data for this tool?',
-      sub:'Resets everything this tool has saved in THIS browser back to first-run defaults: the Template Library (back to the 15 built-in ones — any custom templates you\'ve added or edited here will be lost), Data Editor autosave, change history, your saved name, remembered "Label by column" choices, and any connected live-file link. This does NOT touch the actual file on disk. This cannot be undone — the page will reload once it\'s done.',
+      sub:'Resets everything this tool has saved in THIS browser back to first-run defaults: the Template Library (back to the 15 built-in ones — any custom templates you\'ve added or edited here will be lost), Data Editor autosave, remembered "Label by column" choices, and any connected live-file link. This does NOT touch the actual file on disk. This cannot be undone — the page will reload once it\'s done.',
       mode:'confirm',
       danger:true,
       confirmLabel:'Clear Everything',
       cancelLabel:'Cancel',
       onConfirm:()=>{
-        [CG_TPL_LIBRARY_KEY,CG_AUTOSAVE_KEY,CG_LAST_UPDATE_KEY,CG_TPL_HISTORY_KEY,CG_EDITOR_NAME_KEY,'cgHeaderVarMap','cgDupAllCols'].forEach(k=>{
+        [CG_TPL_LIBRARY_KEY,CG_AUTOSAVE_KEY,'cgHeaderVarMap','cgDupAllCols'].forEach(k=>{
           try{localStorage.removeItem(k);}catch(_){}
         });
         cgIdbClearHandle().catch(()=>{}).finally(()=>{
           cgToast('✔ Cleared — reloading…');
           setTimeout(()=>location.reload(),500);
         });
-      }
-    });
-  };
-
-  window.cgSetEditorName=function(){
-    let cur='';
-    try{cur=localStorage.getItem(CG_EDITOR_NAME_KEY)||'';}catch(_){}
-    cgModalOpen({
-      title:'Your name',
-      sub:'Shown next to "Last updated" whenever you update a template in this browser. Leave blank to stay anonymous.',
-      mode:'text',
-      value:cur,
-      placeholder:'e.g. Kasun',
-      confirmLabel:'Save',
-      onConfirm:(name)=>{
-        try{
-          if(name)localStorage.setItem(CG_EDITOR_NAME_KEY,name);
-          else localStorage.removeItem(CG_EDITOR_NAME_KEY);
-        }catch(_){}
-        cgToast(name?'✔ Name saved — '+name:'✔ Name cleared');
       }
     });
   };
@@ -2459,29 +2256,6 @@ select.cg-modal-input{cursor:pointer}
   const CG_FILE_HANDLE_SUPPORTED='showOpenFilePicker' in window;
   let cgFileHandle=null;
   let cgFilePendingHandle=null; // a previously-connected handle restored from IndexedDB, awaiting a permission re-grant click
-  // Whether the CONNECTED file actually has the "Updated by"/History marker
-  // blocks baked in. An older file downloaded before that feature existed
-  // still connects fine and still syncs templates — but cgFileWriteLibrary()
-  // silently skips just those two blocks on every save (see its own comment)
-  // and, until now, the 🔗 Connect File button kept showing a plain "🟢
-  // Synced" the whole time, so that gap was easy to miss (a toast mentions
-  // it after each save, but nothing PERSISTENT flagged it). Track it here so
-  // the button itself can show "🟡 Synced (partial)" instead, whenever it's
-  // actually true — that's the fix for "Updated by" disappearing on a cache
-  // clear even though Connect File was used: the connected file itself never
-  // had anywhere to keep it.
-  let cgFileHasHistorySupport=false;
-  function cgFileDetectHistorySupport(text){
-    // Deliberately checks for the actual top-level declarations (newline +
-    // 2-space indent + "const NAME=") rather than just the bare marker text
-    // — this same file's own cgFileWriteLibrary() below ALSO contains the
-    // marker strings (as the literal start/end/decl values it searches
-    // for), so a plain text.includes('...START') would find those and
-    // always return true, even for a file that genuinely never had the
-    // real declarations. The declaration form only appears where the block
-    // actually exists — either the shipped default or a value once written.
-    return text.includes('\n  const CG_LAST_UPDATE_DEFAULT=')&&text.includes('\n  const CG_TPL_HISTORY_DEFAULT=');
-  }
   function cgIdbOpen(){
     return new Promise((resolve,reject)=>{
       const req=indexedDB.open('cgFileHandleDB',1);
@@ -2528,13 +2302,8 @@ select.cg-modal-input{cursor:pointer}
       return;
     }
     if(cgFileHandle){
-      if(cgFileHasHistorySupport){
-        btn.textContent='🟢 Synced — '+cgFileHandle.name;
-        btn.title='Template changes, "Updated by" and History are all written directly into this file — click to disconnect.';
-      }else{
-        btn.textContent='🟡 Synced (partial) — '+cgFileHandle.name;
-        btn.title='This connected file predates "Updated by"/History syncing — templates still save into it fine, but that info will NOT survive a browser cache clear here. Disconnect, download a fresh copy of this tool, then Connect File to that one to fix it.';
-      }
+      btn.textContent='🟢 Synced — '+cgFileHandle.name;
+      btn.title='Template Library changes are written directly into this file — click to disconnect.';
       btn.classList.add('cg-file-connected');
     }else if(cgFilePendingHandle){
       btn.textContent='🔗 Reconnect File';
@@ -2554,10 +2323,6 @@ select.cg-modal-input{cursor:pointer}
       const perm=await handle.queryPermission({mode:'readwrite'});
       if(perm==='granted'){
         cgFileHandle=handle;
-        try{
-          const file=await handle.getFile();
-          cgFileHasHistorySupport=cgFileDetectHistorySupport(await file.text());
-        }catch(_){cgFileHasHistorySupport=false;}
       }else{cgFilePendingHandle=handle;}
     }catch(_){
       // stored handle is stale/invalid (file moved, DB cleared, etc.) — ignore, user can reconnect manually
@@ -2572,7 +2337,6 @@ select.cg-modal-input{cursor:pointer}
     if(cgFileHandle){
       cgFileHandle=null;
       cgFilePendingHandle=null;
-      cgFileHasHistorySupport=false;
       try{await cgIdbClearHandle();}catch(_){}
       cgFileConnectBtnRender();
       cgToast('Disconnected — template changes will only save to this browser now');
@@ -2602,12 +2366,9 @@ select.cg-modal-input{cursor:pointer}
       }
       cgFileHandle=handle;
       cgFilePendingHandle=null;
-      cgFileHasHistorySupport=cgFileDetectHistorySupport(text);
       try{await cgIdbSaveHandle(handle);}catch(_){}
       cgFileConnectBtnRender();
-      cgToast(cgFileHasHistorySupport?'🟢 Connected — '+handle.name:'🟡 Connected — '+handle.name,null,cgFileHasHistorySupport
-        ?'Template changes, "Updated by" and History will now save directly into this file.'
-        :'Template changes will save into this file, but it predates "Updated by"/History syncing — download a fresh copy of this tool and reconnect to that one for those to survive a cache clear too.');
+      cgToast('🟢 Connected — '+handle.name,null,'Template Library changes will now save directly into this file.');
     }catch(err){
       if(err&&err.name==='AbortError')return; // user cancelled the picker — not an error
       cgToast('✖ Could not connect to the file','fail');
@@ -2644,28 +2405,6 @@ select.cg-modal-input{cursor:pointer}
       }
       text=text.slice(0,startIdx+startMarker.length)+'\n  const CG_TPL_LIBRARY_DEFAULTS='+JSON.stringify(cgTplLibrary,null,2)+';\n  '+text.slice(endIdx);
 
-      // "Last updated" + History blocks are OPTIONAL — a file downloaded
-      // before this feature existed won't have them yet. Skip just those
-      // (instead of failing the whole save) so older connected files still
-      // get their templates saved; only a freshly downloaded copy also gets
-      // "Updated by" + History baked in.
-      let lastUpdate=null;
-      try{lastUpdate=JSON.parse(localStorage.getItem(CG_LAST_UPDATE_KEY)||'null');}catch(_){}
-      let history=[];
-      try{history=JSON.parse(localStorage.getItem(CG_TPL_HISTORY_KEY)||'[]');}catch(_){}
-      if(!Array.isArray(history))history=[];
-      const optionalBlocks=[
-        {start:'// ⟦CG_LAST_UPDATE_DEFAULT_START⟧',end:'// ⟦CG_LAST_UPDATE_DEFAULT_END⟧',decl:'const CG_LAST_UPDATE_DEFAULT=',value:lastUpdate},
-        {start:'// ⟦CG_TPL_HISTORY_DEFAULT_START⟧',end:'// ⟦CG_TPL_HISTORY_DEFAULT_END⟧',decl:'const CG_TPL_HISTORY_DEFAULT=',value:history},
-      ];
-      let skippedOptional=false;
-      for(const b of optionalBlocks){
-        const bStart=text.indexOf(b.start);
-        const bEnd=text.indexOf(b.end);
-        if(bStart<0||bEnd<0||bEnd<bStart){skippedOptional=true;continue;}
-        text=text.slice(0,bStart+b.start.length)+'\n  '+b.decl+JSON.stringify(b.value,null,2)+';\n  '+text.slice(bEnd);
-      }
-
       const writable=await cgFileHandle.createWritable();
       await writable.write(text);
       await writable.close();
@@ -2697,9 +2436,7 @@ select.cg-modal-input{cursor:pointer}
         return;
       }
 
-      cgToast('💾 Saved to file — '+cgFileHandle.name,null,skippedOptional
-        ?'Templates saved. This file predates "Updated by"/History syncing — reconnect a freshly downloaded copy to sync those too.'
-        :'Anyone who opens this file will now see the updated templates, last-updated info and history.');
+      cgToast('💾 Saved to file — '+cgFileHandle.name,null,'Anyone who opens this file will now see the updated templates.');
     }catch(err){
       cgToast('✖ Failed to write to the file','fail',String((err&&err.message)||err));
     }
@@ -4908,8 +4645,6 @@ select.cg-modal-input{cursor:pointer}
   })();
 
   cgTplLibraryLoadFromStorage();
-  cgLastUpdateLoadFromStorage();
-  cgTplHistoryLoadFromStorage();
   {
     const d=cgTplLibrary.find(t=>t.isDefault)||cgTplLibrary[0];
     // Defensive fallback: if the resolved default entry somehow has blank/
@@ -4923,12 +4658,10 @@ select.cg-modal-input{cursor:pointer}
   cgTplPinLoad();
   cgTplLockRender();
   cgTplUpdateEditability();
-  cgFooterRender();
   cgFileConnectBtnRender();
   cgFileTryReconnect();
   cgValidate();
   cgTryAutoRestore();
-  cgMaybeShowWelcomeBackPicker();
 })();
 </script>
 </body>
