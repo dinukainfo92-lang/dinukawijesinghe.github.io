@@ -153,6 +153,21 @@ button:focus-visible {
   .side-rail { display: flex; }
 }
 
+@media (min-width: 1100px) {
+  .hero {
+    padding: 100px 28px 76px;
+  }
+  .hero-grid {
+    gap: 68px;
+  }
+  .hero-actions {
+    margin-top: 40px;
+  }
+  .section {
+    padding: 88px 28px;
+  }
+}
+
 /* ---------- header ---------- */
 .site-header {
   position: sticky;
@@ -199,37 +214,56 @@ button:focus-visible {
 
 .nav {
   display: flex;
-  gap: 28px;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-mono);
   font-size: 0.85rem;
 }
 
 .nav a {
   position: relative;
+  display: inline-flex;
+  align-items: center;
   color: var(--text-dim);
-  padding: 6px 2px;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.nav-idx {
+  color: var(--text-faint);
+  font-size: 0.68rem;
+  margin-right: 5px;
   transition: color 0.2s ease;
 }
 
 .nav a::before {
   content: '';
   position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
+  left: 10px;
+  right: 10px;
+  bottom: 3px;
   height: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
   background: var(--accent);
-  transition: width 0.25s ease;
+  transition: transform 0.25s ease;
 }
 
 .nav a:hover,
 .nav a:focus-visible {
   color: var(--text);
+  background: var(--bg-raised);
+}
+
+.nav a:hover .nav-idx,
+.nav a:focus-visible .nav-idx {
+  color: var(--accent);
 }
 
 .nav a:hover::before,
 .nav a:focus-visible::before {
-  width: 100%;
+  transform: scaleX(1);
 }
 
 .nav-toggle {
@@ -270,6 +304,23 @@ button:focus-visible {
   border-radius: var(--radius);
   border: 1px solid transparent;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn::after {
+  content: '\2192';
+  display: inline-block;
+  transform: translateX(-4px);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn:hover::after {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .btn-primary {
@@ -386,10 +437,10 @@ button:focus-visible {
 }
 
 .terminal-body {
-  padding: 20px 18px 24px;
+  padding: 22px 20px 26px;
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  line-height: 1.75;
+  line-height: 1.8;
   min-height: 260px;
   color: var(--text-dim);
 }
@@ -404,8 +455,8 @@ button:focus-visible {
 .terminal-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 14px 18px 16px;
+  gap: 10px;
+  padding: 16px 18px 18px;
   border-top: 1px solid var(--border);
   background: var(--bg-raised-2);
 }
@@ -421,6 +472,12 @@ button:focus-visible {
   border-radius: 20px;
   padding: 5px 12px;
   white-space: nowrap;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.tbadge:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .tbadge-ok {
@@ -557,6 +614,12 @@ button:focus-visible {
 .led-up {
   background: var(--green);
   box-shadow: 0 0 8px 1px var(--accent-glow);
+  animation: led-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes led-pulse {
+  0%, 100% { box-shadow: 0 0 8px 1px var(--accent-glow); }
+  50% { box-shadow: 0 0 12px 3px var(--accent-glow); }
 }
 
 /* ---------- skills / interface table ---------- */
