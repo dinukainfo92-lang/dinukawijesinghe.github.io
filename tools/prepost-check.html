@@ -244,9 +244,27 @@ main{max-width:1280px;margin:0 auto;padding:0 28px 60px}
 
 <footer class="tool-footer">
   <span>© <span id="ppYear"></span> Dinuka Hasanka Wijesinghe. All Rights Reserved.</span>
-  <span>Last updated: Aug 2026 &nbsp;·&nbsp; <a href="https://dinukahasanka.com/tools/config-generator.html">Config Generator →</a></span>
+  <span>Last updated: <span id="ppLastUpdated">Aug 2026</span> &nbsp;·&nbsp; <a href="https://dinukahasanka.com/tools/config-generator.html">Config Generator →</a></span>
 </footer>
-<script>document.getElementById('ppYear').textContent=new Date().getFullYear();</script>
+<script>
+document.getElementById('ppYear').textContent=new Date().getFullYear();
+
+// "Last updated": pulled from the repo's latest commit. Keeps the static
+// fallback already in the HTML if the request fails (offline, rate-limited).
+(function(){
+  const el = document.getElementById('ppLastUpdated');
+  if (!el) return;
+  fetch('https://api.github.com/repos/dinukainfo92-lang/dinukawijesinghe.github.io/commits?per_page=1')
+    .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+    .then((commits) => {
+      const iso = commits && commits[0] && commits[0].commit && commits[0].commit.author && commits[0].commit.author.date;
+      if (!iso) return;
+      const date = new Date(iso);
+      el.textContent = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    })
+    .catch(() => { /* keep static fallback */ });
+})();
+</script>
 
 <script>
 (function(){
