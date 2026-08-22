@@ -230,13 +230,6 @@ button:focus-visible {
   transition: color 0.2s ease, background 0.2s ease;
 }
 
-.nav-idx {
-  color: var(--text-faint);
-  font-size: 0.68rem;
-  margin-right: 5px;
-  transition: color 0.2s ease;
-}
-
 .nav a::before {
   content: '';
   position: absolute;
@@ -254,11 +247,6 @@ button:focus-visible {
 .nav a:focus-visible {
   color: var(--text);
   background: var(--bg-raised);
-}
-
-.nav a:hover .nav-idx,
-.nav a:focus-visible .nav-idx {
-  color: var(--accent);
 }
 
 .nav a:hover::before,
@@ -436,21 +424,124 @@ button:focus-visible {
   color: var(--text-faint);
 }
 
-.terminal-body {
-  padding: 22px 20px 26px;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  line-height: 1.8;
-  min-height: 260px;
-  color: var(--text-dim);
+/* ---------- hero: live network topology diagram ---------- */
+.topo-stage {
+  position: relative;
+  height: 260px;
+  padding: 18px;
 }
 
-.terminal-body .tl-prompt { color: var(--accent); }
-.terminal-body .tl-cmd { color: var(--text); }
-.terminal-body .tl-ok { color: var(--green); }
-.terminal-body .tl-key { color: var(--blue); }
-.terminal-body .tl-muted { color: var(--text-faint); }
-.terminal-body .tl-line { white-space: pre-wrap; }
+.topo-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.topo-link {
+  stroke: var(--border);
+  stroke-width: 2;
+}
+
+.topo-packet {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 4px var(--accent-glow));
+}
+
+.topo-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 58px;
+  height: 58px;
+  justify-content: center;
+  background: var(--bg-raised-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.topo-node:hover {
+  border-color: var(--accent);
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.topo-node-core {
+  width: 68px;
+  height: 68px;
+  border-color: var(--accent);
+  background: rgba(47, 226, 143, 0.06);
+}
+
+.topo-node-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px 1px var(--accent-glow);
+  animation: led-pulse 2.4s ease-in-out infinite;
+}
+
+.topo-node-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+
+.topo-node-core .topo-node-label {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.topo-meta {
+  display: flex;
+  gap: 28px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-raised-2);
+}
+
+.topo-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topo-stat-v {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.topo-stat-v.topo-stat-ok {
+  color: var(--accent);
+}
+
+.topo-stat-k {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topo-packet { display: none; }
+  .topo-node-dot { animation: none; }
+}
+
+@media (max-width: 480px) {
+  .topo-stage { height: 220px; }
+  .topo-node { width: 48px; height: 48px; }
+  .topo-node-core { width: 56px; height: 56px; }
+  .topo-node-label { font-size: 0.6rem; }
+  .topo-meta { gap: 18px; }
+}
 
 .terminal-badges {
   display: flex;
@@ -491,15 +582,6 @@ button:focus-visible {
 }
 
 .tbadge .led { margin-right: 6px; }
-
-.terminal-cursor {
-  display: inline-block;
-  width: 7px;
-  height: 14px;
-  background: var(--accent);
-  vertical-align: -2px;
-  animation: blink 1s step-end infinite;
-}
 
 /* ---------- sections ---------- */
 .section {
