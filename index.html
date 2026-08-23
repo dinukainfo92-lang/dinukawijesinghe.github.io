@@ -281,6 +281,7 @@
         <div class="terminal-badges">
           <span class="tbadge tbadge-ok">SEA-ME-WE · FALCON · APG</span>
           <span class="tbadge tbadge-live"><span class="led led-up"></span>global reach</span>
+          <a class="tbadge tbadge-link" href="https://www.submarinecablemap.com/" target="_blank" rel="noopener">Full submarine cable map ↗</a>
         </div>
       </div>
     </div>
@@ -608,13 +609,13 @@
          class="tool-tab" role="tab">
         <span class="tool-tab-num">01</span> Config Generator ↗
       </a>
-      <a href="tools/prepost-check.html" target="_blank" rel="noopener"
-         class="tool-tab" role="tab">
-        <span class="tool-tab-num">02</span> Pre/Post Check ↗
-      </a>
       <a href="tools/subnet-calculator.html" target="_blank" rel="noopener"
          class="tool-tab" role="tab">
-        <span class="tool-tab-num">03</span> Subnet Calculator ↗
+        <span class="tool-tab-num">02</span> Subnet Calculator ↗
+      </a>
+      <a href="tools/prepost-check.html" target="_blank" rel="noopener"
+         class="tool-tab" role="tab">
+        <span class="tool-tab-num">03</span> Pre/Post Check ↗
       </a>
     </div>
 
@@ -670,6 +671,50 @@
         </div>
       </a>
 
+      <!-- Subnet Calculator preview -->
+      <a href="tools/subnet-calculator.html" target="_blank" rel="noopener" class="tool-preview-card">
+        <div class="tp-mock tp-mock-sc">
+          <div class="tp-mock-bar">
+            <span class="tp-dot" style="background:#ff5f56"></span>
+            <span class="tp-dot" style="background:#ffb454"></span>
+            <span class="tp-dot" style="background:#2fe28f"></span>
+            <span class="tp-mock-title">subnet-calculator</span>
+          </div>
+          <div class="tp-mock-body">
+            <div class="tp-mock-row">
+              <span class="tp-mock-label">input</span>
+              <div class="tp-mock-upload">🔢 192.168.1.10/26 &nbsp;<span class="tp-ok">private · RFC 1918</span></div>
+            </div>
+            <div class="tp-mock-row">
+              <span class="tp-mock-label">summary</span>
+              <div class="tp-mock-field">
+                <span class="tp-kw">network</span> <span class="tp-val">192.168.1.0/26</span><br>
+                <span class="tp-kw">broadcast</span> <span class="tp-val">192.168.1.63</span><br>
+                <span class="tp-kw">wildcard</span> <span class="tp-val">0.0.0.63</span><br>
+                <span class="tp-kw">usable</span> <span class="tp-val">62 hosts</span>
+              </div>
+            </div>
+            <div class="tp-mock-output">
+              <span style="color:var(--text-faint)"># all 4 possible /26 networks</span><br>
+              <span style="color:#a3f7c5">192.168.1.0/26</span> &nbsp; .1 – .62 &nbsp; bc .63<br>
+              <span style="color:#a3f7c5">192.168.1.64/26</span> &nbsp; .65 – .126 &nbsp; bc .127<br>
+              <span style="color:#a3f7c5">192.168.1.128/26</span> &nbsp; .129 – .190 &nbsp; bc .191
+            </div>
+            <div class="tp-pp-summary">
+              <span class="tp-stat-ok">✔ 4 × /26</span>
+              <span class="tp-stat-pend">⚙ VLSM planner</span>
+            </div>
+          </div>
+        </div>
+        <div class="tp-footer">
+          <div>
+            <p class="tp-name">Subnet Calculator</p>
+            <p class="tp-desc">CIDR · wildcard · binary · VLSM planner</p>
+          </div>
+          <span class="tp-open">Open ↗</span>
+        </div>
+      </a>
+
       <!-- Pre/Post Check preview -->
       <a href="tools/prepost-check.html" target="_blank" rel="noopener" class="tool-preview-card">
         <div class="tp-mock tp-mock-pp">
@@ -716,50 +761,6 @@
           <div>
             <p class="tp-name">Pre/Post Check</p>
             <p class="tp-desc">Diff CLI output · Pass/Fail status · Export report</p>
-          </div>
-          <span class="tp-open">Open ↗</span>
-        </div>
-      </a>
-
-      <!-- Subnet Calculator preview -->
-      <a href="tools/subnet-calculator.html" target="_blank" rel="noopener" class="tool-preview-card">
-        <div class="tp-mock tp-mock-sc">
-          <div class="tp-mock-bar">
-            <span class="tp-dot" style="background:#ff5f56"></span>
-            <span class="tp-dot" style="background:#ffb454"></span>
-            <span class="tp-dot" style="background:#2fe28f"></span>
-            <span class="tp-mock-title">subnet-calculator</span>
-          </div>
-          <div class="tp-mock-body">
-            <div class="tp-mock-row">
-              <span class="tp-mock-label">input</span>
-              <div class="tp-mock-upload">🔢 192.168.1.10/26 &nbsp;<span class="tp-ok">private · RFC 1918</span></div>
-            </div>
-            <div class="tp-mock-row">
-              <span class="tp-mock-label">summary</span>
-              <div class="tp-mock-field">
-                <span class="tp-kw">network</span> <span class="tp-val">192.168.1.0/26</span><br>
-                <span class="tp-kw">broadcast</span> <span class="tp-val">192.168.1.63</span><br>
-                <span class="tp-kw">wildcard</span> <span class="tp-val">0.0.0.63</span><br>
-                <span class="tp-kw">usable</span> <span class="tp-val">62 hosts</span>
-              </div>
-            </div>
-            <div class="tp-mock-output">
-              <span style="color:var(--text-faint)"># all 4 possible /26 networks</span><br>
-              <span style="color:#a3f7c5">192.168.1.0/26</span> &nbsp; .1 – .62 &nbsp; bc .63<br>
-              <span style="color:#a3f7c5">192.168.1.64/26</span> &nbsp; .65 – .126 &nbsp; bc .127<br>
-              <span style="color:#a3f7c5">192.168.1.128/26</span> &nbsp; .129 – .190 &nbsp; bc .191
-            </div>
-            <div class="tp-pp-summary">
-              <span class="tp-stat-ok">✔ 4 × /26</span>
-              <span class="tp-stat-pend">⚙ VLSM planner</span>
-            </div>
-          </div>
-        </div>
-        <div class="tp-footer">
-          <div>
-            <p class="tp-name">Subnet Calculator</p>
-            <p class="tp-desc">CIDR · wildcard · binary · VLSM planner</p>
           </div>
           <span class="tp-open">Open ↗</span>
         </div>
