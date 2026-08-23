@@ -377,6 +377,100 @@ button:focus-visible {
   flex-wrap: wrap;
 }
 
+/* ---------- world clock ---------- */
+.worldclock {
+  margin-top: 44px;
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-raised);
+}
+
+.worldclock-label {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--text-faint);
+  letter-spacing: 0.02em;
+  margin: 0 0 14px;
+}
+
+.worldclock-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.wc-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-raised-2);
+  padding: 12px 16px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.wc-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.wc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.wc-dot-day {
+  background: var(--green);
+  box-shadow: 0 0 2px 0 var(--accent-glow);
+}
+
+.wc-dot-night {
+  background: var(--blue);
+  box-shadow: 0 0 2px 0 rgba(94, 200, 255, 0.3);
+}
+
+.wc-city {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wc-time {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-left: auto;
+  padding-left: 6px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+  .worldclock-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .worldclock { padding: 14px 14px; margin-top: 32px; }
+  .worldclock-grid { gap: 8px; }
+  .wc-item { padding: 9px 10px; gap: 6px; }
+  .wc-city { font-size: 0.68rem; }
+  .wc-time { font-size: 0.78rem; }
+}
+
+@media (max-width: 360px) {
+  .worldclock-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* ---------- terminal card ---------- */
 .terminal {
   background: var(--bg-raised);
