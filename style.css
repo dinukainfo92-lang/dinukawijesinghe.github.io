@@ -340,7 +340,12 @@ button:focus-visible {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  /* Text column sized close to its real content width (h1/buttons top out
+     around ~480-500px at desktop) rather than an even 1.05fr/0.95fr split —
+     the old split left a wide dead gap between the left-aligned hero text
+     and the card, since the text never actually filled its column. Giving
+     the card the reclaimed share also gives the subsea map room to breathe. */
+  grid-template-columns: 0.85fr 1.15fr;
   gap: 56px;
   align-items: center;
 }
@@ -577,76 +582,73 @@ button:focus-visible {
   color: var(--text-faint);
 }
 
-/* ---------- hero: live network topology diagram ---------- */
-.topo-stage {
+/* ---------- hero: live subsea cable map ---------- */
+.map-stage {
   position: relative;
-  height: 260px;
-  padding: 18px;
+  height: 320px;
+  padding: 14px;
 }
 
-.topo-svg {
+.map-svg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
 
-.topo-link {
-  stroke: var(--border);
-  stroke-width: 2;
+.map-land {
+  fill: rgba(136, 145, 161, 0.10);
+  stroke: rgba(136, 145, 161, 0.22);
+  stroke-width: 0.6;
 }
 
-.topo-packet {
-  fill: var(--accent);
+.cable-link {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1.2;
+}
+
+.cable-pulse {
   filter: drop-shadow(0 0 4px var(--accent-glow));
 }
 
-.topo-node {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  width: 58px;
-  height: 58px;
-  justify-content: center;
-  background: var(--bg-raised-2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+.cable-pulse-out {
+  fill: var(--accent);
 }
 
-.topo-node:hover {
-  border-color: var(--accent);
-  transform: translate(-50%, -50%) scale(1.06);
+.cable-pulse-in {
+  fill: var(--blue);
+  filter: drop-shadow(0 0 4px rgba(94, 200, 255, 0.45));
 }
 
-.topo-node-core {
-  width: 68px;
-  height: 68px;
-  border-color: var(--accent);
-  background: rgba(47, 226, 143, 0.06);
+.map-node-ping {
+  fill: none;
+  stroke: var(--text-dim);
+  stroke-width: 1.3;
 }
 
-.topo-node-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 6px 1px var(--accent-glow);
-  animation: led-pulse 2.4s ease-in-out infinite;
+.map-node-dot {
+  fill: var(--text-dim);
 }
 
-.topo-node-label {
+.map-node-home .map-node-ping {
+  stroke: var(--accent);
+}
+
+.map-node-home .map-node-dot {
+  fill: var(--green);
+  filter: drop-shadow(0 0 5px var(--accent-glow));
+}
+
+.map-node-label {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-dim);
-  letter-spacing: 0.02em;
+  font-size: 10px;
+  fill: var(--text-faint);
+  letter-spacing: 0.01em;
 }
 
-.topo-node-core .topo-node-label {
-  color: var(--accent);
+.map-node-home .map-node-label {
+  fill: var(--accent);
   font-weight: 600;
 }
 
@@ -684,15 +686,17 @@ button:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .topo-packet { display: none; }
-  .topo-node-dot { animation: none; }
+  .cable-pulse { display: none; }
+  .map-node-ping { display: none; }
+}
+
+@media (max-width: 900px) {
+  .map-stage { height: 260px; }
 }
 
 @media (max-width: 480px) {
-  .topo-stage { height: 220px; }
-  .topo-node { width: 48px; height: 48px; }
-  .topo-node-core { width: 56px; height: 56px; }
-  .topo-node-label { font-size: 0.6rem; }
+  .map-stage { height: 220px; }
+  .map-node-label { font-size: 8.5px; }
   .topo-meta { gap: 18px; }
 }
 
