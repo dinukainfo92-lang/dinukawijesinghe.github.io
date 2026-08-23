@@ -88,7 +88,7 @@
   const worldClockGrid = document.querySelector('.worldclock-grid');
   if (worldClockGrid) {
     const WORLD_CLOCK_HOME_TZ = 'Asia/Colombo';
-    const WORLD_CLOCK_ZONES = ['Asia/Colombo', 'Asia/Dubai', 'Asia/Qatar', 'Australia/Sydney', 'Australia/Perth', 'Europe/London'];
+    const WORLD_CLOCK_ZONES = ['Asia/Colombo', 'Asia/Dubai', 'Asia/Qatar', 'Australia/Sydney', 'Australia/Perth', 'Pacific/Auckland', 'Asia/Tokyo', 'Europe/London'];
 
     // Reads a timezone's current UTC offset (in minutes) via Intl's
     // "shortOffset" name (e.g. "GMT+5:30", "GMT+8", "GMT"), so DST is
@@ -183,6 +183,58 @@
     // year), so there's no need to recompute every second — every 5
     // minutes keeps both correct with a negligible worst-case lag.
     setInterval(renderWorldClockDiffs, 5 * 60 * 1000);
+  }
+
+  /* ---------- subsea map: ctrl+scroll to zoom, double-click to reset ----------
+     Zooms by shrinking/growing the SVG's own viewBox (a real vector zoom, so
+     labels/lines stay crisp) around the pointer position. Only intercepts
+     the wheel event when ctrlKey is set (also true for trackpad pinch), so
+     normal page scrolling is completely unaffected everywhere else. */
+  const subseaSvg = document.getElementById('subseaMapSvg');
+  if (subseaSvg) {
+    const parseViewBox = (str) => str.trim().split(/\s+/).map(Number);
+    const home = parseViewBox(subseaSvg.dataset.homeViewbox);
+    const [worldX, worldY, worldW, worldH] = parseViewBox(subseaSvg.dataset.minViewbox);
+    const aspect = home[2] / home[3];
+    const MIN_W = 120; // most zoomed-in, in viewBox units
+    const MAX_W = worldW; // most zoomed-out: the full world map
+    let vb = { x: home[0], y: home[1], w: home[2], h: home[3] };
+
+    const applyViewBox = () => {
+      subseaSvg.setAttribute('viewBox', `${vb.x.toFixed(1)} ${vb.y.toFixed(1)} ${vb.w.toFixed(1)} ${vb.h.toFixed(1)}`);
+    };
+
+    subseaSvg.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+
+      const rect = subseaSvg.getBoundingClientRect();
+      // pointer position converted into current viewBox (SVG user-space) coordinates
+      const px = vb.x + ((e.clientX - rect.left) / rect.width) * vb.w;
+      const py = vb.y + ((e.clientY - rect.top) / rect.height) * vb.h;
+
+      const zoomFactor = Math.exp(e.deltaY * 0.0018); // scroll up = zoom in, down = zoom out
+      const newW = Math.min(MAX_W, Math.max(MIN_W, vb.w * zoomFactor));
+      const newH = newW / aspect;
+      const ratio = newW / vb.w;
+
+      // keep the point under the cursor stationary while zooming
+      vb.x = px - (px - vb.x) * ratio;
+      vb.y = py - (py - vb.y) * ratio;
+      vb.w = newW;
+      vb.h = newH;
+
+      // never pan past the edges of the actual world map
+      vb.x = Math.max(worldX, Math.min(worldX + worldW - vb.w, vb.x));
+      vb.y = Math.max(worldY, Math.min(worldY + worldH - vb.h, vb.y));
+
+      applyViewBox();
+    }, { passive: false });
+
+    subseaSvg.addEventListener('dblclick', () => {
+      vb = { x: home[0], y: home[1], w: home[2], h: home[3] };
+      applyViewBox();
+    });
   }
 
   /* ==========================================================
