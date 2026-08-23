@@ -136,6 +136,8 @@
       }
     };
 
+    // Renders each city's own local date plus its time-difference (or
+    // "Home base") on one line, e.g. "Sun, Aug 23 · +4:30 vs Colombo".
     const renderWorldClockDiffs = () => {
       const now = new Date();
       const homeOffset = getUtcOffsetMinutes(WORLD_CLOCK_HOME_TZ, now);
@@ -143,22 +145,34 @@
         const item = worldClockGrid.querySelector(`.wc-item[data-tz="${tz}"]`);
         const diffEl = item && item.querySelector('.wc-diff');
         if (!diffEl) return;
+        const dateStr = new Intl.DateTimeFormat('en-US', {
+          timeZone: tz,
+          weekday: 'short',
+          day: 'numeric',
+          month: 'short',
+        }).format(now);
+
+        let statusText;
+        let isHome = false;
         if (tz === WORLD_CLOCK_HOME_TZ) {
-          diffEl.textContent = 'Home base';
-          diffEl.classList.add('wc-diff-home');
-          return;
+          statusText = 'Home base';
+          isHome = true;
+        } else {
+          const offset = getUtcOffsetMinutes(tz, now);
+          if (offset === null || homeOffset === null) {
+            diffEl.textContent = dateStr;
+            diffEl.classList.remove('wc-diff-home');
+            return;
+          }
+          const diff = offset - homeOffset;
+          const sign = diff >= 0 ? '+' : '-';
+          const abs = Math.abs(diff);
+          const h = Math.floor(abs / 60);
+          const mm = String(abs % 60).padStart(2, '0');
+          statusText = `${sign}${h}:${mm} vs Colombo`;
         }
-        const offset = getUtcOffsetMinutes(tz, now);
-        if (offset === null || homeOffset === null) {
-          diffEl.textContent = '';
-          return;
-        }
-        const diff = offset - homeOffset;
-        const sign = diff >= 0 ? '+' : '-';
-        const abs = Math.abs(diff);
-        const h = Math.floor(abs / 60);
-        const mm = String(abs % 60).padStart(2, '0');
-        diffEl.textContent = `${sign}${h}:${mm} vs Colombo`;
+        diffEl.innerHTML = `${dateStr} <span class="wc-diff-dot">&middot;</span> ${statusText}`;
+        diffEl.classList.toggle('wc-diff-home', isHome);
       });
     };
 
@@ -190,9 +204,10 @@
     renderWorldClock();
     renderWorldClockDiffs();
     setInterval(renderWorldClock, 1000);
-    // Offsets only ever change at a DST transition (at most twice a year),
-    // so there's no need to recompute every second — every 5 minutes is
-    // more than enough to stay correct through a transition.
+    // The date only changes once a day (at each city's own local midnight)
+    // and the offset only changes at a DST transition (at most twice a
+    // year), so there's no need to recompute every second — every 5
+    // minutes keeps both correct with a negligible worst-case lag.
     setInterval(renderWorldClockDiffs, 5 * 60 * 1000);
   }
 
