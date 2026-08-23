@@ -264,10 +264,10 @@
       applyViewBox();
     });
 
-    // ---- ctrl + left-click or ctrl + right-click drag to pan ----
-    // Both buttons are repurposed for panning only while ctrl is held, so
-    // normal left-click/right-click behavior (text selection, context menu)
-    // still works everywhere else (and even over the map when ctrl isn't held).
+    // ---- left-click drag (or ctrl + right-click drag) to pan ----
+    // Plain left-click drag pans directly, matching the grab cursor shown on
+    // hover. Right-click still requires ctrl, so a normal right-click over
+    // the map still opens the browser's context menu.
     let isPanning = false;
     let panStart = null; // { mouseX, mouseY, vbX, vbY }
 
@@ -276,7 +276,7 @@
     });
 
     subseaSvg.addEventListener('mousedown', (e) => {
-      if ((e.button !== 0 && e.button !== 2) || !e.ctrlKey) return;
+      if (e.button !== 0 && !(e.button === 2 && e.ctrlKey)) return;
       e.preventDefault();
       isPanning = true;
       panStart = { mouseX: e.clientX, mouseY: e.clientY, vbX: vb.x, vbY: vb.y };
