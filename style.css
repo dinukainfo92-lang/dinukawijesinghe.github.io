@@ -465,7 +465,7 @@ button:focus-visible {
 
 .wc-city {
   font-size: 0.9rem;
-  color: var(--text-dim);
+  color: #a9b2c2;
   letter-spacing: 0.01em;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -485,9 +485,14 @@ button:focus-visible {
 
 .wc-diff {
   font-size: 0.72rem;
-  color: var(--text-faint);
+  color: #838da0;
   letter-spacing: 0.02em;
   padding-left: 21px;
+}
+
+.wc-diff-dot {
+  color: #838da0;
+  margin: 0 5px;
 }
 
 .wc-diff.wc-diff-home {
