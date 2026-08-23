@@ -380,7 +380,7 @@ button:focus-visible {
 /* ---------- world clock ---------- */
 .worldclock {
   margin-top: 44px;
-  padding: 20px 24px;
+  padding: 24px 28px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--bg-raised);
@@ -388,28 +388,28 @@ button:focus-visible {
 
 .worldclock-label {
   font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   color: var(--text-faint);
   letter-spacing: 0.02em;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
 }
 
 .worldclock-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .wc-item {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   min-width: 0;
   font-family: var(--font-mono);
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg-raised-2);
-  padding: 12px 16px;
+  padding: 16px 20px;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -419,8 +419,8 @@ button:focus-visible {
 }
 
 .wc-dot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -436,7 +436,7 @@ button:focus-visible {
 }
 
 .wc-city {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--text-dim);
   letter-spacing: 0.01em;
   overflow: hidden;
@@ -445,30 +445,40 @@ button:focus-visible {
 }
 
 .wc-time {
-  font-size: 0.92rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--text);
   margin-left: auto;
-  padding-left: 6px;
+  padding-left: 8px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
+@media (max-width: 900px) {
+  .wc-time { font-size: 1rem; }
+  .wc-item { padding: 14px 16px; }
+}
+
 @media (max-width: 720px) {
   .worldclock-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wc-time { font-size: 1.1rem; }
+  .wc-item { padding: 15px 18px; }
 }
 
 @media (max-width: 520px) {
-  .worldclock { padding: 14px 14px; margin-top: 32px; }
-  .worldclock-grid { gap: 8px; }
-  .wc-item { padding: 9px 10px; gap: 6px; }
-  .wc-city { font-size: 0.68rem; }
-  .wc-time { font-size: 0.78rem; }
+  .worldclock { padding: 16px 16px; margin-top: 32px; }
+  .worldclock-grid { gap: 10px; }
+  .wc-item { padding: 11px 13px; gap: 7px; }
+  .wc-city { font-size: 0.76rem; }
+  .wc-time { font-size: 0.9rem; }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 400px) {
   .worldclock-grid { grid-template-columns: minmax(0, 1fr); }
+  .wc-item { padding: 12px 16px; }
+  .wc-city { font-size: 0.82rem; }
+  .wc-time { font-size: 1rem; }
 }
 
 /* ---------- terminal card ---------- */
