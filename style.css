@@ -396,20 +396,23 @@ button:focus-visible {
 
 .worldclock-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
 .wc-item {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
   min-width: 0;
   font-family: var(--font-mono);
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg-raised-2);
   padding: 16px 20px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -418,21 +421,46 @@ button:focus-visible {
   transform: translateY(-1px);
 }
 
-.wc-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+.wc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.wc-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.wc-icon {
+  position: relative;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
 }
 
-.wc-dot-day {
-  background: var(--green);
-  box-shadow: 0 0 2px 0 var(--accent-glow);
+.wc-icon svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
-.wc-dot-night {
-  background: var(--blue);
-  box-shadow: 0 0 2px 0 rgba(94, 200, 255, 0.3);
+.wc-icon-sun { color: var(--amber); }
+.wc-icon-moon { color: var(--blue); }
+
+.wc-icon.is-day .wc-icon-sun { opacity: 1; }
+.wc-icon.is-night .wc-icon-moon { opacity: 1; }
+
+.wc-pin {
+  color: var(--text-faint);
+  flex-shrink: 0;
 }
 
 .wc-city {
@@ -455,6 +483,21 @@ button:focus-visible {
   flex-shrink: 0;
 }
 
+.wc-diff {
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  letter-spacing: 0.02em;
+  padding-left: 21px;
+}
+
+.wc-diff.wc-diff-home {
+  color: var(--green);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wc-icon svg { transition: none; }
+}
+
 @media (max-width: 900px) {
   .wc-time { font-size: 1rem; }
   .wc-item { padding: 14px 16px; }
@@ -469,9 +512,10 @@ button:focus-visible {
 @media (max-width: 520px) {
   .worldclock { padding: 16px 16px; margin-top: 32px; }
   .worldclock-grid { gap: 10px; }
-  .wc-item { padding: 11px 13px; gap: 7px; }
+  .wc-item { padding: 11px 13px; gap: 6px; }
   .wc-city { font-size: 0.76rem; }
   .wc-time { font-size: 0.9rem; }
+  .wc-diff { font-size: 0.66rem; padding-left: 19px; }
 }
 
 @media (max-width: 400px) {
