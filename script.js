@@ -166,10 +166,14 @@
         const mm = parts.find((p) => p.type === 'minute').value;
         const ss = parts.find((p) => p.type === 'second').value;
         const timeEl = item.querySelector('.wc-time');
-        if (timeEl) timeEl.textContent = `${hh}:${mm}:${ss}`;
+        const isDay = Number(hh) >= 6 && Number(hh) < 18;
+        if (timeEl) {
+          timeEl.textContent = `${hh}:${mm}:${ss}`;
+          timeEl.classList.toggle('is-day', isDay);
+          timeEl.classList.toggle('is-night', !isDay);
+        }
         const iconEl = item.querySelector('.wc-icon');
         if (iconEl) {
-          const isDay = Number(hh) >= 6 && Number(hh) < 18;
           iconEl.classList.toggle('is-day', isDay);
           iconEl.classList.toggle('is-night', !isDay);
         }
@@ -234,6 +238,51 @@
     subseaSvg.addEventListener('dblclick', () => {
       vb = { x: home[0], y: home[1], w: home[2], h: home[3] };
       applyViewBox();
+    });
+
+    // ---- ctrl + right-click drag to pan ----
+    // Right-click is repurposed for panning only while ctrl is held, so the
+    // normal right-click context menu still works everywhere else (and even
+    // over the map when ctrl isn't held).
+    let isPanning = false;
+    let panStart = null; // { mouseX, mouseY, vbX, vbY }
+
+    subseaSvg.addEventListener('contextmenu', (e) => {
+      if (e.ctrlKey) e.preventDefault();
+    });
+
+    subseaSvg.addEventListener('mousedown', (e) => {
+      if (e.button !== 2 || !e.ctrlKey) return;
+      e.preventDefault();
+      isPanning = true;
+      panStart = { mouseX: e.clientX, mouseY: e.clientY, vbX: vb.x, vbY: vb.y };
+      subseaSvg.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isPanning || !panStart) return;
+      const rect = subseaSvg.getBoundingClientRect();
+      const scaleX = vb.w / rect.width;
+      const scaleY = vb.h / rect.height;
+      const dx = (e.clientX - panStart.mouseX) * scaleX;
+      const dy = (e.clientY - panStart.mouseY) * scaleY;
+
+      let newX = panStart.vbX - dx;
+      let newY = panStart.vbY - dy;
+      newX = Math.max(worldX, Math.min(worldX + worldW - vb.w, newX));
+      newY = Math.max(worldY, Math.min(worldY + worldH - vb.h, newY));
+      vb.x = newX;
+      vb.y = newY;
+      applyViewBox();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isPanning) return;
+      isPanning = false;
+      panStart = null;
+      subseaSvg.style.cursor = 'grab';
+      document.body.style.userSelect = '';
     });
   }
 
