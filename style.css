@@ -504,6 +504,17 @@ button:focus-visible {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+/* Matches the sun/moon icon colors so the time itself reads as day or
+   night at a glance, not just the small icon next to it. */
+.wc-time.is-day {
+  color: var(--amber);
+}
+
+.wc-time.is-night {
+  color: var(--blue);
 }
 
 .wc-diff {
