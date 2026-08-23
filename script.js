@@ -82,32 +82,6 @@
     barObserver.observe(skillTable);
   }
 
-  /* ---------- hero: live network topology diagram ---------- */
-  const topoStage = document.getElementById('topoStage');
-  const topoPps = document.getElementById('topoPps');
-
-  if (topoStage) {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Small "packets/sec" counter that drifts around a realistic-looking
-    // baseline, purely cosmetic — gives the diagram a sense of live traffic
-    // without pretending to be real telemetry.
-    if (topoPps) {
-      if (reduceMotion) {
-        topoPps.textContent = '1.1k';
-      } else {
-        let value = 1100;
-        const tick = () => {
-          value += Math.round((Math.random() - 0.5) * 180);
-          value = Math.max(820, Math.min(1450, value));
-          topoPps.textContent = (value / 1000).toFixed(1) + 'k';
-          setTimeout(tick, 900 + Math.random() * 500);
-        };
-        setTimeout(tick, 500);
-      }
-    }
-  }
-
   // World clock — Colombo / Sydney / Perth / London, computed client-side
   // from the visitor's own device clock via Intl, so it needs no API and
   // is always correct even across DST changes.
