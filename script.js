@@ -113,7 +113,55 @@
   // is always correct even across DST changes.
   const worldClockGrid = document.querySelector('.worldclock-grid');
   if (worldClockGrid) {
-    const WORLD_CLOCK_ZONES = ['Asia/Colombo', 'Australia/Sydney', 'Australia/Perth', 'Europe/London'];
+    const WORLD_CLOCK_HOME_TZ = 'Asia/Colombo';
+    const WORLD_CLOCK_ZONES = ['Asia/Colombo', 'Asia/Dubai', 'Asia/Qatar', 'Australia/Sydney', 'Australia/Perth', 'Europe/London'];
+
+    // Reads a timezone's current UTC offset (in minutes) via Intl's
+    // "shortOffset" name (e.g. "GMT+5:30", "GMT+8", "GMT"), so DST is
+    // always handled correctly without hardcoding any offsets.
+    const getUtcOffsetMinutes = (tz, date) => {
+      try {
+        const parts = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'shortOffset' }).formatToParts(date);
+        const tzName = parts.find((p) => p.type === 'timeZoneName');
+        if (!tzName) return null;
+        if (tzName.value === 'GMT') return 0;
+        const m = tzName.value.match(/GMT([+-])(\d+)(?::(\d+))?/);
+        if (!m) return null;
+        const sign = m[1] === '-' ? -1 : 1;
+        const hours = parseInt(m[2], 10);
+        const mins = m[3] ? parseInt(m[3], 10) : 0;
+        return sign * (hours * 60 + mins);
+      } catch (_) {
+        return null;
+      }
+    };
+
+    const renderWorldClockDiffs = () => {
+      const now = new Date();
+      const homeOffset = getUtcOffsetMinutes(WORLD_CLOCK_HOME_TZ, now);
+      WORLD_CLOCK_ZONES.forEach((tz) => {
+        const item = worldClockGrid.querySelector(`.wc-item[data-tz="${tz}"]`);
+        const diffEl = item && item.querySelector('.wc-diff');
+        if (!diffEl) return;
+        if (tz === WORLD_CLOCK_HOME_TZ) {
+          diffEl.textContent = 'Home base';
+          diffEl.classList.add('wc-diff-home');
+          return;
+        }
+        const offset = getUtcOffsetMinutes(tz, now);
+        if (offset === null || homeOffset === null) {
+          diffEl.textContent = '';
+          return;
+        }
+        const diff = offset - homeOffset;
+        const sign = diff >= 0 ? '+' : '-';
+        const abs = Math.abs(diff);
+        const h = Math.floor(abs / 60);
+        const mm = String(abs % 60).padStart(2, '0');
+        diffEl.textContent = `${sign}${h}:${mm} vs Colombo`;
+      });
+    };
+
     const renderWorldClock = () => {
       const now = new Date();
       WORLD_CLOCK_ZONES.forEach((tz) => {
@@ -131,16 +179,21 @@
         const ss = parts.find((p) => p.type === 'second').value;
         const timeEl = item.querySelector('.wc-time');
         if (timeEl) timeEl.textContent = `${hh}:${mm}:${ss}`;
-        const dotEl = item.querySelector('.wc-dot');
-        if (dotEl) {
+        const iconEl = item.querySelector('.wc-icon');
+        if (iconEl) {
           const isDay = Number(hh) >= 6 && Number(hh) < 18;
-          dotEl.classList.toggle('wc-dot-day', isDay);
-          dotEl.classList.toggle('wc-dot-night', !isDay);
+          iconEl.classList.toggle('is-day', isDay);
+          iconEl.classList.toggle('is-night', !isDay);
         }
       });
     };
     renderWorldClock();
+    renderWorldClockDiffs();
     setInterval(renderWorldClock, 1000);
+    // Offsets only ever change at a DST transition (at most twice a year),
+    // so there's no need to recompute every second — every 5 minutes is
+    // more than enough to stay correct through a transition.
+    setInterval(renderWorldClockDiffs, 5 * 60 * 1000);
   }
 
   /* ==========================================================
