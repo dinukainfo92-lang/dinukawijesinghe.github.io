@@ -28,10 +28,11 @@
   --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   /* -- layout -- */
-  /* matches tools/config-generator.html's .cg-page max-width: scales with
-     the viewport on wide/ultrawide monitors instead of stopping at a fixed
-     1280px, while never exceeding 1800px. */
-  --wrap: min(94vw, 1800px);
+  /* Scales with the viewport on wide/ultrawide monitors instead of
+     stopping at a fixed 1280px, while staying a little narrower than
+     tools/config-generator.html's .cg-page so the page doesn't feel
+     overly stretched. */
+  --wrap: min(90vw, 1600px);
   --header-h: 68px;
   --radius: 3px;
 }
@@ -404,8 +405,18 @@ button:focus-visible {
 
 .worldclock-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* 2 columns by default (4 even rows for 8 cities) — each card gets
+     plenty of width so the city name never gets squeezed out next to the
+     fixed-width time. Widens to 4 columns (2 even rows) only once there's
+     comfortably enough room per card; see the min-width:1220px rule
+     below. Avoiding 3 columns on purpose: with 8 cities it leaves an
+     uneven trailing row. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+}
+
+@media (min-width: 1220px) {
+  .worldclock-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 .wc-item {
@@ -478,6 +489,10 @@ button:focus-visible {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* Guards against flexbox shrinking this all the way to 0 (its automatic
+     min-width) next to .wc-time's flex-shrink:0 — always keep a few
+     legible characters instead of the name vanishing entirely. */
+  min-width: 3.5ch;
 }
 
 .wc-time {
@@ -517,7 +532,6 @@ button:focus-visible {
 }
 
 @media (max-width: 720px) {
-  .worldclock-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .wc-time { font-size: 1.1rem; }
   .wc-item { padding: 15px 18px; }
 }
@@ -590,6 +604,32 @@ button:focus-visible {
   position: relative;
   height: 320px;
   padding: 14px;
+  overflow: hidden;
+}
+
+.map-hint {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+  background: rgba(8, 12, 20, 0.55);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.map-stage:hover .map-hint {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .map-hint { display: none; }
 }
 
 .map-svg {
@@ -597,6 +637,7 @@ button:focus-visible {
   inset: 0;
   width: 100%;
   height: 100%;
+  cursor: grab;
 }
 
 .map-land {
