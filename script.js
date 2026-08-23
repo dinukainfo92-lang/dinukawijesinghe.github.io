@@ -57,21 +57,45 @@
 
   revealTargets.forEach((el) => revealObserver.observe(el));
 
-  /* ---------- animate skill bars once visible ---------- */
+  /* ---------- animate skill rows once visible (boot-sequence style) ----------
+     Rows stream in one at a time like live CLI output; each interface's LED
+     flicks from off to up right after its row lands, then the proficiency
+     bar fills while the percentage counts up alongside it. */
   if (skillTable) {
+    const animatePct = (pct, level) => {
+      const start = performance.now();
+      const duration = 1000;
+      const tick = (now) => {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        pct.textContent = `${Math.round(level * eased)}%`;
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
     const barObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const rows = entry.target.querySelectorAll('.iface-row[data-level]');
             rows.forEach((row, i) => {
+              const led = row.querySelector('.led');
               const fill = row.querySelector('.bar-fill');
-              const level = row.getAttribute('data-level');
-              if (fill && level) {
-                setTimeout(() => {
-                  fill.style.width = `${level}%`;
-                }, i * 90);
-              }
+              const pct = row.querySelector('.bar-pct');
+              const cell = row.querySelector('.bar-cell');
+              const level = parseFloat(row.getAttribute('data-level')) || 0;
+              const stepDelay = i * 130;
+
+              setTimeout(() => row.classList.add('row-in'), stepDelay);
+              setTimeout(() => {
+                if (led) { led.classList.remove('led-off'); led.classList.add('led-up', 'led-flash'); }
+              }, stepDelay + 170);
+              setTimeout(() => {
+                if (fill) fill.style.width = `${level}%`;
+                if (cell) cell.classList.add('is-filled');
+                if (pct) animatePct(pct, level);
+              }, stepDelay + 260);
             });
             barObserver.unobserve(entry.target);
           }
@@ -283,6 +307,88 @@
       panStart = null;
       subseaSvg.style.cursor = 'grab';
       document.body.style.userSelect = '';
+    });
+
+    // ---- touch: two-finger pinch-to-zoom + two-finger drag-to-pan ----
+    // A single finger is left alone so the page still scrolls normally when
+    // someone swipes over the map on a phone; only a two-finger touch is
+    // treated as a map gesture. A quick double-tap resets the view, mirroring
+    // the desktop double-click.
+    let touchGesture = null; // { dist0, mid0:{x,y}, vb0:{x,y,w,h}, rect }
+    let multiTouchOccurred = false;
+    let lastTapTime = 0;
+    let lastTapX = 0;
+    let lastTapY = 0;
+
+    const touchDist = (t1, t2) => Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+    const touchMid = (t1, t2) => ({ x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 });
+
+    subseaSvg.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        multiTouchOccurred = true;
+        e.preventDefault();
+        touchGesture = {
+          dist0: touchDist(e.touches[0], e.touches[1]),
+          mid0: touchMid(e.touches[0], e.touches[1]),
+          vb0: { x: vb.x, y: vb.y, w: vb.w, h: vb.h },
+          rect: subseaSvg.getBoundingClientRect(),
+        };
+      }
+    }, { passive: false });
+
+    subseaSvg.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && touchGesture) {
+        e.preventDefault();
+        const { dist0, mid0, vb0, rect } = touchGesture;
+        const dist1 = touchDist(e.touches[0], e.touches[1]);
+        const mid1 = touchMid(e.touches[0], e.touches[1]);
+
+        const newW = Math.min(MAX_W, Math.max(MIN_W, vb0.w * (dist0 / Math.max(1, dist1))));
+        const newH = newW / aspect;
+
+        // the map point under the fingers at gesture start should stay under
+        // the fingers' current position, giving combined zoom + pan in one move
+        const px = vb0.x + ((mid0.x - rect.left) / rect.width) * vb0.w;
+        const py = vb0.y + ((mid0.y - rect.top) / rect.height) * vb0.h;
+
+        let newX = px - ((mid1.x - rect.left) / rect.width) * newW;
+        let newY = py - ((mid1.y - rect.top) / rect.height) * newH;
+        newX = Math.max(worldX, Math.min(worldX + worldW - newW, newX));
+        newY = Math.max(worldY, Math.min(worldY + worldH - newH, newY));
+
+        vb.x = newX;
+        vb.y = newY;
+        vb.w = newW;
+        vb.h = newH;
+        applyViewBox();
+      }
+    }, { passive: false });
+
+    subseaSvg.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) touchGesture = null;
+      if (e.touches.length !== 0) return;
+
+      if (!multiTouchOccurred && e.changedTouches.length === 1) {
+        const now = Date.now();
+        const t = e.changedTouches[0];
+        const dx = Math.abs(t.clientX - lastTapX);
+        const dy = Math.abs(t.clientY - lastTapY);
+        if (now - lastTapTime < 320 && dx < 30 && dy < 30) {
+          vb = { x: home[0], y: home[1], w: home[2], h: home[3] };
+          applyViewBox();
+          lastTapTime = 0;
+        } else {
+          lastTapTime = now;
+          lastTapX = t.clientX;
+          lastTapY = t.clientY;
+        }
+      }
+      multiTouchOccurred = false;
+    });
+
+    subseaSvg.addEventListener('touchcancel', () => {
+      touchGesture = null;
+      multiTouchOccurred = false;
     });
   }
 
