@@ -112,6 +112,70 @@ button:focus-visible {
   opacity: 0.5;
 }
 
+/* ---------- background: faint animated world cable map ----------
+   A quieter reprise of the hero's subsea map, fixed behind the whole
+   page (not just the hero) at very low opacity — visible in the
+   margins between cards/sections, never over them, since every card
+   already paints its own opaque background on top. */
+.bgmap-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bgmap-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bgmap-land {
+  fill: rgba(136, 145, 161, 0.035);
+  stroke: rgba(136, 145, 161, 0.05);
+  stroke-width: 0.6;
+}
+
+.bgmap-link {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-opacity: 0.35;
+}
+
+.bgmap-pulse {
+  opacity: 0.16;
+}
+
+.bgmap-pulse-out {
+  fill: var(--accent);
+}
+
+.bgmap-pulse-in {
+  fill: var(--blue);
+}
+
+.bgmap-node {
+  fill: var(--text-faint);
+  opacity: 0.16;
+}
+
+.bgmap-node-home {
+  fill: var(--accent);
+  opacity: 0.24;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bgmap-pulse animateMotion { display: none; }
+  .bgmap-pulse { opacity: 0; }
+}
+
+@media (max-width: 700px) {
+  .bgmap-layer { display: none; }
+}
+
 /* ---------- side rails (decorative, wide screens only) ---------- */
 .side-rail {
   display: none;
