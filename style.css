@@ -146,7 +146,7 @@ button:focus-visible {
 }
 
 .bgmap-pulse {
-  opacity: 0.16;
+  opacity: 0.09;
 }
 
 .bgmap-pulse-out {
@@ -159,12 +159,12 @@ button:focus-visible {
 
 .bgmap-node {
   fill: var(--text-faint);
-  opacity: 0.16;
+  opacity: 0.09;
 }
 
 .bgmap-node-home {
   fill: var(--accent);
-  opacity: 0.24;
+  opacity: 0.14;
 }
 
 @media (prefers-reduced-motion: reduce) {
