@@ -240,10 +240,10 @@
       applyViewBox();
     });
 
-    // ---- ctrl + right-click drag to pan ----
-    // Right-click is repurposed for panning only while ctrl is held, so the
-    // normal right-click context menu still works everywhere else (and even
-    // over the map when ctrl isn't held).
+    // ---- ctrl + left-click or ctrl + right-click drag to pan ----
+    // Both buttons are repurposed for panning only while ctrl is held, so
+    // normal left-click/right-click behavior (text selection, context menu)
+    // still works everywhere else (and even over the map when ctrl isn't held).
     let isPanning = false;
     let panStart = null; // { mouseX, mouseY, vbX, vbY }
 
@@ -252,7 +252,7 @@
     });
 
     subseaSvg.addEventListener('mousedown', (e) => {
-      if (e.button !== 2 || !e.ctrlKey) return;
+      if ((e.button !== 0 && e.button !== 2) || !e.ctrlKey) return;
       e.preventDefault();
       isPanning = true;
       panStart = { mouseX: e.clientX, mouseY: e.clientY, vbX: vb.x, vbY: vb.y };
