@@ -108,6 +108,41 @@
     }
   }
 
+  // World clock — Colombo / Sydney / Perth / London, computed client-side
+  // from the visitor's own device clock via Intl, so it needs no API and
+  // is always correct even across DST changes.
+  const worldClockGrid = document.querySelector('.worldclock-grid');
+  if (worldClockGrid) {
+    const WORLD_CLOCK_ZONES = ['Asia/Colombo', 'Australia/Sydney', 'Australia/Perth', 'Europe/London'];
+    const renderWorldClock = () => {
+      const now = new Date();
+      WORLD_CLOCK_ZONES.forEach((tz) => {
+        const item = worldClockGrid.querySelector(`.wc-item[data-tz="${tz}"]`);
+        if (!item) return;
+        const parts = new Intl.DateTimeFormat('en-GB', {
+          timeZone: tz,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        }).formatToParts(now);
+        const hh = parts.find((p) => p.type === 'hour').value;
+        const mm = parts.find((p) => p.type === 'minute').value;
+        const ss = parts.find((p) => p.type === 'second').value;
+        const timeEl = item.querySelector('.wc-time');
+        if (timeEl) timeEl.textContent = `${hh}:${mm}:${ss}`;
+        const dotEl = item.querySelector('.wc-dot');
+        if (dotEl) {
+          const isDay = Number(hh) >= 6 && Number(hh) < 18;
+          dotEl.classList.toggle('wc-dot-day', isDay);
+          dotEl.classList.toggle('wc-dot-night', !isDay);
+        }
+      });
+    };
+    renderWorldClock();
+    setInterval(renderWorldClock, 1000);
+  }
+
   /* ==========================================================
      GALLERY — placeholder fallback + lightbox
      Replace files under /assets/gallery/ with your own photos;
